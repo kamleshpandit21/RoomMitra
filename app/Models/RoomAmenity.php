@@ -5,21 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FurnitureItem extends Model
-{use HasFactory;
+class RoomAmenity extends Model
+{
+    use HasFactory;
 
     protected $fillable = [
         'room_id',
-        'item_name',
-        'item_type',  
+        'amenity_name',
+        'status',
+        'price',
     ];
 
-    /**
-     * Relationship: Each furniture item belongs to one room.
-     */
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id', 'room_id');
     }
-
 }

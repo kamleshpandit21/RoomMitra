@@ -11,17 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('room_images', function (Blueprint $table) {
-                $table->id();
-            
+        Schema::create('room_amenities', function (Blueprint $table) {
+                $table->id(); 
+                
                 $table->unsignedBigInteger('room_id');
                 $table->foreign('room_id')->references('room_id')->on('rooms')->onDelete('cascade');
             
-                $table->enum('image_type', ['main', 'room', 'kitchen', 'bathroom', 'building', 'other'])->default('room');
-                $table->string('image_url'); 
-                $table->boolean('is_featured')->default(false); 
+                // Amenity Details
+                $table->string('amenity_name'); // e.g. 'WiFi', 'Laundry'
+                $table->enum('status', ['free', 'paid', 'not_available'])->default('not_available');
+                $table->decimal('price', 10, 2)->nullable()->comment('Applicable if paid');
             
                 $table->timestamps();
+            
+                // Optional: prevent duplicates
+                $table->unique(['room_id', 'amenity_name']);
             });
             
     }
@@ -31,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('room_images');
+        Schema::dropIfExists('room_amenities');
     }
 };

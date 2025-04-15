@@ -12,8 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
+            $table->id('review_id');
+
+            $table->unsignedBigInteger('booking_id');
+            $table->unsignedBigInteger('user_id')->nullable(); 
+            $table->unsignedBigInteger('room_id');
+
+            $table->unsignedTinyInteger('rating'); 
+        
+            $table->text('review_text');
+            
             $table->timestamps();
+        
+            $table->foreign('booking_id')->references('booking_id')->on('bookings')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('set null');
+            $table->foreign('room_id')->references('room_id')->on('rooms')->onDelete('cascade');
+        
         });
     }
 

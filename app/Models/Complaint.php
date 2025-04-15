@@ -7,13 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complaint extends Model
 {
-    /** @use HasFactory<\Database\Factories\ComplaintFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'phone',
+        'user_type',
+        'category',
+        'subject',
+        'description',
+        'attachment',
+        'status',
+        'admin_response',
+    ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
+
 
     public function room()
     {

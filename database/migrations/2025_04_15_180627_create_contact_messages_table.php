@@ -12,8 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contact_messages', function (Blueprint $table) {
-            $table->id();
+            $table->id('message_id');
+    
+            // User's Contact Information
+            $table->string('name');
+            $table->string('email');
+            
+            // Subject and Message content
+            $table->string('subject');
+            $table->text('message');
+            
+            // Status of the message
+            $table->enum('status', ['new', 'read', 'responded'])->default('new');
+            
+            // Timestamps
             $table->timestamps();
+        
         });
     }
 

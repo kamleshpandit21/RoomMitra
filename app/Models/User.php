@@ -4,98 +4,88 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
-        'name',
+        'username',
+        'full_name',
         'email',
         'password',
+        'phone',
+        'role',
+        'is_verified',
+        'is_blocked',
+        'provider',
+        'provider_id',
+        'remember_token',
+        'profile_completed',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
+        'provider_id',
+    ];
+
+    protected $casts = [
+        'is_verified' => 'boolean',
+        'is_blocked' => 'boolean',
+        'profile_completed' => 'boolean',
+        'email_verified_at' => 'datetime',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * 🔗 Relationships
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 
-    /**
-     * ==========================================
-     * Get the profile associated with the user.
-     * ==========================================
-     */
+    // Profile (1-to-1)
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class, 'user_id', 'user_id');
     }
-    
-    /**
-     * ===============================================
-     * Get the owner profile associated with the user.
-     * ===============================================
-     */
+
+    // Owner Profile (if user is an owner)
     public function ownerProfile()
     {
-        return $this->hasOne(OwnerProfile::class);
+        return $this->hasOne(OwnerProfile::class, 'user_id', 'user_id');
     }
-    
-    /**
-     * ==========================================
-     * Get the bookings associated with the user.
-     * ==========================================
-     */
 
+    // Bookings
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'user_id', 'user_id');
     }
-    
-    /**
-     * ==========================================
-     * Get the reviews associated with the user.
-     * ==========================================
-     */
+
+    // Reviews
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, 'user_id', 'user_id');
     }
-    
-    /**
-     * ==========================================
-     * Get the complaints associated with the user.
-     * ==========================================
-     */
-    
+
+    // Complaints
     public function complaints()
     {
-        return $this->hasMany(Complaint::class);
+        return $this->hasMany(Complaint::class, 'user_id', 'user_id');
     }
-    
+
+    // Contact Messages
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'user_id', 'user_id');
+    }
+
+    // Payments
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'user_id', 'user_id');
+    }
+
 }

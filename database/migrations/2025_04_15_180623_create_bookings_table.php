@@ -4,16 +4,41 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('booking_id');
+
+            // User, Room, Owner relation
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('room_id');
+            $table->unsignedBigInteger('owner_id');
+
+            // Date fields
+            $table->date('check_in_date')->nullable(false); // Made non-nullable
+            $table->date('check_out_date')->nullable(false); // Made non-nullable
+
+            // Total booking amount
+            $table->decimal('total_amount', 10, 2);
+
+            // Booking status & payment status
+            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
+            $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
+
+            // Optional additional payment details
+            $table->string('payment_method')->nullable(); // E.g., PayPal, Credit Card
+            $table->string('transaction_id')->nullable(); // Payment gateway transaction ID
+
+            $table->timestamps(); 
+            // Foreign Key Relations
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('room_id')->references('room_id')->on('rooms')->onDelete('cascade');
+            $table->foreign('owner_id')->references('user_id')->on('users')->onDelete('cascade');
+
         });
     }
 
