@@ -9,4 +9,10 @@ class FurnitureItem extends Model
 {
     /** @use HasFactory<\Database\Factories\FurnitureItemFactory> */
     use HasFactory;
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
 }

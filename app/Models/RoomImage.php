@@ -9,4 +9,11 @@ class RoomImage extends Model
 {
     /** @use HasFactory<\Database\Factories\RoomImageFactory> */
     use HasFactory;
+
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
 }

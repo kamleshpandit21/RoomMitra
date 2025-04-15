@@ -47,15 +47,55 @@ class User extends Authenticatable
     }
 
     /**
+     * ==========================================
      * Get the profile associated with the user.
+     * ==========================================
      */
-    public function userProfile(){
+    public function profile()
+    {
         return $this->hasOne(Profile::class);
     }
-
-    public function ownerProfile(){
+    
+    /**
+     * ===============================================
+     * Get the owner profile associated with the user.
+     * ===============================================
+     */
+    public function ownerProfile()
+    {
         return $this->hasOne(OwnerProfile::class);
     }
+    
+    /**
+     * ==========================================
+     * Get the bookings associated with the user.
+     * ==========================================
+     */
 
-
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+    
+    /**
+     * ==========================================
+     * Get the reviews associated with the user.
+     * ==========================================
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    
+    /**
+     * ==========================================
+     * Get the complaints associated with the user.
+     * ==========================================
+     */
+    
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class);
+    }
+    
 }
