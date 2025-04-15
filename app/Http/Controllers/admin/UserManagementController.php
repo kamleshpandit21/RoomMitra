@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\RoomAmenity;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class RoomAmenityController extends Controller
+class UserManagementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RoomAmenityController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RoomAmenity $roomAmenity)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class RoomAmenityController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RoomAmenity $roomAmenity)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class RoomAmenityController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RoomAmenity $roomAmenity)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class RoomAmenityController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RoomAmenity $roomAmenity)
+    public function destroy(string $id)
     {
         //
     }

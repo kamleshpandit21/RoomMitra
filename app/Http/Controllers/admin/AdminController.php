@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\RoomImage;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class RoomImageController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RoomImageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RoomImage $roomImage)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class RoomImageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RoomImage $roomImage)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class RoomImageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RoomImage $roomImage)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class RoomImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RoomImage $roomImage)
+    public function destroy(string $id)
     {
         //
     }

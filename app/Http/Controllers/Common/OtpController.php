@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Common;
 
-use App\Models\ContactMessage;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ContactMessageController extends Controller
+class OtpController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class ContactMessageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ContactMessage $contactMessage)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class ContactMessageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ContactMessage $contactMessage)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class ContactMessageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ContactMessage $contactMessage)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class ContactMessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ContactMessage $contactMessage)
+    public function destroy(string $id)
     {
         //
     }

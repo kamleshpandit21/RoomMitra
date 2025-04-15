@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Common;
 
-use App\Models\OwnerProfile;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class OwnerProfileController extends Controller
+class ContactMessageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class OwnerProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(OwnerProfile $ownerProfile)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class OwnerProfileController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(OwnerProfile $ownerProfile)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class OwnerProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, OwnerProfile $ownerProfile)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class OwnerProfileController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OwnerProfile $ownerProfile)
+    public function destroy(string $id)
     {
         //
     }

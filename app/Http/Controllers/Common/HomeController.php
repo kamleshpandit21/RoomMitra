@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Common;
 
-use App\Models\FurnitureItem;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class FurnitureItemController extends Controller
+class HomeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class FurnitureItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FurnitureItem $furnitureItem)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class FurnitureItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(FurnitureItem $furnitureItem)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class FurnitureItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FurnitureItem $furnitureItem)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class FurnitureItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(FurnitureItem $furnitureItem)
+    public function destroy(string $id)
     {
         //
     }

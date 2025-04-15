@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Owner;
 
-use App\Models\Testimonial;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TestimonialController extends Controller
+class ComplaintResponseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class TestimonialController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Testimonial $testimonial)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class TestimonialController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Testimonial $testimonial)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class TestimonialController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Testimonial $testimonial)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class TestimonialController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Testimonial $testimonial)
+    public function destroy(string $id)
     {
         //
     }

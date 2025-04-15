@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Otp;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class OtpController extends Controller
+class TestimonialController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class OtpController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Otp $otp)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class OtpController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Otp $otp)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class OtpController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Otp $otp)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class OtpController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Otp $otp)
+    public function destroy(string $id)
     {
         //
     }
