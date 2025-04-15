@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class OtpController extends Controller
+class CommonContactMessageController extends Controller
 {
     /**
      * Display a listing of the resource.

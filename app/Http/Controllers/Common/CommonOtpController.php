@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class FaqController extends Controller
+class CommonOtpController extends Controller
 {
     /**
      * Display a listing of the resource.

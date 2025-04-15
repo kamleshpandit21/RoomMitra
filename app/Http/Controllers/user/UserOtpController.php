@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Common;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TestimonialController extends Controller
+class UserOtpController extends Controller
 {
     /**
      * Display a listing of the resource.
