@@ -42,7 +42,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-
         $request->validate([
             'full_name' => 'required|min:2|regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email:rfc,dns|unique:users,email',
@@ -50,8 +49,6 @@ class AuthController extends Controller
             'password' => 'nullable|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/|confirmed',
             'role' => 'required|in:user,room_owner',
         ]);
-
-
 
         $user = User::create([
             'full_name' => $request->full_name,
@@ -73,17 +70,15 @@ class AuthController extends Controller
             ]);
         }
 
-
-
-        Auth::guard('web')->login($user);
+        Auth::login($user);
 
         if ($user->role === 'room_owner') {
-            // return redirect()->route('owner.rooms.index');
             return view('common.room-details');
         } else {
             return redirect()->route('user.bookings.index');
         }
     }
+
 
     /**
      * ===============================================
@@ -94,32 +89,30 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-
-        if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.dashboard');
-        }
-
-        if (Auth::guard('owner')->attempt($credentials)) {
-            return redirect()->route('owner.rooms.index');
-        }
-
-        if (Auth::guard('web')->attempt($credentials)) {
-            $user = Auth::guard('web')->user();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
             if ($user->is_blocked) {
-                Auth::guard('web')->logout();
+                Auth::logout();
                 return back()->withErrors(['email' => 'Your account has been blocked.']);
             }
 
-            return redirect()->route('user.bookings.index');
+            if ($user->role === 'room_owner') {
+                return view('common.room-details');
+                //  return redirect()->route('owner.rooms.index');
+            }
+            return view('common.room-details');
+
+            //  return redirect()->route('user.bookings.index');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.']);
     }
+
 
 
     /**
@@ -131,8 +124,7 @@ class AuthController extends Controller
     {
         if (Auth::guard('admin')->check()) {
             Auth::guard('admin')->logout();
-        } elseif (Auth::guard('owner')->check()) {
-            Auth::guard('owner')->logout();
+
         } elseif (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();
         }

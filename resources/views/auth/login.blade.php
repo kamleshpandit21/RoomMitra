@@ -27,7 +27,10 @@
                     <div class="col-md-6 p-5">
                         <h4 class="fw-bold text-success mb-4 text-center">🔐 Login to Your Account</h4>
                         <h6 class="fw-bold text-success mb-4">
-                            {{ session('success') }} {{ session('error') }}
+                            {{ session('success') }} {{ session('error') }} @if (isset($email))
+                                {{ $email }}
+                                
+                            @endif
                         </h6>
                         <form method="POST" action="{{ route('common.login') }}" novalidate id="login-form">
                             @csrf
