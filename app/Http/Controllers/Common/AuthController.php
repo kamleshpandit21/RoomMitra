@@ -3,63 +3,146 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Models\OwnerProfile;
+use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * ================================
+     * Show the application login form.
+     *=================================
      */
-    public function index()
+    public function showLoginForm()
     {
-        //
+        return view('auth.login');
+    }
+
+    /*`
+     * ================================
+     * Show the application Register form.
+     *=================================
+     */
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
+
+
+
+    /**
+     * ===============================================
+     * Register a new user.
+     * ===============================================
+     */
+
+    public function register(Request $request)
+    {
+
+        $request->validate([
+            'full_name' => 'required|min:2|regex:/^[a-zA-Z\s]+$/',
+            'email' => 'required|email:rfc,dns|unique:users,email',
+            'phone' => 'required|digits:10|unique:users,phone',
+            'password' => 'nullable|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/|confirmed',
+            'role' => 'required|in:user,room_owner',
+        ]);
+
+
+
+        $user = User::create([
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'role' => $request->role,
+        ]);
+
+        if ($user && $user->role === 'room_owner') {
+            Profile::create([
+                'user_id' => $user->user_id,
+                'avatar' => 'img/avatar/avatar.png',
+            ]);
+        } else {
+            OwnerProfile::create([
+                'user_id' => $user->user_id,
+                'avatar' => 'img/avatar/avatar.png',
+            ]);
+        }
+
+
+
+        Auth::guard('web')->login($user);
+
+        if ($user->role === 'room_owner') {
+            // return redirect()->route('owner.rooms.index');
+            return view('common.room-details');
+        } else {
+            return redirect()->route('user.bookings.index');
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
+     * ===============================================
+     * Login user.
+     * ===============================================
      */
-    public function create()
+
+    public function login(Request $request)
     {
-        //
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+
+        if (Auth::guard('admin')->attempt($credentials)) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if (Auth::guard('owner')->attempt($credentials)) {
+            return redirect()->route('owner.rooms.index');
+        }
+
+        if (Auth::guard('web')->attempt($credentials)) {
+            $user = Auth::guard('web')->user();
+
+            if ($user->is_blocked) {
+                Auth::guard('web')->logout();
+                return back()->withErrors(['email' => 'Your account has been blocked.']);
+            }
+
+            return redirect()->route('user.bookings.index');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
-     * Display the specified resource.
+     * ===============================================
+     * Logout user.
+     * ===============================================
      */
-    public function show(string $id)
+    public function logout(Request $request)
     {
-        //
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+        } elseif (Auth::guard('owner')->check()) {
+            Auth::guard('owner')->logout();
+        } elseif (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+        }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

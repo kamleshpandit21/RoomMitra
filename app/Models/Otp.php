@@ -15,6 +15,7 @@ class Otp extends Model
         'expires_at',
         'is_used',
     ];
+    public $timestamps = true;
 
     protected $casts = [
         'expires_at' => 'datetime',

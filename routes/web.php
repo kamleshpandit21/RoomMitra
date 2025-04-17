@@ -10,7 +10,9 @@ use App\Http\Controllers\Common\{
     CommonFaqController,
     CommonTestimonialController,
     CommonContactMessageController,
-    CommonOtpController
+    CommonOtpController,
+    ForgotPasswordController,
+    SocialAuthController
 };
 use App\Http\Controllers\Admin\{
     AdminController,
@@ -45,12 +47,28 @@ use App\Http\Controllers\User\{
 
 
 Route::name('common.')->group(function () {
-    // Auth Routes (login, registration)
-    Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [AuthController::class, 'login']);
-    Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('register', [AuthController::class, 'register']);
+    // Auth Routes (login, registration, logout)
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('login', 'showLoginForm')->name('login.form');
+        Route::post('login', 'login')->name('login');
+        Route::get('register', 'showRegistrationForm')->name('register.form');
+        Route::post('register', 'register')->name('register');
+        Route::get('logout', 'logout')->name('logout');
+    });
 
+    // password reset
+
+    Route::controller(ForgotPasswordController::class)->group(function () {
+        Route::get('forgot-password', 'index')->name('forgot-password.form');
+        Route::post('forgot-password', 'sendResetLinkEmail')->name('forgot-password');
+    });
+
+    Route::controller(SocialAuthController::class)->group(function () {
+        Route::get('/auth/{provider}', 'redirectToProvider')->name('social.login'); // role added here
+        Route::get('/auth/{provider}/callback', 'handleProviderCallback');
+    });
+
+ 
     // Home Page
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
