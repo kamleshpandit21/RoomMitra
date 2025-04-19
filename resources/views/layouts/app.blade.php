@@ -156,13 +156,13 @@
                 <div class="col-md-2">
                     <h6 class="text-uppercase fw-bold">Explore</h6>
                     <hr class="text-success" style="width: 60px; height: 2px" />
-                    <p><a href="#" class="text-white text-decoration-none">Home</a></p>
+                    <p><a href="{{ route('home') }}" class="text-white text-decoration-none">Home</a></p>
                     <p>
-                        <a href="#" class="text-white text-decoration-none">About Us</a>
+                        <a href="{{ route('about') }}" class="text-white text-decoration-none">About Us</a>
                     </p>
-                    <p><a href="#" class="text-white text-decoration-none">Rooms</a></p>
+                    <p><a href="" class="text-white text-decoration-none">Rooms</a></p>
                     <p>
-                        <a href="#" class="text-white text-decoration-none">Contact</a>
+                        <a href="{{ route('contact.form') }}" class="text-white text-decoration-none">Contact</a>
                     </p>
                 </div>
 
@@ -170,15 +170,15 @@
                 <div class="col-md-3">
                     <h6 class="text-uppercase fw-bold">Useful Links</h6>
                     <hr class="text-success" style="width: 60px; height: 2px" />
-                    <p>
+                    {{-- <p>
                         <a href="#" class="text-white text-decoration-none">My Account</a>
                     </p>
                     <p>
                         <a href="#" class="text-white text-decoration-none">Booking History</a>
-                    </p>
-                    <p><a href="#" class="text-white text-decoration-none">FAQs</a></p>
+                    </p> --}}
+                    <p><a href="{{ route('faqs') }}" class="text-white text-decoration-none">FAQs</a></p>
                     <p>
-                        <a href="#" class="text-white text-decoration-none">Support</a>
+                        <a href="{{ route('complaint.form') }}" class="text-white text-decoration-none">Complaint</a>
                     </p>
                 </div>
 

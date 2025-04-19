@@ -51,6 +51,8 @@ class Room extends Model
 
     protected $casts = [
         'sharing_prices' => 'array',
+        'entry_time' => 'datetime',
+        'exit_time' => 'datetime',
         
         'ac' => 'boolean',
         'lift' => 'boolean',

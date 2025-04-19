@@ -12,6 +12,7 @@ use App\Http\Controllers\Common\{
     CommonTestimonialController,
     CommonContactMessageController,
     CommonOtpController,
+    ComplaintController,
     ForgotPasswordController,
     SocialAuthController
 };
@@ -47,7 +48,6 @@ use App\Http\Controllers\User\{
     BookingController,
     ReviewController,
     PaymentController,
-    ComplaintController,
     ProfileController,
     UserOtpController
 };
@@ -75,6 +75,7 @@ Route::controller(SocialAuthController::class)->group(function () {
     Route::get('/auth/{provider}/callback', 'handleProviderCallback');
 });
 
+// Public Routes
 
 // Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -95,8 +96,14 @@ Route::post('contact', [CommonContactMessageController::class, 'store'])->name('
 // About Us
 Route::get('about', [AboutController::class, 'index'])->name('about');
 
+// Complaint
+Route::get('complaint', [ComplaintController::class, 'index'])->name('complaint.form');
+Route::post('complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 
+Route::fallback(function () {
+    return view('common.404');
+});
 
 
 
