@@ -13,6 +13,7 @@ class ContactMessageController extends Controller
     public function index()
     {
         //
+        return view('admin.contact-messages');
     }
 
     /**

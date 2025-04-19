@@ -102,10 +102,10 @@ class AuthController extends Controller
             }
 
             if ($user->role === 'room_owner') {
-                return view('common.room-details');
+                return view('');
                 //  return redirect()->route('owner.rooms.index');
             }
-            return view('common.room-details');
+            return view('');
 
             //  return redirect()->route('user.bookings.index');
         }

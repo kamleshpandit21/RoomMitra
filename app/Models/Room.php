@@ -51,18 +51,13 @@ class Room extends Model
 
     protected $casts = [
         'sharing_prices' => 'array',
-        'check_in_time' => 'datetime',
-        'check_out_time' => 'datetime',
-        'entry_time' => 'datetime',
-        'exit_time' => 'datetime',
-        'check_in' => 'boolean',
-        'check_out' => 'boolean',
+        
         'ac' => 'boolean',
         'lift' => 'boolean',
         'parking' => 'boolean',
         'kitchen' => 'boolean',
         'is_verified' => 'boolean',
-        'status' => 'boolean',
+        'status' => 'string',
         
     ];
 

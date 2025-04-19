@@ -32,7 +32,7 @@
                                 
                             @endif
                         </h6>
-                        <form method="POST" action="{{ route('common.login') }}" novalidate id="login-form">
+                        <form method="POST" action="{{ route('login') }}" novalidate id="login-form">
                             @csrf
 
                             <!-- Email -->
@@ -81,7 +81,7 @@
                             <button type="submit" class="btn btn-success w-100 py-2">Login</button>
 
                             <div class="text-center mt-4">
-                                <small class="text-muted">Don't have an account? <a href="{{ route('common.register.form') }}"
+                                <small class="text-muted">Don't have an account? <a href="{{ route('register.form') }}"
                                         class="text-success">Register Now</a></small>
                             </div>
 
@@ -90,13 +90,13 @@
                                 <small class="text-muted">Or login with</small>
                                 <div class="mt-2">
                                     <!-- Login as Student with Google -->
-                                    <a href="{{ route('common.social.login', ['provider' => 'google', 'role' => 'user']) }}"
+                                    <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
                                         class="btn btn-outline-dark btn-sm me-2" id="google-login-user">
                                         <i class="fab fa-google me-1"></i> Student Google Login
                                     </a>
 
                                     <!-- Login as Room Owner with Google -->
-                                    <a href="{{ route('common.social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
+                                    <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
                                         class="btn btn-outline-dark btn-sm" id="google-login-owner">
                                         <i class="fab fa-google me-1"></i> Room Owner Google Login
                                     </a>

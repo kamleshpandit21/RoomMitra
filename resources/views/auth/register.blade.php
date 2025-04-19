@@ -24,7 +24,7 @@
                         <!-- Right Side Login Form -->
                         <div class="col-md-6 p-5">
                             <h4 class="fw-bold text-success mb-4 text-center">📝 Register with StudentStay</h4>
-                            <form method="POST" action="{{ route('common.register') }}" novalidate id="register-form">
+                            <form method="POST" action="{{ route('register') }}" novalidate id="register-form">
                                 @csrf
 
                                 {{-- Full Name --}}
@@ -86,7 +86,7 @@
                                 <button type="submit" class="btn btn-success w-100 py-2">Register</button>
 
                                 <div class="text-center mt-4">
-                                <small class="text-muted">Already have an account? <a href="{{ route('common.login.form') }}"
+                                <small class="text-muted">Already have an account? <a href="{{ route('login.form') }}"
                                         class="text-success">Login Now</a></small> 
                                 </div>
 
@@ -95,13 +95,13 @@
                                     <small class="text-muted">Or Register with</small>
                                     <div class="mt-2">
                                           <!-- Login as Student with Google -->
-                                          <a href="{{ route('common.social.login', ['provider' => 'google', 'role' => 'user']) }}"
+                                          <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
                                             class="btn btn-outline-dark btn-sm me-2" id="google-login-user">
                                             <i class="fab fa-google me-1"></i> Student Google Login
                                         </a>
 
                                         <!-- Login as Room Owner with Google -->
-                                        <a href="{{ route('common.social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
+                                        <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
                                             class="btn btn-outline-dark btn-sm" id="google-login-owner">
                                             <i class="fab fa-google me-1"></i> Room Owner Google Login
                                         </a>
@@ -127,7 +127,7 @@
 
         const formData = new FormData(loginForm);
 
-        fetch("{{ route('common.login') }}", {
+        fetch("{{ route('login') }}", {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>RoomMitra | @yield('title')</title>
+    <title>RoomMitra | @yield('title', 'Home')</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Font Awesome -->
@@ -88,17 +88,17 @@
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                 <ul class="navbar-nav align-items-center w-100 d-flex flex-wrap justify-content-end gap-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('common.home') }}">Home</a>
+                        <a class="nav-link active" href="{{ route('home') }}">Home</a>
                     </li>
                     <!-- Pages -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
+                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="{{ route('contact.form') }}">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">FAQ</a>
+                        <a class="nav-link" href="{{ route('faqs') }}">FAQ</a>
                     </li>
 
                     <!-- Language Dropdown (Optional) -->
@@ -115,8 +115,8 @@
 
                     <!-- Login/Register -->
                     <li class="nav-item">
-                        <a href="{{ route('common.login.form') }}" class="btn btn-outline-success me-2">Login</a>
-                        <a href="{{ route('common.register.form') }}" class="btn btn-success">Register</a>
+                        <a href="{{ route('login.form') }}" class="btn btn-outline-success me-2">Login</a>
+                        <a href="{{ route('register.form') }}" class="btn btn-success">Register</a>
                     </li>
                 </ul>
             </div>
