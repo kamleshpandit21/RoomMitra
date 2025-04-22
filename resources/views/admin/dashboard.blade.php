@@ -15,7 +15,7 @@
       <div class="col-md-3 col-sm-6 mb-3">
         <div class="small-box bg-info">
           <div class="inner">
-            <h3>1,205</h3>
+            <h3>{{ $total_users ?? 0 }}</h3>
             <p>Total Users</p>
           </div>
           <div class="icon">
@@ -28,7 +28,7 @@
       <div class="col-md-3 col-sm-6 mb-3">
         <div class="small-box bg-primary">
           <div class="inner">
-            <h3>150</h3>
+            <h3>{{$total_owners ?? 0}}</h3>
             <p>Total Room Owners</p>
           </div>
           <div class="icon">
@@ -41,7 +41,7 @@
       <div class="col-md-3 col-sm-6 mb-3">
         <div class="small-box bg-success">
           <div class="inner">
-            <h3>830</h3>
+            <h3>{{$total_rooms ?? 0}}</h3>
             <p>Total Rooms</p>
           </div>
           <div class="icon">
@@ -54,7 +54,7 @@
       <div class="col-md-3 col-sm-6 mb-3">
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3>24</h3>
+            <h3>{{$total_pending_rooms ?? 0}}</h3>
             <p>Pending Room Approvals</p>
           </div>
           <div class="icon">

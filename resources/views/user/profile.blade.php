@@ -1,20 +1,45 @@
 @extends('layouts.app')
+@section('title', 'Profile')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/user.profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @endpush
 @section('content')
     <div class="container py-5">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
+            @php
+                $user = auth()->user();
+            @endphp
 
             <!-- Sidebar/Profile Summary -->
             <div class="col-md-4">
                 <div class="card text-center" style="border-radius: 15px;">
                     <div class="card-body">
-                        <div class="mt-3 mb-4">
-                            <img src="asset('img/avatar/avatar.png') }}" 
-                     alt="Profile"
-                     class="rounded-circle img-fluid" style="width: 100px;" />
-                          
+                        <div class="mt-3 mb-4  overflow-hidden">
+                            @if ($user->profile && $user->profile->avatar)
+                                <img src="{{ asset($user->profile->avatar) }}" alt="User Avatar"
+                                    class=" rounded-circle img-fluid" style="height: 100px;">
+                            @else
+                                <img src="{{ asset('img/avatar/avatar.png') }}" alt="Default Avatar"
+                                    class="rounded-circle img" style="width: 100px;">
+                            @endif
+
 
                         </div>
                         <h4 class="mb-2">{{ $user->full_name }}</h4>
@@ -26,8 +51,7 @@
                         @endif
 
 
-                        <p class="text-muted mb-4">{{ $user->username }} <span class="mx-2">|</span> <a
-                                href="#!">{{ $user->provider ?? '' }}</a></p>
+                        <p class="text-muted mb-4"><a href="#!">{{ $user->provider ?? 'N/A' }}</a></p>
                         <p class="mb-1"><i class="fa fa-envelope me-1"></i> {{ $user->email }}</p>
                         <p><i class="fa fa-phone me-1"></i> {{ $user->phone }}</p>
                         <p class="small text-muted">Role: <span class="fw-bold">{{ $user->role }}</span></p>
@@ -49,20 +73,7 @@
                         <button type="button" class="btn btn-primary btn-rounded btn-lg" id="edit-profile">Edit
                             Profile</button>
 
-                        <div class="d-flex justify-content-between text-center mt-5 mb-2">
-                            <div>
-                                <p class="mb-2 h5">8471</p>
-                                <p class="text-muted mb-0">Wallets Balance</p>
-                            </div>
-                            <div class="px-3">
-                                <p class="mb-2 h5">8512</p>
-                                <p class="text-muted mb-0">Income amounts</p>
-                            </div>
-                            <div>
-                                <p class="mb-2 h5">4751</p>
-                                <p class="text-muted mb-0">Total Transactions</p>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -94,7 +105,11 @@
                         </button>
                     </li>
                 </ul>
-
+                @php
+                    if (isset($user->profile->date_of_birth)) {
+                        $dob = date('Y-m-d', strtotime($user->profile->date_of_birth));
+                    }
+                @endphp
                 <div class="tab-content bg-white shadow rounded-4 p-4">
                     <!-- Personal Details Tab -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
@@ -102,21 +117,55 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label>Date of Birth:</label>
-                                <p class="form-control-plaintext">{{ $profile->date_of_birth ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $dob ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Gender:</label>
-                                <p class="form-control-plaintext">{{ $profile->gender ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->gender ?? 'N/A' }}</p>
                             </div>
 
                             <div class="col-md-12">
                                 <label>Address:</label>
-                                <p class="form-control-plaintext">{{ $user->address ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->current_address ?? 'N/A' }}</p>
                             </div>
+                            <div class="col-md-6">
+                                <label>Permanent Address:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->permanent_address ?? '' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Locality:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->locality ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>City:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->city ?? '' }}</p>
+                            </div>
+
+
+
+                            <div class="col-md-6">
+                                <label>State:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->state ?? '' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Country:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->country ?? '' }}</p>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label>Pincode:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->pincode ?? '' }}</p>
+                            </div>
+
+
                             <div class="col-md-12">
                                 <label>Aadhar Number:</label>
-                                <p class="form-control-plaintext">{{ $profile->aadhar_number ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->aadhar ?? 'N/A' }}</p>
+
+
                             </div>
+
                         </div>
                     </div>
 
@@ -126,23 +175,24 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label>College:</label>
-                                <p class="form-control-plaintext">{{ $profile->college_name ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->college_name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Course:</label>
-                                <p class="form-control-plaintext">{{ $profile->course ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->course ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Year:</label>
-                                @if ($profile && $profile->study_year)
-                                    <p class="form-control-plaintext">{{ $profile->study_year . ' Year' }}</p>
+                                @if ($user->profile && $user->profile->study_year)
+                                    <p class="form-control-plaintext">{{ $user->profile->study_year . ' Year' }}</p>
                                 @else
                                     <p class="form-control-plaintext">N/A</p>
                                 @endif
                             </div>
                             <div class="col-md-6">
                                 <label>ID Card:</label>
-                                <a href="{{ $profile->id_card ?? '#' }}" class="btn btn-sm btn-outline-secondary">View /
+                                <a href="{{ asset($user->profile->id_card_url) ?? '#' }}"
+                                    class="btn btn-sm btn-outline-secondary">View /
                                     Download</a>
                             </div>
                         </div>
@@ -151,7 +201,7 @@
                     <!-- Bio Tab -->
                     <div class="tab-pane fade" id="bio" role="tabpanel">
                         <h5 class="mb-3">Bio & Social Links</h5>
-                        <p><strong>About Me:</strong><br>{{ $profile->bio ?? 'N/A' }}</p>
+                        <p><strong>About Me:</strong><br>{{ $user->profile->bio ?? 'N/A' }}</p>
                         <div class="social-links">
                             <a href="" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
                             <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
@@ -162,7 +212,8 @@
                     <!-- Password Tab -->
                     <div class="tab-pane fade" id="password" role="tabpanel">
                         <h5 class="mb-3">Change Password</h5>
-                        <form method="post" action="{{ route('change.password') }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ route('user.profile.update-password') }}"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
@@ -188,12 +239,12 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/user.profile.js') }}"></script>
     <script>
         const editButton = document.getElementById('edit-profile');
         editButton.addEventListener('click', function() {
-            window.location.href = "{{ route('profile.edit') }}";
+            window.location.href = "{{ route('user.profile.edit') }}";
         });
     </script>
 @endpush
-

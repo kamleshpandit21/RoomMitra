@@ -1,20 +1,43 @@
 @extends('layouts.owner')
+@section('title', 'Profile')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/user.profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 @endpush
 @section('content')
     <div class="container py-5">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
+            @php
+                $user = auth()->user();
+            @endphp
 
             <!-- Sidebar/Profile Summary -->
             <div class="col-md-4">
                 <div class="card text-center" style="border-radius: 15px;">
                     <div class="card-body">
-                        <div class="mt-3 mb-4">
-                            <img src="{{ $user->userProfile && $user->userProfile->avatar
-                                ? asset($user->userProfile->avatar)
-                                : asset('storage/avatar/avatar.png') }}"
-                                alt="Profile" class="rounded-circle img-fluid" style="width: 100px;" />
+                        <div class="mt-3 mb-4  overflow-hidden">
+                            @if ($user->profile && $user->profile->avatar)
+                                <img src="{{ asset($user->profile->avatar) }}" alt="User Avatar"
+                                    class=" rounded-circle img-fluid" style="height: 100px;">
+                            @else
+                                <img src="{{ asset('img/avatar/avatar.png') }}" alt="Default Avatar"
+                                    class="rounded-circle img" style="width: 100px;">
+                            @endif
 
 
                         </div>
@@ -27,8 +50,7 @@
                         @endif
 
 
-                        <p class="text-muted mb-4">{{ $user->username }} <span class="mx-2">|</span> <a
-                                href="#!">{{ $user->provider ?? '' }}</a></p>
+                        <p class="text-muted mb-4"><a href="#!">{{ $user->provider ?? 'N/A' }}</a></p>
                         <p class="mb-1"><i class="fa fa-envelope me-1"></i> {{ $user->email }}</p>
                         <p><i class="fa fa-phone me-1"></i> {{ $user->phone }}</p>
                         <p class="small text-muted">Role: <span class="fw-bold">{{ $user->role }}</span></p>
@@ -47,30 +69,16 @@
                                     class="fab fa-skype fa-lg"></i></button>
                         </div>
 
-                        <button type="button" class="btn btn-outline-primary btn-rounded btn-lg" data-bs-toggle="modal"
-                            data-bs-target="#editProfileModal" id="edit-profile">Edit Profile</button>
+                        <button type="button" class="btn btn-primary btn-rounded btn-lg" id="edit-profile">Edit
+                            Profile</button>
 
 
-                        <div class="d-flex justify-content-between text-center mt-5 mb-2">
-                            <div>
-                                <p class="mb-2 h5">8471</p>
-                                <p class="text-muted mb-0">Wallets Balance</p>
-                            </div>
-                            <div class="px-3">
-                                <p class="mb-2 h5">8512</p>
-                                <p class="text-muted mb-0">Income amounts</p>
-                            </div>
-                            <div>
-                                <p class="mb-2 h5">4751</p>
-                                <p class="text-muted mb-0">Total Transactions</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Main Tabs Section -->
-            <div class="col-md-8 animate__animated animate__fadeInRight">
+            <div class="col-md-8 animate__animated animate__fadeInRight rounded-4">
                 <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#personal" type="button"
@@ -79,9 +87,9 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#education" type="button"
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bank" type="button"
                             role="tab">
-                            <i class="fa fa-graduation-cap"></i> Education
+                            <i class="fa-solid fa-building-columns"></i> Bank Details
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -96,7 +104,11 @@
                         </button>
                     </li>
                 </ul>
-
+                @php
+                    if (isset($user->profile->date_of_birth)) {
+                        $dob = date('Y-m-d', strtotime($user->profile->date_of_birth));
+                    }
+                @endphp
                 <div class="tab-content bg-white shadow rounded-4 p-4">
                     <!-- Personal Details Tab -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
@@ -104,56 +116,91 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label>Date of Birth:</label>
-                                <p class="form-control-plaintext">{{ $profile->date_of_birth ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $dob ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Gender:</label>
-                                <p class="form-control-plaintext">{{ $profile->gender ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->gender ?? 'N/A' }}</p>
                             </div>
 
                             <div class="col-md-12">
                                 <label>Address:</label>
-                                <p class="form-control-plaintext">{{ $user->address ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->current_address ?? 'N/A' }}</p>
                             </div>
+                            <div class="col-md-6">
+                                <label>Permanent Address:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->permanent_address ?? '' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Locality:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->locality ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>City:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->city ?? '' }}</p>
+                            </div>
+
+
+
+                            <div class="col-md-6">
+                                <label>State:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->state ?? '' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Country:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->country ?? '' }}</p>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label>Pincode:</label>
+                                <p class="form-control-plaintext">{{ $user->profile->pincode ?? '' }}</p>
+                            </div>
+
+
                             <div class="col-md-12">
                                 <label>Aadhar Number:</label>
-                                <p class="form-control-plaintext">{{ $profile->aadhar_number ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->aadhar ?? 'N/A' }}</p>
+
+
                             </div>
+
                         </div>
                     </div>
 
                     <!-- Education Tab -->
-                    <div class="tab-pane fade" id="education" role="tabpanel">
+                    {{-- <div class="tab-pane fade" id="education" role="tabpanel">
                         <h5 class="mb-3">Education Info</h5>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label>College:</label>
-                                <p class="form-control-plaintext">{{ $profile->college_name ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->college_name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Course:</label>
-                                <p class="form-control-plaintext">{{ $profile->course ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->course ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Year:</label>
-                                @if ($profile && $profile->study_year)
-                                    <p class="form-control-plaintext">{{ $profile->study_year . ' Year' }}</p>
+                                @if ($user->profile && $user->profile->study_year)
+                                    <p class="form-control-plaintext">{{ $user->profile->study_year . ' Year' }}</p>
                                 @else
                                     <p class="form-control-plaintext">N/A</p>
                                 @endif
                             </div>
                             <div class="col-md-6">
                                 <label>ID Card:</label>
-                                <a href="{{ $profile->id_card ?? '#' }}" class="btn btn-sm btn-outline-secondary">View /
+                                <a href="{{ asset($user->profile->id_card_url) ?? '#' }}"
+                                    class="btn btn-sm btn-outline-secondary">View /
                                     Download</a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Bio Tab -->
                     <div class="tab-pane fade" id="bio" role="tabpanel">
                         <h5 class="mb-3">Bio & Social Links</h5>
-                        <p><strong>About Me:</strong><br>{{ $profile->bio ?? 'N/A' }}</p>
+                        <p><strong>About Me:</strong><br>{{ $user->profile->bio ?? 'N/A' }}</p>
                         <div class="social-links">
                             <a href="" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
                             <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
@@ -164,7 +211,8 @@
                     <!-- Password Tab -->
                     <div class="tab-pane fade" id="password" role="tabpanel">
                         <h5 class="mb-3">Change Password</h5>
-                        <form method="post" action="{{ route('change.password') }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ route('user.profile.update-password') }}"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
@@ -187,79 +235,21 @@
 
         </div>
     </div>
-
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Profile Picture -->
-                        <div class="mb-3">
-                            <label for="avatar" class="form-label">Profile Picture</label>
-                            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                        </div>
-
-                        <!-- Full Name -->
-                        <div class="mb-3">
-                            <label for="full_name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="full_name" name="full_name"
-                                value="{{ $user->full_name }}" required>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                value="{{ $user->email }}" required>
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone"
-                                value="{{ $user->phone }}" required>
-                        </div>
-
-                        <!-- Address -->
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" name="address"
-                                value="{{ $user->address }}" required>
-                        </div>
-
-                        <!-- Bio -->
-                        <div class="mb-3">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="bio" name="bio" rows="4">{{ $profile->bio ?? '' }}</textarea>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/user.profile.js') }}"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{{ asset('js/user.profile.js') }}"></script>
+
     <script>
         const editButton = document.getElementById('edit-profile');
         editButton.addEventListener('click', function() {
-            window.location.href = "{{ route('profile.edit') }}";
+            window.location.href = "{{ route('owner.profile.edit') }}";
         });
     </script>
 @endpush

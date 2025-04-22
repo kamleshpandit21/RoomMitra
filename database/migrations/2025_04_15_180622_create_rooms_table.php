@@ -64,7 +64,7 @@ return new class extends Migration {
             $table->text('restrictions')->nullable();
 
             // Status Flags
-            $table->boolean('is_verified')->default(true);
+            $table->boolean('is_verified')->default(false);
             $table->enum('status', ['available', 'booked', 'pending', 'inactive'])->default('available');
 
             $table->timestamps();

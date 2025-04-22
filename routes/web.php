@@ -12,6 +12,7 @@ use App\Http\Controllers\Common\{
     CommonTestimonialController,
     CommonContactMessageController,
     CommonOtpController,
+    CommonRoomController,
     ComplaintController,
     ForgotPasswordController,
     SocialAuthController
@@ -24,6 +25,7 @@ use App\Http\Controllers\Admin\{
     RoomVerificationController,
     ComplaintManagementController,
     AdminFaqController,
+    AdminLoginController,
     AdminPaymentController,
     BookingManagementController,
     TestimonialController,
@@ -86,9 +88,11 @@ Route::get('search', [SearchController::class, 'search'])->name('search');
 // FAQ
 Route::get('faqs', [CommonFaqController::class, 'index'])->name('faqs');
 
-// Testimonials
-Route::get('testimonials', [CommonTestimonialController::class, 'index'])->name('testimonials');
-
+//Rooms
+Route::get('rooms-list', [CommonRoomController::class, 'index'])->name('rooms');
+Route::get('room/{id}', [CommonRoomController::class, 'show'])
+    ->name('room.show')
+    ->middleware(['user']);
 // Contact Us
 Route::get('contact', [CommonContactMessageController::class, 'index'])->name('contact.form');
 Route::post('contact', [CommonContactMessageController::class, 'store'])->name('contact.store');
@@ -101,24 +105,36 @@ Route::get('complaint', [ComplaintController::class, 'index'])->name('complaint.
 Route::post('complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 
-Route::fallback(function () {
-    return view('common.404');
+/**
+ * =============================================================
+ * Admin Routes
+ * =============================================================
+ */
+
+Route::controller(AdminLoginController::class)->prefix('admin')->as('admin.')->group(function () {
+    Route::get('login', 'showLoginForm')->name('login.form');
+    Route::post('login', 'login')->name('login');
+    Route::get('logout', 'logout')->name('logout');
 });
 
 
-
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['admin'])->name('admin.')->group(function () {
     // Admin Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
     // Users Management
     Route::resource('users', UserManagementController::class);
-    Route::patch('/users/{id}/block', [UserManagementController::class, 'block'])->name('admin.users.block');
-    Route::patch('/users/{id}/unblock', [UserManagementController::class, 'unblock'])->name('admin.users.unblock');
+    Route::controller(UserManagementController::class)->group(function () {
+        Route::patch('/users/{id}/verify', 'verify')->name('users.verify');
+        Route::patch('/users/{id}/block', 'block')->name('users.block');
+        Route::patch('/users/{id}/unblock', 'unblock')->name('users.unblock');
+
+    });
 
 
     // Room Management
     Route::resource('rooms', RoomVerificationController::class);
+    Route::patch('/rooms/{id}/approve', [RoomVerificationController::class, 'approve'])->name('rooms.approve');
 
     //Payments
     Route::resource('payments', AdminPaymentController::class);
@@ -128,6 +144,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Complaints
     Route::resource('complaints', ComplaintManagementController::class);
+    Route::post('complaints/{id}/resolve', [ComplaintManagementController::class, 'resolve'])->name('complaints.resolve');
+
 
     // FAQs
     Route::resource('faqs', AdminFaqController::class);
@@ -150,7 +168,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
-Route::prefix('owner')->name('owner.')->group(function () {
+Route::prefix('owner')->middleware('owner')->name('owner.')->group(function () {
     Route::get('/', [OwnerController::class, 'index'])->name('dashboard');
     // Room Management
     Route::resource('rooms', RoomController::class);
@@ -163,6 +181,9 @@ Route::prefix('owner')->name('owner.')->group(function () {
 
     // Profile Management
     Route::resource('profile', OwnerProfileController::class);
+    Route::get('profile-edit', [OwnerProfileController::class, 'editProfile'])->name('profile.edit');
+
+    Route::put('change-password', [OwnerProfileController::class, 'updatePassword'])->name('profile.update-password');
 
     // Complaint Responses
     Route::resource('complaints', ComplaintResponseController::class);
@@ -170,12 +191,21 @@ Route::prefix('owner')->name('owner.')->group(function () {
 
 
 
-Route::prefix('user')->name('user.')->group(function () {
+Route::prefix('user')->name('user.')->middleware('user')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('dashboard');
     // User Profile
     Route::resource('profile', ProfileController::class);
+    Route::get('profile-edit', [ProfileController::class, 'editProfile'])->name('profile.edit');
+
+    // change password
+    Route::put('change-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 
     // Booking Management
     Route::resource('bookings', BookingController::class);
+    Route::get('/booking/{room}/checkout', [BookingController::class, 'checkout'])->name('booking.checkout');
+    Route::post('/booking/{room}/pay', [BookingController::class, 'pay'])->name('booking.pay');
+    Route::get('/booking/success', [BookingController::class, 'success'])->name('booking.success');
+    Route::get('/booking/fail', [BookingController::class, 'fail'])->name('booking.fail');
 
     // Reviews
     Route::resource('reviews', ReviewController::class);

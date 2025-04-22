@@ -17,6 +17,7 @@ return new class extends Migration
             // User's Contact Information
             $table->string('name');
             $table->string('email');
+           
             
             // Subject and Message content
             $table->string('subject');

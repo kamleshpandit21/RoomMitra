@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
 use Illuminate\Http\Request;
 
 class RoomVerificationController extends Controller
@@ -13,9 +14,20 @@ class RoomVerificationController extends Controller
     public function index()
     {
         //
-        return view('admin.rooms');
+        $rooms = Room::with('images', 'amenities', 'owner')->paginate(10);
+        return view('admin.rooms', compact('rooms'));
     }
 
+    public function approve(Room $room,$id)
+    {
+        $room = Room::findOrFail($id);
+
+        $room->is_verified = true;
+        $room->save();
+
+
+        return redirect()->route('admin.rooms.index')->with('success', 'Room approved successfully.');
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -38,6 +50,10 @@ class RoomVerificationController extends Controller
     public function show(string $id)
     {
         //
+    
+        $room = Room::where('room_id', $id)->with('images', 'amenities', 'owner')->first();
+        $room->sharing_prices = json_decode($room->sharing_prices, true);
+        return view('admin.room-details', compact('room'));
     }
 
     /**

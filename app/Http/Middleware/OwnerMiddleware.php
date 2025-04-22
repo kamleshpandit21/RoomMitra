@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class checkrole
+class OwnerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,6 +16,14 @@ class checkrole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+       
+        if(Auth::check() && Auth::user()->role === 'room_owner'){
+            return $next($request);
+        }
+        else{
+            abort(403, 'Unauthorized Owner access');
+        }
+
+       
     }
 }

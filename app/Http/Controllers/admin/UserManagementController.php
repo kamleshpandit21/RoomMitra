@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\UserDeletedMail;
 use App\Models\User;
+use App\Models\UserDeletionLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class UserManagementController extends Controller
 {
@@ -18,70 +21,70 @@ class UserManagementController extends Controller
         return view('admin.users', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
-        $user = User::with('profile', 'ownerProfile')->find($id);
-        return response()->json($user);
+        $user = User::with(['profile', 'ownerProfile'])->findOrFail($id);
+
+
+        $finalProfile = $user->profile ?? $user->ownerProfile;
+
+        return response()->json([
+            'user' => $user->only([
+                'user_id',
+                'full_name',
+                'email',
+                'phone',
+                'role',
+                'is_verified',
+                'email_verified_at',
+                'created_at',
+                'provider',
+                'profile_completed',
+                'is_blocked'
+            ]),
+            'profile' => $finalProfile
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
 
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $user = User::findOrFail($id);
+
+        $reason = $request->input('reason', 'No reason provided');
+        $note = $request->input('note');
     
-        // Optional: Also delete related profile or ownerProfile
+        UserDeletionLog::create([
+            'user_id' => $user->user_id,
+            'reason' => $reason,
+            'note'   => $note,
+        ]);
+
+        if ($user->email) {
+            Mail::to($user->email)->send(new UserDeletedMail($user, $reason, $note));
+        }
+
         if ($user->profile) {
             $user->profile->delete();
         }
-    
+
         if ($user->ownerProfile) {
             $user->ownerProfile->delete();
         }
-    
+
         $user->delete();
-    
-        return response()->json(['message' => 'User deleted successfully.']);
+
+        return response()->json(['message' => 'User deleted successfully and reason logged.']);
     }
-    
+
+
 
     public function block(Request $request, $id)
     {
@@ -106,4 +109,14 @@ class UserManagementController extends Controller
             'is_blocked' => $user->is_blocked
         ]);
     }
+    public function verify(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_verified = true;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User verified successfully.');
+
+    }
+
 }

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckRole;
-use App\Http\Middleware\checkrole as MiddlewareCheckrole;
+use App\Http\Middleware\OwnerMiddleware;
+use App\Http\Middleware\UserMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->append(MiddlewareCheckrole::class);
+        $middleware->alias([
+            'admin' => AdminMiddleware::class,
+            'owner' => OwnerMiddleware::class,
+            'user' => UserMiddleware::class,
+        ]);
+       
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

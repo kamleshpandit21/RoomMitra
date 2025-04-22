@@ -1,4 +1,4 @@
-@extends('admin.layout.master')
+@extends('layouts.admin')
 @section('title', 'Payment Hold')
 @push('styles')
 <style>
@@ -13,10 +13,7 @@
 @endpush
 
 @section('content')
-    <div class="wrapper">
-        <div class="content-wrapper">
-            <div class="content-header">
-                <div class="container-fluid">
+
                     <h3 class="mb-4">💰 Admin Payment Holder Page</h3>
 
                     <!-- Filters -->
@@ -81,10 +78,7 @@
                         </div>
                     </div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+          
 @endsection
 @push('scripts')
 <script>

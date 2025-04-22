@@ -5,7 +5,7 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Home')</title>
+    <title>RoomMitra | @yield('title', 'Home')</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -82,7 +82,7 @@
      class="brand-image img-circle elevation-3"
      style="opacity: .8; width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
 
-        <span class="brand-text font-weight-light">Sunset Villas</span>
+        <span class="brand-text font-weight-light">RoomMitra</span>
     </a>
 
     <!-- Sidebar -->
@@ -239,7 +239,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('logout') }}" class="nav-link">
+                            <a href="{{ route('admin.logout') }}" class="nav-link">
                                 <i class="fas fa-sign-out-alt nav-icon"></i>
                                 <p>Logout</p>
                             </a>
@@ -273,7 +273,7 @@
                 Anything you want
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+            <strong>Copyright &copy; 2025 <a >RoomMitra</a>.</strong> All rights
             reserved.
         </footer>
     </div>

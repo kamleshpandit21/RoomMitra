@@ -20,7 +20,7 @@ return new class extends Migration {
 
             // Date fields
             $table->date('check_in_date')->nullable(false); // Made non-nullable
-            $table->date('check_out_date')->nullable(false); // Made non-nullable
+            $table->date('check_out_date')->nullable(); // Made non-nullable
 
             // Total booking amount
             $table->decimal('total_amount', 10, 2);

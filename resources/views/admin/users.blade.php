@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('title', 'Manage Users')
 @push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .badge-verified {
             background-color: #28a745;
@@ -90,35 +92,35 @@
                     </thead>
                     <tbody>
                         @forelse ($users as $user)
-                            <tr></tr>
-                            <td>#{{ $user->user_id }}</td>
-                            <td>{{ $user->full_name }}</td>
+                            <tr>
+                                <td>#{{ $user->user_id }}</td>
+                                <td>{{ $user->full_name }}</td>
 
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->phone ?? 'N/A' }}</td>
-                            <td><span
-                                    class="badge badge-{{ $user->role == 'user' ? 'primary' : 'secondary' }}">{{ $user->role }}</span>
-                            </td>
-                            <td>{{ $user->profile->city ?? 'N/A' }}</td>
-                            <td><span
-                                    class="badge badge-{{ $user->is_verified ? 'verified' : 'notverified' }}">{{ $user->is_verified ? 'Verified' : 'Not Verified' }}</span>
-                            </td>
-                            <td><span
-                                    class="badge badge-{{ $user->is_blocked ? 'blocked' : 'active' }}">{{ $user->is_blocked ? 'Blocked' : 'Active' }}</span>
-                            </td>
-                            <td>{{ $user->created_at }}</td>
-                            <td class="d-flex g-10 justify-content-evenly align-items-center flex-wrap">
-                                <button class="btn btn-sm btn-outline-info mx-1 mb-2" data-toggle="modal"
-                                    data-target="#viewUserModal" data-id="{{ $user->user_id }}">👁️</button>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->phone ?? 'N/A' }}</td>
+                                <td><span
+                                        class="badge badge-{{ $user->role == 'user' ? 'primary' : 'secondary' }}">{{ $user->role }}</span>
+                                </td>
+                                <td>{{ $user->profile->city ?? 'N/A' }}</td>
+                                <td><span
+                                        class="badge badge-{{ $user->is_verified ? 'verified' : 'notverified' }}">{{ $user->is_verified ? 'Verified' : 'Not Verified' }}</span>
+                                </td>
+                                <td><span
+                                        class="badge badge-{{ $user->is_blocked ? 'blocked' : 'active' }}">{{ $user->is_blocked ? 'Blocked' : 'Active' }}</span>
+                                </td>
+                                <td>{{ $user->created_at }}</td>
+                                <td class="d-flex g-10 justify-content-evenly align-items-center flex-wrap">
+                                    <button class="btn btn-sm btn-outline-info mx-1 mb-2" data-toggle="modal"
+                                        data-target="#viewUserModal" data-id="{{ $user->user_id }}">👁️</button>
 
-                                <button class="btn btn-sm btn-outline-warning mx-1 mb-2" data-toggle="modal"
-                                    data-target="#blockUserModal" data-id="{{ $user->user_id }}">🚫</button>
-                                <button class="btn btn-sm btn-outline-success mx-1 mb-2" data-toggle="modal"
-                                    data-target="#unblockUserModal" data-id="{{ $user->user_id }}"
-                                    data-name="{{ $user->full_name }}">✅</button>
-                                <button class="btn btn-sm btn-outline-danger mx-1 mb-2" data-toggle="modal"
-                                    data-target="#deleteUserModal" data-id="{{ $user->user_id }}">🗑️</button>
-                            </td>
+                                    <button class="btn btn-sm btn-outline-warning mx-1 mb-2" data-toggle="modal"
+                                        data-target="#blockUserModal" data-id="{{ $user->user_id }}">🚫</button>
+                                    <button class="btn btn-sm btn-outline-success mx-1 mb-2" data-toggle="modal"
+                                        data-target="#unblockUserModal" data-id="{{ $user->user_id }}"
+                                        data-name="{{ $user->full_name }}">✅</button>
+                                    <button class="btn btn-sm btn-outline-danger mx-1 mb-2" data-toggle="modal"
+                                        data-target="#deleteUserModal" data-id="{{ $user->user_id }}">🗑️</button>
+                                </td>
 
                             </tr>
 
@@ -136,10 +138,9 @@
             </div>
         </div>
     </div>
-
     <!-- User Profile Modal -->
     <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="viewUserModalLabel">👤 User Profile</h5>
@@ -149,27 +150,69 @@
                 </div>
 
                 <div class="modal-body">
-                    <h6 class="mb-2">📄 Basic Information</h6>
-                    <!-- Inside your modal body -->
-                    <div class="row">
-                        <div class="col-md-6"><strong>Full Name:</strong> <span id="userFullName">--</span></div>
-                        <div class="col-md-6"><strong>Email:</strong> <span id="userEmail">--</span></div>
-                        <div class="col-md-6"><strong>Phone:</strong> <span id="userPhone">--</span></div>
-                        <div class="col-md-6"><strong>Role:</strong> <span id="userRole">--</span></div>
-                        <div class="col-md-6"><strong>City:</strong> <span id="userCity">--</span></div>
-                        <div class="col-md-6"><strong>Registered On:</strong> <span id="userRegistered">--</span></div>
+                    <!-- Profile Header -->
+                    <div class="d-flex align-items-center mb-4">
+                        <img id="userAvatar" src="https://via.placeholder.com/100" alt="User Avatar"
+                            class="rounded-circle mr-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        <div>
+                            <h4 id="userFullName" class="mb-0">--</h4>
+                            <p class="mb-1 text-muted" id="userEmail">--</p>
+                            <span class="badge badge-secondary" id="userRole">--</span>
+                            <span class="ml-2 badge badge-success" id="userStatus">Verified</span>
+                        </div>
                     </div>
 
-                    <!-- Verification Badges -->
-                    <ul class="list-group list-group-sm mb-3">
-                        <li class="list-group-item">📧 Email: <span id="emailVerifyBadge" class="badge">--</span></li>
-                        <li class="list-group-item">📱 Phone: <span id="phoneVerifyBadge" class="badge">--</span></li>
-                        <li class="list-group-item">🆔 Aadhar / ID: <span id="aadharVerifyBadge" class="badge">--</span>
-                        </li>
-                    </ul>
+                    <!-- Section 1: Basic Info -->
+                    <h6 class="mb-3">📄 Basic Information</h6>
+                    <div class="row">
+                        <div class="col-md-4"><strong>Phone:</strong> <span id="userPhone">--</span></div>
+                        <div class="col-md-4"><strong>City:</strong> <span id="userCity">--</span></div>
+                        <div class="col-md-4"><strong>Registered On:</strong> <span id="userRegistered">--</span></div>
 
-                    <!-- Documents -->
-                    <ul class="list-group">
+                        <div class="col-md-4"><strong>DOB:</strong> <span id="userDOB">--</span></div>
+                        <div class="col-md-4"><strong>Gender:</strong> <span id="userGender">--</span></div>
+                        <div class="col-md-4"><strong>Provider:</strong> <span id="userProvider">--</span></div>
+                    </div>
+
+                    <!-- Section 2: Address -->
+                    <h6 class="mt-4 mb-2">🏠 Address Details</h6>
+                    <div class="row">
+                        <div class="col-md-6"><strong>Current:</strong> <span id="currentAddress">--</span></div>
+                        <div class="col-md-6"><strong>Permanent:</strong> <span id="permanentAddress">--</span></div>
+                        <div class="col-md-4"><strong>Locality:</strong> <span id="userLocality">--</span></div>
+                        <div class="col-md-4"><strong>State:</strong> <span id="userState">--</span></div>
+                        <div class="col-md-4"><strong>Pincode:</strong> <span id="userPincode">--</span></div>
+                    </div>
+
+                    <!-- Section 3: Education -->
+                    <h6 class="mt-4 mb-2">🎓 Education</h6>
+                    <div class="row">
+                        <div class="col-md-4"><strong>College:</strong> <span id="collegeName">--</span></div>
+                        <div class="col-md-4"><strong>Course:</strong> <span id="courseName">--</span></div>
+                        <div class="col-md-4"><strong>Year:</strong> <span id="studyYear">--</span></div>
+                    </div>
+
+                    <!-- Section 4: Socials & Bio -->
+                    <h6 class="mt-4 mb-2">🔗 Social & Bio</h6>
+                    <p id="userBio" class="mb-2">--</p>
+                    <div id="socialLinks">
+                        <!-- Dynamically render social icons/links here -->
+                    </div>
+
+                    <!-- Section 5: Verification Badges -->
+                    <h6 class="mt-4 mb-2">✅ Verification Status</h6>
+                    <div class="row">
+                        <div class="col-md-4">📧 Email: <span id="emailVerifyBadge"
+                                class="badge badge-pill badge-secondary">--</span></div>
+                        <div class="col-md-4">📱 Phone: <span id="phoneVerifyBadge"
+                                class="badge badge-pill badge-secondary">--</span></div>
+                        <div class="col-md-4">🆔 Aadhar: <span id="aadharVerifyBadge"
+                                class="badge badge-pill badge-secondary">--</span></div>
+                    </div>
+
+                    <!-- Section 6: Documents -->
+                    <h6 class="mt-4 mb-2">📎 Uploaded Documents</h6>
+                    <ul class="list-group mb-2">
                         <li class="list-group-item">
                             Aadhar Card:
                             <a id="aadharLink" href="#" class="btn btn-sm btn-outline-info ml-2"
@@ -183,6 +226,7 @@
                     </ul>
                 </div>
 
+                <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">✏️ Edit User</button>
@@ -191,6 +235,7 @@
             </div>
         </div>
     </div>
+
 
 
 
@@ -255,228 +300,317 @@
     </div>
 
 
-    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">
-                        <span>&times;</span>
-                    </button>
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">🗑️ Confirm Deletion</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user?</p>
+
+                <div class="form-group">
+                    <label for="deleteReason">Reason for Deletion <span class="text-danger">*</span></label>
+                    <select id="deleteReason" class="form-control" required name="reason">
+                        <option value="">-- Select Reason --</option>
+                        <option value="fake_profile">Fake Profile</option>
+                        <option value="abusive_behavior">Abusive Behavior</option>
+                        <option value="violation">Policy Violation</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this user?
+
+                <div class="form-group mt-2">
+                    <label for="deleteNote">Additional Notes (optional)</label>
+                    <textarea id="deleteNote" class="form-control" rows="3" placeholder="Add a note..." name="note"></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
-                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
             </div>
         </div>
     </div>
+</div>
+
 
 
 @endsection
 @push('scripts')
     <!-- Bootstrap 5 Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-target="#viewUserModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('[data-target="#viewUserModal"]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
+            fetch(`/admin/users/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    const user = data.user;
+                    const profile = data.profile || {};
 
-                    fetch(`/admin/users/${userId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                            const user = data;
-                            const profile = user.user_profile || {};
+                    // Avatar
+                    const avatarImg = document.getElementById('userAvatar');
+                    avatarImg.src = profile.avatar ||
+                        '{{ asset('img/avatar/avatar.png') }}';
 
-                            // Inject data into modal using IDs
-                            document.getElementById('userFullName').textContent = user
-                                .full_name || 'Not Available';
+                    // Basic Info
+                    document.getElementById('userFullName').textContent = user
+                        .full_name || 'N/A';
+                    document.getElementById('userEmail').textContent = user.email ||
+                        'N/A';
+                    document.getElementById('userPhone').textContent = user.phone ||
+                        'N/A';
+                    document.getElementById('userRole').textContent = user.role ===
+                        'room_owner' ? 'Room Owner' : 'User';
+                    document.getElementById('userCity').textContent = profile.city ||
+                        'N/A';
+                    document.getElementById('userRegistered').textContent = new Date(
+                        user.created_at).toLocaleDateString();
 
-                            document.getElementById('userEmail').textContent = user.email ||
-                                'Not Available';
-                            document.getElementById('userPhone').textContent = user.phone ||
-                                'Not Available';
-                            const role = user.role === 'user' ? 'User' : 'Owner' ||
-                                'Not Available';
-                            document.getElementById('userRole').textContent = role;
-                            const city = user.profile?.city || user.owner_profile?.city ||
-                                'Not Available';
-                            document.getElementById('userCity').textContent = city;
+                    // More profile info
+                    document.getElementById('userDOB').textContent = profile
+                        .date_of_birth || 'N/A';
+                    document.getElementById('userGender').textContent = profile
+                        .gender || 'N/A';
+                    document.getElementById('userProvider').textContent = user
+                        .provider || 'Email';
 
+                    document.getElementById('currentAddress').textContent = profile
+                        .current_address || 'N/A';
+                    document.getElementById('permanentAddress').textContent = profile
+                        .permanent_address || 'N/A';
+                    document.getElementById('userLocality').textContent = profile
+                        .locality || 'N/A';
+                    document.getElementById('userState').textContent = profile.state ||
+                        'N/A';
+                    document.getElementById('userPincode').textContent = profile
+                        .pincode || 'N/A';
 
-                            document.getElementById('userRegistered').textContent = new Date(
-                                user.created_at).toLocaleDateString();
+                    // Education
+                    document.getElementById('collegeName').textContent = profile
+                        .college_name || 'N/A';
+                    document.getElementById('courseName').textContent = profile
+                        .course || 'N/A';
+                    document.getElementById('studyYear').textContent = profile
+                        .study_year || 'N/A';
 
-                            // Verification badges
-                            const emailBadge = document.getElementById('emailVerifyBadge');
-                            emailBadge.textContent = user.is_verified ? 'Verified' :
-                                'Unverified';
-                            emailBadge.className =
-                                `badge badge-${user.is_verified ? 'success' : 'warning'}`;
+                    // Bio & Socials
+                    document.getElementById('userBio').textContent = profile.bio ||
+                        'No bio available.';
+                    const socialLinksDiv = document.getElementById('socialLinks');
+                    socialLinksDiv.innerHTML = '';
 
-                            const phoneBadge = document.getElementById('phoneVerifyBadge');
-                            phoneBadge.textContent = user.phone ? 'Verified' : 'Unverified';
-                            phoneBadge.className =
-                                `badge badge-${user.phone ? 'success' : 'warning'}`;
+                    if (profile.social_links) {
+                        try {
+                            const links = JSON.parse(profile.social_links);
+                            for (let key in links) {
+                                const a = document.createElement('a');
+                                a.href = links[key];
+                                a.target = "_blank";
+                                a.className = "btn btn-sm btn-outline-dark mr-2 mb-1";
+                                a.innerHTML = `<i class="fab fa-${key}"></i> ${key}`;
+                                socialLinksDiv.appendChild(a);
+                            }
+                        } catch (e) {
+                            console.warn("Invalid social_links JSON", e);
+                        }
+                    }
 
-                            const aadharBadge = document.getElementById('aadharVerifyBadge');
-                            aadharBadge.textContent = profile.aadhar ? 'Verified' : 'Pending';
-                            aadharBadge.className =
-                                `badge badge-${profile.aadhar ? 'success' : 'warning'}`;
+                    // Badges
+                    const setBadge = (id, status, positiveText, negativeText) => {
+                        const el = document.getElementById(id);
+                        el.textContent = status ? positiveText : negativeText;
+                        el.className =
+                            `badge badge-pill badge-${status ? 'success' : 'warning'}`;
+                    };
 
-                            // Document links
-                            document.getElementById('aadharLink').href = profile.aadhar_url ||
-                                'Not Available';
-                            document.getElementById('idCardLink').href = profile.id_card_url ||
-                                'Not Available';
+                    setBadge('emailVerifyBadge', user.email_verified_at, 'Verified',
+                        'Unverified');
+                    setBadge('phoneVerifyBadge', !!user.phone, 'Verified',
+                        'Unverified');
+                    setBadge('aadharVerifyBadge', !!profile.aadhar, 'Verified',
+                        'Pending');
 
-                            // Show modal
-                            const modal = new bootstrap.Modal(document.getElementById(
-                                'viewUserModal'));
-                            modal.show();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('❌ Failed to load user details.');
-                        });
-                });
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            // Show modal and pass user info
-            document.querySelectorAll('[data-target="#blockUserModal"]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
-                    const userName = this.getAttribute('data-name') || 'User';
+                    // Document links
+                    document.getElementById('aadharLink').href = profile.aadhar_url ||
+                        '#';
+                    document.getElementById('idCardLink').href = profile.id_card_url ||
+                        '#';
 
-                    // Set modal data
-                    document.getElementById('blockUserModal').setAttribute('data-user-id', userId);
-                    document.querySelector('#blockUserModal .modal-body strong').textContent =
-                        userName;
+                    const modalEl = document.getElementById('viewUserModal');
+                    let modal;
 
-                    // Show modal
-                    const modal = new bootstrap.Modal(document.getElementById('blockUserModal'));
+                    if (bootstrap.Modal.getOrCreateInstance) {
+                        modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    } else {
+                        modal = new bootstrap.Modal(modalEl);
+                    }
                     modal.show();
+
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Failed to load user details.');
                 });
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    // Show modal and pass user info
+    document.querySelectorAll('[data-target="#blockUserModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const userName = this.getAttribute('data-name') || 'User';
+
+            // Set modal data
+            document.getElementById('blockUserModal').setAttribute('data-user-id', userId);
+            document.querySelector('#blockUserModal .modal-body strong').textContent =
+                userName;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('blockUserModal'));
+            modal.show();
+        });
+    });
+
+    // Handle form submission
+    document.querySelector('#blockUserModal form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const userId = document.getElementById('blockUserModal').getAttribute('data-user-id');
+        const reason = document.getElementById('blockReason').value;
+
+        fetch(`/admin/users/${userId}/block`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    reason: reason
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Block failed');
+                return response.json();
+            })
+            .then(data => {
+                alert('User blocked successfully.');
+                $('#blockUserModal').modal('hide');
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to block user.');
             });
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-target="#unblockUserModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const userName = this.getAttribute('data-name'); // Get the user's name
 
-            // Handle form submission
-            document.querySelector('#blockUserModal form').addEventListener('submit', function(e) {
-                e.preventDefault();
+            // Update the modal content dynamically
+            document.getElementById('unblockUserName').textContent = userName;
 
-                const userId = document.getElementById('blockUserModal').getAttribute('data-user-id');
-                const reason = document.getElementById('blockReason').value;
-
-                fetch(`/admin/users/${userId}/block`, {
+            // On confirm unblock, trigger the API call
+            const unblockButton = document.querySelector('#unblockUserModal .btn-success');
+            unblockButton.addEventListener('click', function() {
+                fetch(`/admin/users/${userId}/unblock`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            reason: reason
-                        })
+                        }
                     })
                     .then(response => {
-                        if (!response.ok) throw new Error('Block failed');
+                        if (!response.ok) throw new Error('Unblock failed');
                         return response.json();
                     })
                     .then(data => {
-                        alert('User blocked successfully.');
-                        $('#blockUserModal').modal('hide');
+                        alert('User unblocked successfully.');
+                        $('#unblockUserModal').modal('hide');
                     })
                     .catch(error => {
                         console.error(error);
-                        alert('Failed to block user.');
+                        alert('Failed to unblock user.');
                     });
             });
         });
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('[data-target="#unblockUserModal"]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
-                    const userName = this.getAttribute('data-name'); // Get the user's name
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    let deleteButton = document.querySelector('#deleteUserModal #confirmDeleteBtn');
 
-                    // Update the modal content dynamically
-                    document.getElementById('unblockUserName').textContent = userName;
+    // Update modal content dynamically
+    document.querySelectorAll('[data-target="#deleteUserModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const userName = this.getAttribute('data-name') || 'this user';
 
-                    // On confirm unblock, trigger the API call
-                    const unblockButton = document.querySelector('#unblockUserModal .btn-success');
-                    unblockButton.addEventListener('click', function() {
-                        fetch(`/admin/users/${userId}/unblock`, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                }
-                            })
-                            .then(response => {
-                                if (!response.ok) throw new Error('Unblock failed');
-                                return response.json();
-                            })
-                            .then(data => {
-                                alert('User unblocked successfully.');
-                                $('#unblockUserModal').modal('hide');
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                alert('Failed to unblock user.');
-                            });
-                    });
+            // Update modal message
+            document.querySelector('#deleteUserModal .modal-body p').textContent = 
+                `Are you sure you want to delete ${userName}?`;
+
+            // Reset the form fields when modal is opened
+            document.querySelector('#deleteReason').value = '';
+            document.querySelector('#deleteNote').value = '';
+
+            // Replace old listener
+            const newButton = deleteButton.cloneNode(true);
+            deleteButton.parentNode.replaceChild(newButton, deleteButton);
+            deleteButton = newButton;
+
+            // Add fresh click event listener for the delete button
+            deleteButton.addEventListener('click', function() {
+                // Gather form data (Reason & Note)
+                const reason = document.querySelector('#deleteReason').value;
+                const note = document.querySelector('#deleteNote').value;
+
+                // Validate the reason before sending
+                if (!reason) {
+                    alert('❌ Please select a reason for deletion.');
+                    return;
+                }
+
+                // Send the deletion request to the server
+                fetch(`/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ reason: reason, note: note })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Delete failed');
+                    return response.json();
+                })
+                .then(data => {
+                    $('#deleteUserModal').modal('hide');
+                    alert('✅ User deleted successfully.');
+                    location.reload(); // Optionally reload to update list
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('❌ Failed to delete user.');
                 });
             });
         });
+    });
+});
 
-        document.addEventListener('DOMContentLoaded', function() {
-            let deleteButton = document.querySelector('#deleteUserModal .btn-danger');
-
-            document.querySelectorAll('[data-target="#deleteUserModal"]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
-                    const userName = this.getAttribute('data-name') || 'this user';
-
-                    // Update modal content
-                    document.querySelector('#deleteUserModal .modal-body').textContent =
-                        `Are you sure you want to delete ${userName}?`;
-
-                    // Replace old listener
-                    const newButton = deleteButton.cloneNode(true);
-                    deleteButton.parentNode.replaceChild(newButton, deleteButton);
-                    deleteButton = newButton;
-
-                    // Add fresh click event
-                    deleteButton.addEventListener('click', function() {
-                        fetch(`/admin/users/${userId}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                }
-                            })
-                            .then(response => {
-                                if (!response.ok) throw new Error('Delete failed');
-                                return response.json();
-                            })
-                            .then(data => {
-                                $('#deleteUserModal').modal('hide');
-                                alert('✅ User deleted successfully.');
-                                location.reload(); // Optionally reload to update list
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                alert('❌ Failed to delete user.');
-                            });
-                    });
-                });
-            });
-        });
-    </script>
+</script>
 @endpush

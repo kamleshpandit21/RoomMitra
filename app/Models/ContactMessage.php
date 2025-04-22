@@ -11,14 +11,9 @@ class ContactMessage extends Model
 
     protected $table = 'contact_messages';
 
-  
-    protected $fillable = [
-        'name',
-        'email',
-        'subject',
-        'message',
-        'status',
-    ];
+
+    protected $fillable = ['name', 'email', 'phone', 'subject', 'message', 'status'];
+
 
     public function getStatusAttribute($value)
     {

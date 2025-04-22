@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 
 class CommonContactMessageController extends Controller
@@ -29,7 +30,24 @@ class CommonContactMessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:20',
+            'subject' => 'required|string',
+            'message' => 'required|string',
+        ]);
+    
+        $contact = new ContactMessage();
+        $contact->name = $validated['name'];
+        $contact->email = $validated['email'];
+        $contact->phone = $validated['phone'];
+        $contact->subject = $validated['subject'];
+        $contact->message = $validated['message'];
+        $contact->status = 'new';
+        $contact->save();
+    
+        return response()->json(['message' => 'Your message has been submitted.'], 200);
     }
 
     /**

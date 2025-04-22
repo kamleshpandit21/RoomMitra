@@ -19,14 +19,12 @@ return new class extends Migration
             
                 // Amenity Details
                 $table->string('amenity_name'); // e.g. 'WiFi', 'Laundry'
-                $table->enum('status', ['free', 'paid', 'not_available'])->default('not_available');
+                $table->enum('status', ['free', 'paid'])->default('free');
                 $table->decimal('price', 10, 2)->nullable()->comment('Applicable if paid');
             
                 $table->timestamps();
             
-                // Optional: prevent duplicates
-                $table->unique(['room_id', 'amenity_name']);
-            });
+                 });
             
     }
 

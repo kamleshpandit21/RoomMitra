@@ -90,6 +90,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('home') }}">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('rooms') }}">Rooms</a>
+                    </li>
                     <!-- Pages -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('about') }}">About Us</a>
@@ -114,10 +117,19 @@
                     </li>
 
                     <!-- Login/Register -->
-                    <li class="nav-item">
-                        <a href="{{ route('login.form') }}" class="btn btn-outline-success me-2">Login</a>
-                        <a href="{{ route('register.form') }}" class="btn btn-success">Register</a>
-                    </li>
+                    @if (Auth::check())
+                        <li class="nav-item">
+                            <a href="{{ route('user.profile.index') }}" class="btn btn-success">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('logout') }}" class="btn btn-outline-success me-2">Logout</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a href="{{ route('login.form') }}" class="btn btn-outline-success me-2">Login</a>
+                            <a href="{{ route('register.form') }}" class="btn btn-success">Register</a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>

@@ -19,6 +19,14 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'room_owner') {
+                return redirect()->route('owner.dashboard'); 
+            }
+            return redirect()->route('user.dashboard');
+        }
+
         return view('auth.login');
     }
 
@@ -29,6 +37,14 @@ class AuthController extends Controller
      */
     public function showRegistrationForm()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'room_owner') {
+                return redirect()->route('owner.dashboard'); 
+            }
+            return redirect()->route('user.dashboard');
+        }
+
         return view('auth.register');
     }
 
@@ -73,9 +89,9 @@ class AuthController extends Controller
         Auth::login($user);
 
         if ($user->role === 'room_owner') {
-            return view('common.room-details');
+            return view('owner.dashboard');
         } else {
-            return redirect()->route('user.bookings.index');
+            return redirect()->route('user.dashboard');
         }
     }
 
@@ -92,8 +108,9 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $remember = $request->has('remember');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
 
             if ($user->is_blocked) {
@@ -102,12 +119,12 @@ class AuthController extends Controller
             }
 
             if ($user->role === 'room_owner') {
-                return view('');
-                //  return redirect()->route('owner.rooms.index');
-            }
-            return view('');
 
-            //  return redirect()->route('user.bookings.index');
+                 return redirect()->route('owner.dashboard');
+            }
+
+
+            return redirect()->route('user.dashboard');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.']);
@@ -122,10 +139,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        if (Auth::guard('admin')->check()) {
-            Auth::guard('admin')->logout();
-
-        } elseif (Auth::guard('web')->check()) {
+      if (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();
         }
 

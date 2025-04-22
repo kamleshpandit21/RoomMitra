@@ -76,7 +76,7 @@
 
             <h4 class="text-success mb-4 fw-bold">🙋 Help Categories</h4>
             <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 animate__animated animate__fadeInUp">
-                
+
                 @php
                     $categories = [
                         [
@@ -159,8 +159,11 @@
                 <!-- Contact Form -->
                 <div class="col-lg-7">
                     <div class="bg-white p-4 p-md-5 rounded-4 shadow animate__animated animate__fadeInRight">
+
                         <h4 class="fw-bold mb-4 text-success">📬 Send Us a Message</h4>
-                        <form id="helpForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <form id="helpForm" method="post" enctype="multipart/form-data" class="needs-validation"
+                            novalidate>
+
                             <div class="row g-3">
 
                                 <!-- Name -->
@@ -190,8 +193,10 @@
                                     <label for="userType" class="form-label">🙋 You Are *</label>
                                     <select class="form-select" id="userType" name="user_type" required>
                                         <option value="">Select User Type</option>
-                                        <option value="User">User</option>
-                                        <option value="Owner">Room Owner</option>
+                                        <option value="guest">Guest</option>
+                                        <option value="user">User</option>
+                                        <option value="room_owner">Room Owner</option>
+
                                     </select>
                                     <div class="invalid-feedback">Please select user type.</div>
                                 </div>
@@ -233,7 +238,7 @@
                                     <label for="file" class="form-label">📎 Upload Screenshot / File
                                         (Optional)</label>
                                     <input class="form-control" type="file" id="file" name="attachment[]"
-                                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" multiple>
                                     <div class="form-text">Supported formats: JPG, PNG, PDF, DOC</div>
                                 </div>
 
@@ -270,51 +275,44 @@
 
 @push('scripts')
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('helpForm');
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('helpForm');
 
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                alert("Please fill all required fields correctly!");
-                return;
-            }
+                const formData = new FormData(form);
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
 
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+                try {
+                    const response = await fetch("{{ route('complaint.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    });
 
-            const formData = new FormData(form);
+                    const data = await response.json();
 
-            fetch('{{ route('admin.complaints.store') }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
+                    if (response.ok) {
+                        alert(data.message || "Complaint submitted successfully!");
+                        form.reset();
+                    } else {
+                        let errors = data.errors || {};
+                        let messages = Object.values(errors).flat().join('\n');
+                        alert(messages || "Something went wrong.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("An error occurred. Please try again.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit';
                 }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message);
-                form.reset();
-                form.classList.remove('was-validated');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Submit Request';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Something went wrong. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Submit Request';
             });
         });
-    });
     </script>
 @endpush

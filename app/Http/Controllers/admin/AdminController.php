@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -12,7 +14,11 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard');
+        $total_users = User::where('role', 'user')->count();
+        $total_owners = User::where('role', 'room_owner')->count();
+        $total_rooms = Room::count();
+        $total_pending_rooms = Room::where('status', 'pending')->count();
+        return view('admin.dashboard', compact('total_users', 'total_owners', 'total_rooms', 'total_pending_rooms'));
     }
 
     /**

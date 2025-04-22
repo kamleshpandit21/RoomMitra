@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,7 +14,13 @@ class HomeController extends Controller
     public function index()
     {
         //
-        return view('welcome');
+        $rooms = Room::where('is_verified', true)
+            ->where('status', 'available')
+            ->with('images', 'amenities', 'owner')
+            ->orderBy('created_at', 'desc')
+            ->paginate(3);
+        
+        return view('welcome', compact('rooms'));
     }
 
     /**
