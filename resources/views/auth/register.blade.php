@@ -97,13 +97,13 @@
                                           <!-- Login as Student with Google -->
                                           <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
                                             class="btn btn-outline-dark btn-sm me-2" id="google-login-user">
-                                            <i class="fab fa-google me-1"></i> Student Google Login
+                                            <i class="fab fa-google me-1"></i> Student Google Register
                                         </a>
 
                                         <!-- Login as Room Owner with Google -->
                                         <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
                                             class="btn btn-outline-dark btn-sm" id="google-login-owner">
-                                            <i class="fab fa-google me-1"></i> Room Owner Google Login
+                                            <i class="fab fa-google me-1"></i> Room Owner Google Register
                                         </a>
                                     </div>
                                 </div>

@@ -87,10 +87,10 @@
 
                             <!-- Social Login Placeholder -->
                             <div class="text-center mt-4">
-                                <small class="text-muted">Or login with</small>
+                                <small class="text-muted">Or Register with</small>
                                 <div class="mt-2">
-                                    <!-- Login as Student with Google -->
-                                    <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
+                                      <!-- Login as Student with Google -->
+                                      <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
                                         class="btn btn-outline-dark btn-sm me-2" id="google-login-user">
                                         <i class="fab fa-google me-1"></i> Student Google Login
                                     </a>

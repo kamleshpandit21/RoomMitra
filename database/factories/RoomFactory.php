@@ -17,10 +17,11 @@ class RoomFactory extends Factory
      */
     public function definition(): array
     {
-      
+
 
         return [
-            'owner_id' => User::inRandomOrder()->first()->user_id ?? User::factory(),
+            'owner_id' => User::where('role', 'room_owner')->inRandomOrder()->first()->user_id
+                ?? User::factory()->create(['role' => 'room_owner'])->user_id,
             'room_number' => strtoupper($this->faker->bothify('A###')),
             'room_title' => $this->faker->sentence(4),
             'room_description' => $this->faker->paragraph(2),

@@ -16,10 +16,13 @@ class HomeController extends Controller
         //
         $rooms = Room::where('is_verified', true)
             ->where('status', 'available')
+            ->whereHas('images')    
+            ->whereHas('amenities')
+            ->whereHas('owner')
             ->with('images', 'amenities', 'owner')
             ->orderBy('created_at', 'desc')
             ->paginate(3);
-        
+
         return view('welcome', compact('rooms'));
     }
 

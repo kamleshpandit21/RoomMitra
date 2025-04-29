@@ -23,6 +23,7 @@
                         <option value="booking">Booking</option>
                         <option value="payment">Payment</option>
                         <option value="general">General</option>
+                        <option value="technical">Technical</option>
                     </select>
                 </div>
                 <div class="col-md-3 form-group">
@@ -33,7 +34,7 @@
                     </select>
                 </div>
             </div>
-            
+
             <!-- Table -->
             <table class="table table-hover align-middle" id="faq-table">
                 <thead class="table-light">
@@ -53,22 +54,25 @@
                             <td>{{ Str::limit($faq->question, 60) }}</td>
                             <td>{{ ucfirst($faq->category ?? '-') }}</td>
                             <td>
-                                @if ($faq->status === 'active')
+                                @if ($faq->is_active === 1)
                                     <span class="badge bg-success">Active</span>
                                 @else
                                     <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </td>
                             <td>{{ $faq->created_at->format('d M Y') }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-info view-faq-btn" data-id="{{ $faq->id }}">
+                            <td class="d-flex gap-2 flex-wrap justify-content-between ">
+                                <button class="btn btn-sm btn-outline-info view-faq-btn"
+                                    data-url="{{ route('admin.faqs.show', $faq->id) }}">
                                     👁️ View
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary edit-faq-btn" data-id="{{ $faq->id }}">
+                                <button class="btn btn-sm btn-outline-primary edit-faq-btn"
+                                    data-url="{{ route('admin.faqs.update', $faq->id) }}" data-id="{{ $faq->id }}">
                                     ✏️ Edit
                                 </button>
 
-                                <button class="btn btn-sm btn-outline-danger delete-faq-btn" data-id="{{ $faq->id }}">
+                                <button class="btn btn-sm btn-outline-danger delete-faq-btn" data-id="{{ $faq->id }}"
+                                    data-url="{{ route('admin.faqs.destroy', $faq->id) }}">
                                     🗑️ Delete
                                 </button>
 
@@ -79,10 +83,16 @@
                             <td colspan="6" class="text-center text-muted">No FAQs found.</td>
                         </tr>
                     @endforelse
+
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">{{ $faqs->links('pagination::bootstrap-5') }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+
     <!-- Edit FAQ Modal -->
     <div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -108,30 +118,25 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label>Category</label>
-                            <select class="form-control select2bs4" name="category" id="edit-category">
-                                <option value="booking">Booking</option>
-                                <option value="payment">Payment</option>
-                                <option value="technical">Technical</option>
+                            <select class="form-control" name="category" id="edit-category">
+                                <option value="">Select Category</option>
+                                <option value="General Questions">General Questions</option>
+                                <option value="For Students (Users)">For Students (Users)</option>
+                                <option value="For Room Owners">For Room Owners</option>
+                                <option value="Security & Verification">Security & Verification</option>
+                                <option value="Technical Questions">Technical Questions</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Status</label>
-                            <select class="form-control select2bs4" name="status" id="edit-status">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Order</label>
-                            <input type="number" class="form-control" name="order" id="edit-order">
-                        </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label>Tags</label>
-                        <input type="text" class="form-control" name="tags" id="edit-tags">
+                        <div class="col-md-6 mb-3">
+                            <label>Status</label>
+                            <select class="form-control" name="is_active" id="edit-status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -143,97 +148,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit FAQ Modal -->
-    <div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <form class="modal-content" method="post" action="{{ route('admin.faqs.store') }}">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="faqModalLabel">➕ Add New FAQ</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i
-                            class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body">
-                    {{-- Validation Errors --}}
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <strong>Oops!</strong> Please fix the following errors:
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- FAQ Fields -->
-                    <div class="mb-3">
-                        <label>Question</label>
-                        <input type="text" class="form-control" placeholder="Enter the FAQ question" required
-                            name="question">
-                        @error('question')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Other fields for answer, category, etc. -->
-                    <div class="mb-3">
-                        <label>Answer</label>
-                        <textarea class="form-control wysiwyg" rows="5" placeholder="Enter detailed answer..." name="answer"></textarea>
-                        @error('answer')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Category, Status, Order and Tags -->
-                    <div class="row">
-                        <div class="col-md-4 mb-3 form-group">
-                            <label>Category</label>
-                            <select class="form-control select2bs4" name="category">
-                                <option value="">Select Category</option>
-                                <option value="booking">Booking</option>
-                                <option value="payment">Payment</option>
-                                <option value="technical">Technical</option>
-                            </select>
-                            @error('category')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-3 form-group">
-                            <label>Status</label>
-                            <select class="form-control select2bs4" name="status">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Order</label>
-                            <input type="number" class="form-control" placeholder="Sorting order" name="order">
-                            @error('order')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Tags <small>(optional, comma-separated)</small></label>
-                        <input type="text" class="form-control" placeholder="e.g., refund, payment delay"
-                            name="tags">
-                        @error('tags')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">💾 Save FAQ</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- View FAQ Modal -->
     <div class="modal fade" id="viewFaqModal" tabindex="-1" aria-labelledby="viewFaqLabel" aria-hidden="true">
@@ -241,7 +155,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="viewFaqLabel">📖 FAQ Details</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i
                             class="fas fa-times"></i></button>
 
                 </div>
@@ -267,11 +181,6 @@
                         <span id="view-status">Loading...</span>
                     </div>
 
-                    <!-- FAQ Tags -->
-                    <div class="mb-2">
-                        <strong>Tags:</strong>
-                        <span id="view-tags">Loading...</span>
-                    </div>
 
                     <!-- FAQ Created At -->
                     <div class="mb-2">
@@ -290,20 +199,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Attach click event listener to each "view" button
+        // View FAQ Modal
         document.querySelectorAll('.view-faq-btn').forEach(button => {
             button.addEventListener('click', function() {
-                let faqId = this.getAttribute('data-id');
+
+                let url = this.getAttribute('data-url');
 
                 // Fetch FAQ details from server
-                fetch(`/admin/faqs/${faqId}`)
+                fetch(url)
                     .then(response => response.json())
                     .then(faq => {
+
                         document.getElementById('view-question').textContent = faq.question;
                         document.getElementById('view-answer').innerHTML = faq.answer;
                         document.getElementById('view-category').innerText = faq.category || '—';
-                        document.getElementById('view-status').innerText = faq.status;
-                        document.getElementById('view-tags').innerText = faq.tags || '—';
+                        document.getElementById('view-status').innerText = faq.is_active ? 'Active' :
+                            'Inactive';
                         document.getElementById('view-date').innerText = new Date(faq.created_at)
                             .toLocaleString();
 
@@ -317,26 +228,26 @@
                     });
             });
         });
+
         document.querySelectorAll('.edit-faq-btn').forEach(button => {
             button.addEventListener('click', function() {
+                let url = this.getAttribute('data-url');
                 let faqId = this.getAttribute('data-id');
+                let showUrl = "{{ route('admin.faqs.show', ':id') }}".replace(':id', faqId);
 
-                fetch(`/admin/faqs/${faqId}`)
+                fetch(showUrl)
                     .then(res => res.json())
                     .then(faq => {
-                        // Fill the form fields
                         document.getElementById('edit-id').value = faq.id;
                         document.getElementById('edit-question').value = faq.question;
                         document.getElementById('edit-answer').value = faq.answer;
                         document.getElementById('edit-category').value = faq.category;
-                        document.getElementById('edit-status').value = faq.status;
-                        document.getElementById('edit-order').value = faq.order;
-                        document.getElementById('edit-tags').value = faq.tags;
+                        document.getElementById('edit-status').value = faq.is_active;
 
-                        // Set form action
-                        document.getElementById('editFaqForm').action = `/admin/faqs/${faqId}`;
+                        // Set form action URL here
+                        document.getElementById('editFaqForm').action =
+                            url; // Dynamic URL for form submission
 
-                        // Show modal
                         let modal = new bootstrap.Modal(document.getElementById('editFaqModal'));
                         modal.show();
                     })
@@ -346,12 +257,49 @@
                     });
             });
         });
+        document.getElementById('editFaqForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const url = form.action;
+
+            // Log the values of the fields to check if they are populated
+            console.log({
+                question: document.getElementById('edit-question').value,
+                answer: document.getElementById('edit-answer').value,
+                category: document.getElementById('edit-category').value,
+                is_active: document.getElementById('edit-status').value
+            });
+
+            // Ensure that FormData is correctly populated
+            const formData = new FormData(form);
+            console.log([...formData]);
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw errorData;
+                    }
+                    const data = await response.json();
+                    alert('✅ FAQ updated!');
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error("Error updating FAQ:", error);
+                });
+        });
 
 
         document.querySelectorAll('.delete-faq-btn').forEach(button => {
             button.addEventListener('click', function() {
                 let faqId = this.getAttribute('data-id');
-
+                console.log(faqId);
                 if (confirm('Are you sure you want to delete this FAQ?')) {
                     fetch(`/admin/faqs/${faqId}`, {
                             method: 'DELETE',
@@ -362,8 +310,8 @@
                         })
                         .then(response => {
                             if (response.ok) {
-                                // Optionally refresh the page or remove the row
                                 location.reload();
+                                alert('✅ FAQ deleted!');
                             } else {
                                 alert('Failed to delete FAQ.');
                             }

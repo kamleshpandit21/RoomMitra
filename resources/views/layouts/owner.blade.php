@@ -19,8 +19,12 @@
 @php
     if (Auth::check()):
         $user = Auth::user();
+        $profile = $user->ownerProfile;
+       
+       
     endif;
 @endphp
+
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -100,7 +104,8 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
 
-                        <img src="{{ asset('img/avatar/avatar.png') }}" class="img-circle elevation-2"
+
+                        <img src="{{ asset($profile->avatar) ?? asset('adminlte/dist/img/user2-160x160.jpg')  }}" alt="Owner Image"  class="img-circle elevation-2"
                             alt="Owner Image">
                     </div>
                     <div class="info">
@@ -232,13 +237,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="edit-profile.html" class="nav-link">
+                                    <a href="{{ route('owner.profile.edit') }}" class="nav-link">
                                         <i class="fas fa-user-edit nav-icon"></i>
                                         <p>Edit Profile</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="change-password.html" class="nav-link">
+                                    <a href="{{ route('owner.profile.index') }}" class="nav-link">
                                         <i class="fas fa-lock nav-icon"></i>
                                         <p>Change Password</p>
                                     </a>
@@ -248,7 +253,7 @@
 
                         <!-- Logout -->
                         <li class="nav-item">
-                            <a href="logout.html" class="nav-link">
+                            <a href="{{ route('logout') }}" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>

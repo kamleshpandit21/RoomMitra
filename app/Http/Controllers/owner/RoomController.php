@@ -7,6 +7,7 @@ use App\Http\Requests\RoomValidation;
 use App\Http\Requests\UpdateRoomRequest;
 use App\Models\Room;
 use App\Models\RoomAmenity;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -14,14 +15,29 @@ class RoomController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = Auth::user();
 
-        $rooms = Room::with('images', 'amenities')->paginate(10);
+        $query = Room::where('owner_id', $user->user_id)
+            ->with('images', 'amenities');
+
+        if ($request->filled('search')) {
+            $query->where('room_title', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $rooms = $query->paginate(10)->withQueryString();
+
         return view('owner.my-rooms', compact('rooms'));
-
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -37,8 +53,12 @@ class RoomController extends Controller
      */
     public function store(RoomValidation $request)
     {
+        if (Room::where('owner_id', Auth::user()->user_id)->where('room_number', $request->room_number)->exists()) {
+            return back()->with('error', 'Room Number already exists');
+        }
+
         $room = new Room();
-        $room->owner_id = 1;
+        $room->owner_id = Auth::user()->user_id;
         $room->room_number = $request->room_number;
         $room->room_title = $request->room_title;
         $room->room_description = $request->room_description ?? null;
@@ -122,13 +142,18 @@ class RoomController extends Controller
      */
     public function show(string $id)
     {
-        //
-        $room = Room::findOrFail($id)->with('images', 'amenities')->first();
+        $ownerId = Auth::user()->user_id;
+    
+        $room = Room::where('owner_id', $ownerId)
+                    ->where('room_id', $id)
+                    ->with('images', 'amenities')
+                    ->firstOrFail();
+    
         $room->sharing_prices = json_decode($room->sharing_prices, true);
-        
+    
         return view('owner.view-room', compact('room'));
-
     }
+    
 
     /**
      * Show the form for editing the specified resource.

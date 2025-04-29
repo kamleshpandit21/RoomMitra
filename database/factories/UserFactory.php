@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\OwnerProfile;
+use App\Models\Profile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -40,6 +42,22 @@ class UserFactory extends Factory
             ];  
     }
 
+    public function configure()
+{
+    return $this->afterCreating(function ($user) {
+        if ($user->role === 'room_owner') {
+            OwnerProfile::factory()->create([
+                'user_id' => $user->user_id,
+                // Add other default values if needed
+            ]);
+        } else {
+            Profile::factory()->create([
+                'user_id' => $user->user_id,
+                // Add other default values if needed
+            ]);
+        }
+    });
+}
     /**
      * Indicate that the model's email address should be unverified.
      */

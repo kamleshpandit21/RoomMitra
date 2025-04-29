@@ -28,7 +28,7 @@ return new class extends Migration {
             $table->date('date_of_birth')->nullable(); // renamed from dob
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
 
-            $table->string('aadhar', 12)->unique()->nullable();
+            $table->string('aadhar', 20)->unique()->nullable();
             $table->string('college_name')->nullable();
             $table->string('course')->nullable();
             $table->integer('study_year')->nullable();

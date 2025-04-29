@@ -30,11 +30,11 @@ return new class extends Migration {
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
 
             // Optional additional payment details
-            $table->string('payment_method')->nullable(); // E.g., PayPal, Credit Card
-            $table->string('transaction_id')->nullable(); // Payment gateway transaction ID
+            $table->string('payment_method')->nullable();
+            $table->string('transaction_id')->nullable(); 
 
             $table->timestamps(); 
-            // Foreign Key Relations
+
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('room_id')->references('room_id')->on('rooms')->onDelete('cascade');
             $table->foreign('owner_id')->references('user_id')->on('users')->onDelete('cascade');

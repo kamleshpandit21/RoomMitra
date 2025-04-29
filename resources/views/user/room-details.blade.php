@@ -75,16 +75,17 @@
                 <div id="roomGallery" class="carousel slide mb-4" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="{{ asset($room->images->first()->image_url) }}" class="d-block w-100"
-                                alt="..." height="400px">
+                            <img src="{{ asset($room->images->first()->image_url) }}" class="d-block w-100" alt="..."
+                                height="400px">
                         </div>
                         @foreach ($room->images->skip(1) as $image)
-                        <div class="carousel-item">
-                            <img src="{{ asset($image->image_url) }}" class="d-block w-100" alt="Room Image" height="400px">
-                        </div>
-                    @endforeach
-                    
-                     
+                            <div class="carousel-item">
+                                <img src="{{ asset($image->image_url) }}" class="d-block w-100" alt="Room Image"
+                                    height="400px">
+                            </div>
+                        @endforeach
+
+
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -96,55 +97,59 @@
                     </button>
                 </div>
 
-             <!-- Basic Info -->
-<div class="card p-3 mb-4">
-    <h5><i class="fas fa-info-circle me-2"></i> Room Information</h5>
-    <p><strong>Room No.:</strong> {{ $room->room_number }}</p>
-    <p><strong>Capacity:</strong> {{ $room->room_capacity }} People</p>
-    <p><strong>Total Beds:</strong> {{ $room->total_beds }} Beds</p>
-    <p><strong>Description:</strong> {{ $room->room_description }}</p>
-</div>
+                <!-- Basic Info -->
+                <div class="card p-3 mb-4">
+                    <h5><i class="fas fa-info-circle me-2"></i> Room Information</h5>
+                    <p><strong>Room No.:</strong> {{ $room->room_number }}</p>
+                    <p><strong>Capacity:</strong> {{ $room->room_capacity }} People</p>
+                    <p><strong>Total Beds:</strong> {{ $room->total_beds }} Beds</p>
+                    <p><strong>Description:</strong> {{ $room->room_description }}</p>
+                </div>
 
-<!-- Specifications -->
-<div class="card p-3 mb-4">
-    <h5><i class="fas fa-cogs me-2"></i> Specifications</h5>
-    <div class="row g-3">
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-bath me-2"></i> <strong>Bathroom Type:</strong> {{ ucfirst($room->bathroom_type) }}
-        </div>
+                <!-- Specifications -->
+                <div class="card p-3 mb-4">
+                    <h5><i class="fas fa-cogs me-2"></i> Specifications</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-bath me-2"></i> <strong>Bathroom Type:</strong>
+                            {{ ucfirst($room->bathroom_type) }}
+                        </div>
 
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-utensils me-2"></i> <strong>Kitchen Type:</strong> {{ ucfirst($room->kitchen_type) }}
-        </div>
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-utensils me-2"></i> <strong>Kitchen Type:</strong>
+                            {{ ucfirst($room->kitchen_type) }}
+                        </div>
 
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-building me-2"></i> <strong>Floor:</strong>
-            @if ($room->floor == 1)
-                Ground Floor
-            @elseif ($room->floor == 2)
-                1st Floor
-            @elseif ($room->floor == 3)
-                2nd Floor
-            @elseif ($room->floor == 4)
-                3rd Floor
-            @else
-                {{ $room->floor }}th Floor
-            @endif
-        </div>
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-building me-2"></i> <strong>Floor:</strong>
+                            @if ($room->floor == 1)
+                                Ground Floor
+                            @elseif ($room->floor == 2)
+                                1st Floor
+                            @elseif ($room->floor == 3)
+                                2nd Floor
+                            @elseif ($room->floor == 4)
+                                3rd Floor
+                            @else
+                                {{ $room->floor }}th Floor
+                            @endif
+                        </div>
 
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-elevator me-2"></i> <strong>Lift:</strong> {{ $room->lift ? 'Available' : 'Not Available' }}
-        </div>
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-elevator me-2"></i> <strong>Lift:</strong>
+                            {{ $room->lift ? 'Available' : 'Not Available' }}
+                        </div>
 
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-car me-2"></i> <strong>Parking:</strong> {{ $room->parking ? 'Available' : 'Not Available' }}
-        </div>
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-car me-2"></i> <strong>Parking:</strong>
+                            {{ $room->parking ? 'Available' : 'Not Available' }}
+                        </div>
 
-        <div class="col-md-6 spec-item">
-            <i class="fa fa-bolt me-2"></i> <strong>Light:</strong> {{ ucfirst($room->light ?? 'Normal') }}
-        </div>
-    </div>
-</div>
+                        <div class="col-md-6 spec-item">
+                            <i class="fa fa-bolt me-2"></i> <strong>Light:</strong> {{ ucfirst($room->light ?? 'Normal') }}
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card p-3 mb-4">
                     <h5>Amenities</h5>
@@ -196,7 +201,7 @@
                     <p>{{ $room->address_line2 }}</p>
                     <p><strong>City:</strong> {{ $room->city }}</p>
                     <p><strong>State:</strong> {{ $room->state }}</p>
-                    <p><strong>Pincode:</strong> {{ $room->pincode }}</p>                    
+                    <p><strong>Pincode:</strong> {{ $room->pincode }}</p>
                     <p><strong>Landmarks:</strong>{{ $room->nearby_landmarks }}</p>
                     <iframe src="https://maps.google.com/maps?q=Salt%20Lake,%20Kolkata&t=&z=13&ie=UTF8&iwloc=&output=embed"
                         width="100%" height="300" frameborder="0" style="border:0;"></iframe>
@@ -208,7 +213,8 @@
                     <p>
                         <strong>Entry Time:</strong> {{ date('h:i A', strtotime($room->entry_time)) }} |
                         <strong>Exit Time:</strong> {{ date('h:i A', strtotime($room->exit_time)) }}
-                    </p>                    <p><strong>Restrictions:</strong>{{ $room->restrictions }}</p>
+                    </p>
+                    <p><strong>Restrictions:</strong>{{ $room->restrictions }}</p>
                 </div>
             </div>
 
@@ -232,6 +238,7 @@
 
                     <!-- Owner Info -->
                     <div class="card p-3 mb-4">
+                       
                         <h5>Owner Info</h5>
                         <p><strong>Name:</strong> {{ ucwords($room->owner->full_name) }}</p>
                         <p><strong>Contact:</strong> {{ substr($room->owner->phone, 0, 4) . '********' }}</p>
@@ -253,10 +260,9 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.getElementById('bookNow').addEventListener('click', function() {
-        window.location.href = "{{route('user.booking.checkout', $room->room_id)}}";
-    });
-</script>
-
+    <script>
+        document.getElementById('bookNow').addEventListener('click', function() {
+            window.location.href = "{{ route('user.booking.checkout', $room->room_id) }}";
+        });
+    </script>
 @endpush

@@ -108,112 +108,103 @@
         </button>
       </div>
     </section>
+    <div class="container my-5">
 
-    <section id="featured-rooms" class="py-5 bg-light">
-      <div class="container">
-        <h2 class="text-center fw-bold mb-4" data-aos="fade-up">
-          🏡 Featured Rooms
-        </h2>
+      <h2 class="text-center fw-bold mb-4" data-aos="fade-up">
+          🏡 New Rooms
+      </h2>
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-          <!-- Room Card -->
-          <div class="col">
-            <div class="card room-card border-0 shadow-sm h-100">
-              <div class="position-relative">
-                <div class="ribbon"><span>5000/month</span></div>
-                <img
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-                  class="card-img-top"
-                  alt="Room Image"
-                />
+      <div class="row g-4">
+          @forelse ($rooms as $room)
+              @php
 
-                <span
-                  class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 p-2"
-                  >⭐ 4.0</span
-                >
-              </div>
-              <div class="card-body">
-                <h5 class="card-title mb-1">Single Room</h5>
-                <p class="text-muted mb-2">
-                  <i class="fas fa-map-marker-alt text-danger me-1"></i>Delhi,
-                  India
-                </p>
-                <a
-                  href="room-detail.php?id=1"
-                  class="btn btn-outline-success btn-sm w-100 p-2"
-                  >👁️ View Details</a
-                >
-              </div>
-            </div>
-          </div>
+                  $firstImage = $room->images->first();
+                  $roomImage =
+                      $firstImage && $firstImage->image_url ? $firstImage->image_url : asset('default-room.jpg');
+              @endphp
 
-          <!-- Repeat Room Cards -->
-          <div class="col">
-            <div class="card room-card border-0 shadow-sm h-100">
-              <div class="position-relative">
-                <img
-                  src="https://images.unsplash.com/photo-1613490493576-7fde63acd811"
-                  class="card-img-top"
-                  alt="Room Image"
-                />
-                <span
-                  class="badge bg-success position-absolute top-0 start-0 m-2"
-                  >₹3,500/mo</span
-                >
-                <span
-                  class="badge bg-warning text-dark position-absolute top-0 end-0 m-2"
-                  >⭐ 5.0</span
-                >
-              </div>
-              <div class="card-body">
-                <h5 class="card-title mb-1">Shared PG Room</h5>
-                <p class="text-muted mb-2">
-                  <i class="fas fa-map-marker-alt text-danger me-1"></i>Mumbai,
-                  India
-                </p>
-                <a
-                  href="room-detail.php?id=2"
-                  class="btn btn-outline-success btn-sm w-100 p-2"
-                  >👁️ View Details</a
-                >
-              </div>
-            </div>
-          </div>
+          
+              <div class="col-md-6 col-lg-4">
+                  <div class="card room-card " data-aos="fade-up" data-aos-delay="100">
+                      <img src="{{ asset($roomImage) }}" class="card-img-top" alt="Room Image">
+                      <div class="card-body">
+                          <h5 class="card-title">🏷 {{ $room->room_title }}</h5>
+                          <p class="card-text text-muted mb-1">
+                              <i class="fas fa-map-marker-alt me-1"></i>
+                              {{ ucwords($room->locality) }}, {{ ucwords($room->city) }}, {{ ucwords($room->state) }}
+                          </p>
 
-          <div class="col">
-            <div class="card room-card border-0 shadow-sm h-100">
-              <div class="position-relative">
-                <img
-                  src="https://images.unsplash.com/photo-1570129477492-45c003edd2be"
-                  class="card-img-top"
-                  alt="Room Image"
-                />
-                <span
-                  class="badge bg-success position-absolute top-0 start-0 m-2"
-                  >₹6,000/mo</span
-                >
-                <span
-                  class="badge bg-warning text-dark position-absolute top-0 end-0 m-2"
-                  >⭐ 4.5</span
-                >
+                          <p class="card-text mb-1">
+                              <i class="fas fa-rupee-sign me-1"></i> {{ intval($room->room_price) }} / month
+                          </p>
+
+                          <p class="card-text mb-2">
+                              <i class="fas fa-user me-1"></i>
+                              {{ $room->room_capacity === 1 ? '1 Person' : $room->room_capacity . ' Sharing' }} |
+                              {{ ucwords($room->bathroom_type) }} Bathroom
+                          </p>
+
+                          <div class="d-flex flex-wrap gap-2 mb-3">
+                              @php
+                                  $icons = [
+                                      'WiFi' => 'fa-wifi',
+                                      'wifi' => 'fa-wifi',
+                                      'Laundry' => 'fa-tshirt',
+                                      'laundry' => 'fa-tshirt',
+                                      'RO Water' => 'fa-tint',
+                                      'ro' => 'fa-tint',
+                                      'Fridge' => 'fa-snowflake',
+                                      'TV' => 'fa-tv',
+                                      'tv' => 'fa-tv',
+                                      'Microwave' => 'fa-mitten',
+                                  ];
+                              @endphp
+
+                              @foreach ($room->amenities as $amenity)
+                                  <span class="text-muted small" title="{{ $amenity->amenity_name }}">
+                                      <i
+                                          class="fas {{ $icons[$amenity->amenity_name] ?? 'fa-concierge-bell' }} amenity-icon"></i>
+                                      {{ $amenity->amenity_name }}
+                                  </span>
+                              @endforeach
+                          </div>
+
+                          <div class="d-flex justify-content-between align-items-center">
+                              <span class="badge bg-{{ $room->is_verified ? 'success' : 'secondary' }}">
+                                  {{ $room->is_verified ? 'Verified' : 'Not Verified' }}
+                              </span>
+
+                              <small class="text-muted" title="{{ $room->created_at->format('d M Y, h:i A') }}">
+                                  📅 {{ $room->created_at->diffForHumans() }}
+                              </small>
+                          </div>
+
+                          <hr>
+
+                          <div class="d-flex justify-content-between">
+                              <a href="{{ route('room.show', ['id' => $room->room_id]) }}"
+                                  class="btn btn-sm btn-outline-primary">
+                                  <i class="fas fa-eye me-1"></i> View Details
+                              </a>
+                              <button class="btn btn-sm btn-outline-danger like-btn">
+                                  <i class="far fa-heart"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
               </div>
-              <div class="card-body">
-                <h5 class="card-title mb-1">AC Room with Balcony</h5>
-                <p class="text-muted mb-2">
-                  <i class="fas fa-map-marker-alt text-danger me-1"></i>Pune,
-                  India
-                </p>
-                <a
-                  href="room-detail.php?id=3"
-                  class="btn btn-outline-success btn-sm w-100 p-2"
-                  >👁️ View Details</a
-                >
+          @empty
+              <div class="col-12">
+                  <div class="alert alert-warning text-center " data-aos="fade-in"> <!-- Added animation here -->
+
+                      <strong>No rooms found.</strong>
+                  </div>
               </div>
-            </div>
-          </div>
-        </div>
+          @endforelse
       </div>
-    </section>
+
+
+  </div>
     <section class="py-5 bg-light" id="why-choose-us">
       <div class="container">
         <div class="text-center mb-5">

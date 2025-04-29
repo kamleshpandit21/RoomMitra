@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AdminFaqController extends Controller
 {
@@ -14,7 +15,7 @@ class AdminFaqController extends Controller
     public function index()
     {
         //
-        $faqs = Faq::all();
+        $faqs = Faq::paginate(10);
         return view('admin.faqs', compact('faqs'));
     }
 
@@ -39,24 +40,46 @@ class AdminFaqController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $faq = Faq::find($id);
+        return response()->json($faq);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $faq = Faq::findOrFail($id); // Find FAQ or throw 404 error
+    
+        // Validation (optional but recommended)
+        $validated = $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+            'category' => 'required|string',
+            'is_active' => 'required|boolean',
+        ]);
+    
+        // Update FAQ data
+        $faq->question = $request->question;
+        $faq->answer = $request->answer;
+        $faq->category = $request->category;
+        $faq->is_active = $request->is_active == '1' ? true : false;
+        $faq->save();
+    
+        return response()->json($faq);
     }
+    
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -64,5 +87,8 @@ class AdminFaqController extends Controller
     public function destroy(string $id)
     {
         //
+        $faq = Faq::findOrFail($id);
+         $faq->delete(); 
+         return response()->json(['message' => 'FAQ deleted successfully.']);
     }
 }

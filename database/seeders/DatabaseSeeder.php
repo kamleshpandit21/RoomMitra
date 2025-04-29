@@ -19,18 +19,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->count(10)->create();
+        User::factory()->count(20)->create();
 
-        // Create rooms for some users
-        Room::factory()->count(20)->create();
-
-        // Attach images and amenities for the created rooms
-        RoomImage::factory()->count(50)->create();
-        RoomAmenity::factory()->count(50)->create();
-        Complaint::factory()->count(10)->create();
-
+      
         $this->call([
             AdminSeeder::class,
-        ]);
+            RoomSeeder::class
+        ]); 
+    
+        
+            $this->call(FaqSeeder::class);
+        
     }
 }

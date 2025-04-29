@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="5;url={{ route('login.form') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Forbidden</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -22,7 +23,10 @@
             font-weight: bold;
         }
         .error-message {
-            font-size: 24px;
+            font-size: 34px;
+        }
+        p {
+            font-size: 18px;
         }
     </style>
 </head>
@@ -31,7 +35,6 @@
         <div class="error-code">403</div>
         <div class="error-message">Forbidden</div>
         <p>You do not have permission to access this resource.</p>
-        <a href="{{ url()->previous() }}" class="btn btn-primary">Go to Home</a>
     </div>
 </body>
 </html>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,7 +14,16 @@ class UserController extends Controller
     public function index()
     {
         //
-        return view('user.dashboard');
+        $rooms = Room::where('is_verified', true)
+        ->where('status', 'available')
+        ->whereHas('images')    
+        ->whereHas('amenities')
+        ->whereHas('owner')
+        ->with('images', 'amenities', 'owner')
+        ->orderBy('created_at', 'desc')
+        ->paginate(3);
+
+        return view('user.dashboard', compact('rooms'));
     }
 
     /**

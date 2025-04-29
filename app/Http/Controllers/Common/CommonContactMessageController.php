@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CommonContactMessageController extends Controller
 {
@@ -47,6 +48,16 @@ class CommonContactMessageController extends Controller
         $contact->status = 'new';
         $contact->save();
     
+        Mail::send('emails.contact-confirmation', ['contact' => $contact], function ($m) use ($contact) {
+            $m->to($contact->email, $contact->name)
+              ->subject('We Received Your Message');
+        });
+    
+ 
+        Mail::send('emails.contact-notification', ['contact' => $contact], function ($m) {
+            $m->to('atul800498@gmail.com', 'Admin')
+              ->subject('New Contact Message Received');
+        });
         return response()->json(['message' => 'Your message has been submitted.'], 200);
     }
 

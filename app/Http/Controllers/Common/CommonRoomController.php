@@ -18,11 +18,15 @@ class CommonRoomController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(6);
 
+
         return view('common.room-list', compact('rooms'));
     }
     public function show(string $id)
     {
-        $room = Room::where('room_id', $id)->with('images', 'amenities', 'owner')->first();
+        $room = Room::where('room_id', $id)
+            ->with(['images', 'amenities', 'owner'])
+            ->whereHas('owner')
+            ->firstOrFail();
         $room->sharing_prices = json_decode($room->sharing_prices, true);
         return view('user.room-details', compact('room'));
     }

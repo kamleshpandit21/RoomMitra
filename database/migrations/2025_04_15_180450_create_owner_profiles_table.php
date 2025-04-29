@@ -19,7 +19,7 @@ return new class extends Migration
         
             $table->string('avatar')->nullable();
         
-            $table->string('aadhar', 12)->unique()->nullable();
+            $table->string('aadhar', 20)->unique()->nullable();
         
             $table->string('current_address')->nullable();
             $table->string('permanent_address')->nullable();

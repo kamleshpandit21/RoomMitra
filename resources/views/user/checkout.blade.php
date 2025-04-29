@@ -93,7 +93,7 @@
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
-    <p><strong>Title:</strong> {{ $room->room_title }}</p>
+                    <p><strong>Title:</strong> {{ $room->room_title }}</p>
                     <p><strong>Location:</strong>{{ $room->city }}, {{ $room->state }}</p>
                     <p><strong>Room Capacity:</strong> {{ $room->room_capacity }}</p>
                     <input type="date" class="form-control mb-2" />
@@ -198,7 +198,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>ID Card:</label>
-                            <p><a href="{{ asset($user->profile->id_card_url) ?? '#' }}"
+                            <p><a href="{{ asset($user->profile?->id_card_url) ?? '#' }}"
                                     class="btn btn-sm btn-outline-secondary">View /
                                     Download</a> </p>
 

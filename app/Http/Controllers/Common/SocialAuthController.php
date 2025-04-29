@@ -75,20 +75,25 @@ class SocialAuthController extends Controller
                 ]);
             }
             Auth::login($user);
-       
+            if ($user->role === 'room_owner') {
+                $user->load('ownerProfile');
+            } else {
+                $user->load('profile');
+            }
+
             if ($role === 'room_owner') {
                 return redirect()->route(
                     'owner.dashboard'
-              
-                    )->with('success', "You have successfully logged in with $provider.");
-           
+
+                )->with('success', "You have successfully logged in with $provider.");
+
                 ;
             } else {
                 return redirect()->route('user.dashboard')->with('success', "You have successfully logged in with $provider.");
             }
-            
 
-              } catch (\Exception $e) {
+
+        } catch (\Exception $e) {
             return redirect()->route('login.form')->with('error', 'Error: ' . $e->getMessage());
         }
     }

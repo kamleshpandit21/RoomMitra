@@ -2,80 +2,163 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>RoomMitra | @yield('title', 'Home')</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-    @stack('styles')
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            background-color: #fff;
-            font-family: "Sansita", sans-serif;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        /* Smooth sticky effect */
-        .sticky-nav {
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-            transition: all 0.3s ease-in-out;
-        }
+        <title>RoomMitra | @yield('title', 'Home')</title>
+        <meta name="description"
+            content="RoomMitra helps students find 100% verified, affordable, and secure PGs, hostels, and rental rooms near their college. Safe booking. Owner-verified." />
+        <meta name="keywords"
+            content="Room booking, Student accommodation, Hostel booking, PGs, RoomMitra, Student housing India" />
+        <meta name="robots" content="index, follow" />
 
-        /* Navbar spacing control */
-        .navbar-nav .nav-link {
-            padding: 0.75rem 1rem;
-            font-weight: 500;
-            color: #333;
-        }
+        <!-- Open Graph (Facebook & others) -->
+        <meta property="og:title" content="RoomMitra | Student Room Booking Simplified" />
+        <meta property="og:description"
+            content="Explore verified rooms with owner KYC, secure booking, and flexible cancellations on RoomMitra." />
+        {{-- <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.roommitra.in" />
+        <meta property="og:image" content="https://www.roommitra.in/assets/og-image.jpg" /> --}}
 
-        .navbar-nav .nav-link:hover,
-        .navbar-nav .nav-link.active {
-            color: #198754;
-            /* Bootstrap success color */
-        }
+        <!-- Twitter Card -->
+        {{-- <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="RoomMitra | Simplified Student Room Booking" />
+        <meta name="twitter:description" content="100% Verified Rooms, No Brokers, Just Peace of Mind." />
+        <meta name="twitter:image" content="https://www.roommitra.in/assets/twitter-card.jpg" /> --}}
 
-        /* Notification icon spacing */
-        .navbar .fa-bell,
-        .navbar .fa-heart {
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+        <!-- Preconnect for performance -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        .navbar .fa-bell:hover,
-        .navbar .fa-heart:hover {
-            color: #198754;
-        }
+        <!-- Google Fonts: Optimized -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Quicksand:wght@300;500;700&family=Raleway:wght@400;600;800&display=swap"
+            rel="stylesheet" />
 
-        /* Profile avatar hover */
-        .dropdown-toggle img {
-            transition: transform 0.3s ease;
-        }
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-        .dropdown-toggle:hover img {
-            transform: scale(1.05);
-        }
-    </style>
+        <!-- Font Awesome (Latest) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+            integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-</head>
+        <!-- Animate.css (Latest v4) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <!-- AOS (Animate on Scroll) -->
+        <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+
+        @stack('styles')
+        <style>
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+                font-family: 'raleway', sans-serif;
+            }
+
+            /* Smooth sticky effect */
+            .sticky-nav {
+                position: sticky;
+                top: 0;
+                z-index: 1030;
+                transition: all 0.3s ease-in-out;
+            }
+
+            .navbar {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                transition: all 0.3s ease-in-out;
+            }
+
+
+            /* Navbar spacing control */
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem;
+                font-weight: 500;
+                font-size: 1.1rem;
+                color: #ffffff;
+            }
+
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link.active {
+                color: #6366f1;
+                /* Bootstrap success color */
+            }
+
+            /* Notification icon spacing */
+            .navbar .fa-bell,
+            .navbar .fa-heart {
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+
+            .navbar .fa-bell:hover,
+            .navbar .fa-heart:hover {
+                color: #198754;
+            }
+
+            /* Profile avatar hover */
+            .dropdown-toggle img {
+                transition: transform 0.3s ease;
+            }
+
+            .dropdown-toggle:hover img {
+                transform: scale(1.05);
+            }
+
+            /* Scroll hone ke baad jo navbar banegi */
+            .navbar.scrolled {
+                background-color: #ffffff !important;
+
+                padding-top: 1.2rem;
+                padding-bottom: 1.2rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease-in-out;
+            }
+
+            .navbar.scrolled .nav-link {
+                color: #000 !important;
+            }
+
+            .navbar.scrolled .nav-link:hover,
+            .navbar.scrolled .nav-link.active {
+                color: #6366f1 !important;
+            }
+
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 #6366f1;
+                }
+
+                70% {
+                    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+                }
+            }
+
+            .shadow-pulse {
+                animation: pulse 1.5s infinite;
+            }
+        </style>
+
+    </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top py-3">
         <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <!-- Logo -->
             <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="index.html">
                 <img src="https://img.icons8.com/color/48/room.png" alt="logo" height="30" class="me-2" />
-                StudentRoom
+                RoomMitra
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -86,7 +169,7 @@
 
             <!-- Navbar Content -->
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
-                <ul class="navbar-nav align-items-center w-100 d-flex flex-wrap justify-content-end gap-3">
+                <ul class="navbar-nav align-items-center w-100 d-flex flex-wrap justify-content-end gap-3 ">
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('home') }}">Home</a>
                     </li>
@@ -117,7 +200,7 @@
                     </li>
 
                     <!-- Login/Register -->
-                    @if (Auth::check())
+                    @if (Auth::check() && Auth::user())
                         <li class="nav-item">
                             <a href="{{ route('user.profile.index') }}" class="btn btn-success">Profile</a>
                         </li>
@@ -126,8 +209,8 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a href="{{ route('login.form') }}" class="btn btn-outline-success me-2">Login</a>
-                            <a href="{{ route('register.form') }}" class="btn btn-success">Register</a>
+                            <a href="{{ route('register.form') }}" class="btn btn-lg fs-5 shadow-pulse me-2 text-white "
+                                style="background: linear-gradient(135deg, #6366f1, #8b5cf6)">Get Started</a>
                         </li>
                     @endif
                 </ul>
@@ -140,7 +223,8 @@
     <!-- Full Width Footer -->
     <footer class="text-white" style="background-color: #1c2331">
         <!-- Social Media -->
-        <section class="d-flex justify-content-between align-items-center px-5 py-4" style="background-color: #268c38">
+        <section class="d-flex justify-content-between align-items-center px-5 py-4"
+            style="background:linear-gradient(135deg, #6366f1, #8b5cf6)">
             <span class="fw-semibold">Get connected with us on social networks:</span>
             <div>
                 <a href="#" class="text-white me-4"><i class="fab fa-facebook-f"></i></a>
@@ -213,66 +297,29 @@
         <!-- Copyright -->
         <div class="text-center py-3 mt-4" style="background-color: rgba(0, 0, 0, 0.2)">
             © 2025 Copyright:
-            <a class="text-white text-decoration-none fw-bold" href="#">StudentRoomPortal.com</a>
+            <a class="text-white text-decoration-none fw-bold" href="#">RoomMitra.com</a>
         </div>
     </footer>
 
-    <!-- End of .container -->
-
-    <!-- Add remaining sections following similar structure -->
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Initialize AOS -->
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init();
     </script>
+
+
     @stack('scripts')
 
     <script>
         // Navbar scroll effect
+
         window.addEventListener("scroll", function() {
+            const navbar = document.querySelector(".navbar");
             if (window.scrollY > 50) {
-                document.getElementById("mainNav").classList.add("nav-scroll");
+                navbar.classList.add("scrolled");
             } else {
-                document.getElementById("mainNav").classList.remove("nav-scroll");
-            }
-        });
-    </script>
-    <script>
-        const counters = document.querySelectorAll(".counter");
-        const speed = 200; // lower = faster
-
-        const animateCounters = () => {
-            counters.forEach((counter) => {
-                const updateCount = () => {
-                    const target = +counter.getAttribute("data-target");
-                    const count = +counter.innerText;
-                    const inc = Math.ceil(target / speed);
-
-                    if (count < target) {
-                        counter.innerText = count + inc;
-                        setTimeout(updateCount, 30);
-                    } else {
-                        counter.innerText = target + "+";
-                    }
-                };
-                updateCount();
-            });
-        };
-
-        let started = false;
-        window.addEventListener("scroll", () => {
-            const statsSection = document.getElementById("stats");
-            const sectionTop = statsSection.getBoundingClientRect().top;
-            const screenHeight = window.innerHeight;
-
-            if (!started && sectionTop < screenHeight) {
-                started = true;
-                animateCounters();
+                navbar.classList.remove("scrolled");
             }
         });
     </script>

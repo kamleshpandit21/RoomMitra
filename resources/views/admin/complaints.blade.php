@@ -108,8 +108,12 @@
                     <td colspan="7" class="text-center">No Complaints Found</td>
                 </tr>
             @endforelse
+            <tr>
+                <td colspan="7" >{{ $complaints->links('pagination::bootstrap-5') }}</td>
+            </tr>
 
         </tbody>
+
     </table>
 
     <div class="modal fade" id="viewComplaintModal" tabindex="-1">

@@ -24,6 +24,7 @@
         <div class="row">
             @php
                 $user = auth()->user();
+                $profile = $user->ownerProfile;
             @endphp
 
             <!-- Sidebar/Profile Summary -->
@@ -31,13 +32,10 @@
                 <div class="card text-center" style="border-radius: 15px;">
                     <div class="card-body">
                         <div class="mt-3 mb-4  overflow-hidden">
-                            @if ($user->profile && $user->profile->avatar)
-                                <img src="{{ asset($user->profile->avatar) }}" alt="User Avatar"
-                                    class=" rounded-circle img-fluid" style="height: 100px;">
-                            @else
-                                <img src="{{ asset('img/avatar/avatar.png') }}" alt="Default Avatar"
+                           
+                                <img src="{{ asset($profile->avatar) ?? asset('img/avatar/avatar.png') }}" alt="Default Avatar"
                                     class="rounded-circle img" style="width: 100px;">
-                            @endif
+                          
 
 
                         </div>
@@ -51,13 +49,13 @@
 
 
                         <p class="text-muted mb-4"><a href="#!">{{ $user->provider ?? 'N/A' }}</a></p>
-                        <p class="mb-1"><i class="fa fa-envelope me-1"></i> {{ $user->email }}</p>
-                        <p><i class="fa fa-phone me-1"></i> {{ $user->phone }}</p>
-                        <p class="small text-muted">Role: <span class="fw-bold">{{ $user->role }}</span></p>
-                        <p class="small text-muted">Member Since: <span class="fw-bold">{{ $user->created_at }}</span>
+                        <p class="mb-1"><i class="fa fa-envelope me-1"></i> {{ $user->email ?? 'N/A' }}</p>
+                        <p><i class="fa fa-phone me-1"></i> {{ $user->phone ?? 'N/A' }}</p>
+                        <p class="small text-muted">Role: <span class="fw-bold">{{ $user->role  }}</span></p>
+                        <p class="small text-muted">Member Since: <span class="fw-bold">{{ $user->created_at ?? 'N/A' }}</span>
 
                         </p>
-                        <p class="small text-muted">Last Updated: <span class="fw-bold">{{ $user->updated_at }} </span>
+                        <p class="small text-muted">Last Updated: <span class="fw-bold">{{ $user->updated_at ?? 'N/A' }} </span>
                         </p>
 
                         <div class="mb-4 pb-2">
@@ -105,8 +103,8 @@
                     </li>
                 </ul>
                 @php
-                    if (isset($user->profile->date_of_birth)) {
-                        $dob = date('Y-m-d', strtotime($user->profile->date_of_birth));
+                    if (isset($profile->date_of_birth)) {
+                        $dob = date('Y-m-d', strtotime($profile->date_of_birth));
                     }
                 @endphp
                 <div class="tab-content bg-white shadow rounded-4 p-4">
@@ -120,47 +118,47 @@
                             </div>
                             <div class="col-md-6">
                                 <label>Gender:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->gender ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->gender ?? 'N/A' }}</p>
                             </div>
 
                             <div class="col-md-12">
                                 <label>Address:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->current_address ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->current_address ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Permanent Address:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->permanent_address ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->permanent_address ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Locality:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->locality ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->locality ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>City:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->city ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->city ?? 'N/A' }}</p>
                             </div>
 
 
 
                             <div class="col-md-6">
                                 <label>State:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->state ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->state ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Country:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->country ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->country ?? 'N/A' }}</p>
                             </div>
 
 
                             <div class="col-md-6">
                                 <label>Pincode:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->pincode ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->pincode ?? 'N/A' }}</p>
                             </div>
 
 
                             <div class="col-md-12">
                                 <label>Aadhar Number:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->aadhar ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->aadhar ?? 'N/A' }}</p>
 
 
                             </div>
@@ -174,23 +172,23 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label>College:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->college_name ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->college_name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Course:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->course ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ $profile->course ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Year:</label>
-                                @if ($user->profile && $user->profile->study_year)
-                                    <p class="form-control-plaintext">{{ $user->profile->study_year . ' Year' }}</p>
+                                @if ($profile && $profile->study_year)
+                                    <p class="form-control-plaintext">{{ $profile->study_year . ' Year' }}</p>
                                 @else
                                     <p class="form-control-plaintext">N/A</p>
                                 @endif
                             </div>
                             <div class="col-md-6">
                                 <label>ID Card:</label>
-                                <a href="{{ asset($user->profile->id_card_url) ?? '#' }}"
+                                <a href="{{ asset($profile->id_card_url) ?? '#' }}"
                                     class="btn btn-sm btn-outline-secondary">View /
                                     Download</a>
                             </div>
@@ -200,7 +198,7 @@
                     <!-- Bio Tab -->
                     <div class="tab-pane fade" id="bio" role="tabpanel">
                         <h5 class="mb-3">Bio & Social Links</h5>
-                        <p><strong>About Me:</strong><br>{{ $user->profile->bio ?? 'N/A' }}</p>
+                        <p><strong>About Me:</strong><br>{{ $profile->bio ?? 'N/A' }}</p>
                         <div class="social-links">
                             <a href="" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
                             <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>
@@ -211,7 +209,7 @@
                     <!-- Password Tab -->
                     <div class="tab-pane fade" id="password" role="tabpanel">
                         <h5 class="mb-3">Change Password</h5>
-                        <form method="post" action="{{ route('user.profile.update-password') }}"
+                        <form method="post" action="{{ route('owner.profile.update-password') }}"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
