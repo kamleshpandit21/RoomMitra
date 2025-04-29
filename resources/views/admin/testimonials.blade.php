@@ -25,6 +25,28 @@
           </tr>
         </thead>
         <tbody>
+          @forelse ($testimonials as $testimonial )
+            <tr>
+              <td>{{ $testimonial->id }}</td>
+              <td>{{ $testimonial->name }}</td>
+              <td>{{ $testimonial->designation }}</td>
+              <td>{{ $testimonial->rating }}</td>
+              <td>{{ $testimonial->message }}</td>
+              <td>
+                @if ($testimonial->status == 'active')
+                  <span class="badge bg-success">Active</span>
+                @else
+                  <span class="badge bg-danger">Inactive</span>
+                @endif
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTestimonialModal" data-id="{{ $testimonial->id }}">✏️</button>
+                <button class="btn btn-sm btn-outline-danger" data-url="{{ route('admin.testimonials.destroy', $testimonial->id) }}"="">🗑️</button>
+              </td>
+            </tr>
+          @empty
+            
+          @endforelse
           <tr>
             <td>1</td>
             <td>Riya Sharma</td>

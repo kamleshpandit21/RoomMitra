@@ -45,10 +45,12 @@ p {
 .btn-transparent {
     background: transparent;
     color: #fff;
-    border: 2px solid #fff;
+    border: 2px solid var(--primary-dark);
 }
 .btn-transparent:hover {
-    background-color: #fff;
+    background: var(--primary-dark);
+
+
 }
 .btn-rounded {
     border-radius: 70px;
@@ -175,57 +177,7 @@ p {
     justify-content: space-between;
 }
 
-/* City Card */
-.city-card {
-    transition: transform 0.3s ease-in-out;
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-.city-card:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-}
-.card-img {
-    height: 100%;
-    object-fit: cover;
-}
-.card-img-overlay {
-    transition: background-color 0.3s;
-    border-radius: 15px;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-.card-img-overlay:hover {
-    background-color: rgba(0, 0, 0, 0.6) !important;
-}
 
-/* Ribbon */
-.ribbon {
-    width: 150px;
-    height: 150px;
-    overflow: hidden;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    z-index: 1;
-}
-.ribbon span {
-    position: absolute;
-    display: block;
-    width: 200px;
-    padding: 8px 0;
-    background: var(--primary-color);
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    transform: rotate(45deg);
-    top: 30px;
-    right: -45px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    font-size: 13px;
-    text-transform: uppercase;
-}
 
 /* Testimonials */
 #testimonials {
