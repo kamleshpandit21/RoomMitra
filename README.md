@@ -1,183 +1,113 @@
-# 🏠 Room Rental Portal
+# 🏠 RoomMitra (A Room Rental Portal) 
 
-## 📖 Project Overview
+![Room Rental Logo](public/logo/RoomLogo.png)
 
-The Room Rental Portal is a full-featured web platform designed to connect students searching for rental rooms with owners listing available spaces. The platform includes various functionalities for students, owners, and administrators to manage their interactions seamlessly.
+## 📖 Overview
+
+Room Rental Portal is a full-featured web platform built to connect students with room owners. It offers seamless room browsing, booking, and payment experiences for students, while empowering owners and admins with powerful tools for management and oversight.
 
 ## 🛠 Tech Stack
 
-- **Backend**: Laravel / Node.js (customizable)
-- **Frontend**: React / Blade / Bootstrap / Tailwind
-- **Database**: MySQL
-- **Authentication**: OTP-based + Email-password
-- **Payment Gateway**: Razorpay / Stripe (modular)
-- **Image Handling**: File Uploads & Cloud Storage
-- **Other**: REST APIs, Role-Based Access Control, CMS
+* **Backend**: Laravel 
+* **Frontend**: Blade / Bootstrap
+* **Database**: MySQL
+* **Authentication**: Email + OTP
+* **Payments**: Razorpay (UPI/Card/Wallet)
+* **File Handling**: Cloud Storage & Uploads
+* **Architecture**: REST APIs, Modular MVC
 
-## 🌟 Features
+## 🌟 Key Features
 
-- Room listing & filtering (location, price, capacity, etc.)
-- Owner dashboard with room & booking management
-- Booking + payment flow with invoice & status
-- Complaint registration & resolution system
-- Admin dashboards with analytics & approval features
-- CMS for FAQs, Testimonials, Static Pages
-- OTP-based password reset & secure login
-- Multi-role login system: student, owner, admin
+* 🔎 Room listing, advanced filtering (location, price, amenities)
+* 💬 Owner dashboard with room and booking management
+* 💳 Online booking with integrated payment gateway
+* 📄 Auto-generated invoices, booking summaries
+* ⚠️ Complaint & resolution system
+* 📊 Admin dashboard with analytics & user controls
+* 📃 CMS for FAQs, Testimonials, Static Pages
 
-## 👥 Modules & Roles
+## 👥 User Roles
 
-### 👨‍🎓 Student / User
+### 👨‍🎓 Students
 
-- Browse & filter rooms (without login)
-- View room details, amenities, prices, photos
-- Register/login with OTP/email
-- Book rooms, pay online, view booking history
-- Rate & review rooms
-- File complaints
-- Manage profile, documents, ID cards
+* Browse rooms (without login)
+* Filter by amenities, price, distance
+* Book & pay online
+* View booking/invoice history
+* Submit reviews and complaints
 
-### 🧑‍💼 Owner
+### 🧑‍💼 Owners
 
-- Add / edit rooms with detailed info and photos
-- See bookings, accept/reject them
-- Manage availability, room visibility
-- View complaints related to rooms
-- View payment settlements
-- Edit own profile, banking info
+* Add/edit rooms with photos and details
+* View & manage bookings
+* Handle availability
+* Respond to complaints
 
-### 👨‍💻 Admin
+### 👨‍💻 Admins
 
-- Dashboard with total users, rooms, complaints
-- Manage room approvals, user verification
-- Block / delete fake accounts
-- View payments, generate reports
-- CMS for FAQs, Testimonials, Static Pages
-- Handle complaints and assign resolutions
+* Approve rooms and verify users
+* View complaints and payment logs
+* Manage users & CMS content
+* Generate reports & analytics
 
-## 🧩 Database Models
+## 🧩 Core Data Models
 
-### 🧍 User
+* **User**: role, contact, password, login method
+* **Profile**: DOB, documents, address, banking info
+* **Room**: title, price, amenities, images, capacity
+* **Booking**: user, room, dates, payment info, status
+* **Payment**: mode, booking\_id, amount
+* **Complaint**: user, room, description, status
+* **Review**: user, rating, text, room\_id
+* **Message**: contact form fields
 
-- `username`, `email`, `password`, `phone`
-- `role`: user / owner
-- Provider fields for social login
+## 🖼 Public Pages
 
-### 📄 Profile (User  & Owner)
+* Landing
+* About Us
+* FAQs
+* Contact Us
+* Login / Register / OTP Recovery
 
-- `DOB`, `gender`, `address`, `documents`, `bank details`
+## 📋 CMS
 
-### 🏠 Room
+* Manage FAQs
+* Handle testimonials
+* Edit About/Terms pages
 
-- `title`, `description`, `capacity`, `amenities`, `prices`
-- Images (room, kitchen, house)
-- Restrictions, floor, bathroom/kitchen types
+## 🔐 Security
 
-### 📦 Booking
+* OTP + password login options
+* Role-based access restrictions
+* Secure image uploads
 
-- `room_id`, `user_id`, `dates`, `payment info`
-- `status`: pending / accepted / cancelled
 
-### ⭐ Review
+## 💳 Payment Integration (in next update)
 
-- `user_id`, `booking_id`, `rating`, `text`
+* **Razorpay Checkout**: Secure, supports UPI, card, wallet
+* Auto-calculate rent, security deposit, and optional services
 
-### ⚠ Complaint
-
-- `user_id`, `room_id`, `description`, `status`
-
-### 💳 Payment
-
-- `booking_id`, `amount`, `mode`, `date`
-
-### 🧾 Contact Message
-
-- `name`, `email`, `subject`, `message`, `status`
-
-## 🗂 Pages Overview
-
-### 🔓 Public (No login)
-
-- Landing Page
-- About Us
-- FAQ
-- Contact Us
-- Login / Register / Forgot Password (OTP)
-
-### 👨‍🎓 Student Side
-
-- Home Page (room listings)
-- Room Detail Page
-- Profile Page
-- Booking History + Payments
-- Review Submission
-- Complaint Form + History
-
-### 🧑‍💼 Owner Side
-
-- Dashboard (summary cards)
-- Room Management
-- Add Room
-- View/Edit Room
-- Bookings
-- Complaints
-- Profile + Bank Details
-
-### 👨‍💻 Admin Side
-
-- Dashboard:
-  - Total Users, Rooms, Complaints
-  - Booking & Revenue Graphs
-- Room Approval Page
-- Bookings
-- Complaints Management
-- Payments (settlement to owners)
-- Users Management (block/unblock/delete)
-- CMS (FAQs, Testimonials, Static Pages)
-- Reports
-
-## 🔐 Authentication & Security
-
-- OTP based password reset
-- Social login support (Google/Facebook)
-- Role-based access control
-- Email/phone uniqueness checks
-- Secure image uploads
-
-## 📋 CMS Panels
-
-### FAQs Panel
-
-- Create, update, delete FAQ entries
-
-### Testimonials Panel
-
-- Manage student reviews/testimonials
-
-### Static Pages
-
-- About Us, Contact Us with WYSIWYG editor
-
-## 🛎️ Support & Contact
-
-- Dedicated contact form (viewable in admin)
-- Complaint submission + response system
-- Ticket status tracking
-
-## 💻 Run Locally
-
-To run the project locally, follow these steps:
+## ▶️ Local Setup
 
 ```bash
 git clone https://github.com/your-repo/room-rental.git
 cd room-rental
-composer install / npm install
+composer install
+npm install
 php artisan migrate --seed
 php artisan serve
 ```
 
-## 🤝 Contributing
-Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request.
+## 🤝 Contribution
+
+We welcome pull requests! Please fork the repo and raise an issue or PR for improvements.
 
 ## 📞 Contact
-For any inquiries or support, please reach out via the contact form on the platform or directly through the repository.
+
+Submit queries via the Contact Us form on the website or reach us via GitHub Issues.
+
+---
+
+
+
+> Built with ❤️ for students and property owners
