@@ -9,7 +9,7 @@
             <div>
                 <h3 class="card-title">FAQ Management</h3>
             </div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFaqModal">➕ Add New FAQ</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addFaqModal">➕ Add New FAQ</button>
         </div>
         <div class="card-body table-responsive">
             <!-- Filters -->

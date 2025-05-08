@@ -27,7 +27,7 @@ p {
     font-family: "Raleway", sans-serif;
     font-weight: bold;
     position: relative;
-    margin: 30px 0 60px;
+    padding: 50px 0 50px 0;
 }
 .heading::after {
     content: "";
@@ -38,7 +38,7 @@ p {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     left: 0;
     right: 0;
-    bottom: -10px;
+    bottom: 45px;
 }
 
 /* Buttons */
@@ -49,8 +49,6 @@ p {
 }
 .btn-transparent:hover {
     background: var(--primary-dark);
-
-
 }
 .btn-rounded {
     border-radius: 70px;
@@ -60,6 +58,28 @@ p {
     font-size: 18px;
 }
 
+.submit-btn {
+    border: 2px solid #6366f1 !important;
+    color: #6366f1 !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.submit-btn:hover {
+    background-color: #6366f1 !important;
+    border: 2px solid #6366f1 !important;
+    color: #fff !important;
+}
+.fill-btn {
+    background-color: #6366f1 !important;
+    border: 2px solid #6366f1 !important;
+    color: #fff !important;
+    transition: all 0.3s ease-in-out;
+}
+.fill-btn:hover {
+    background-color: transparent !important;
+    border: 2px solid #6366f1 !important;
+    color: #6366f1 !important;
+}
 /* Animations */
 .animated {
     -webkit-animation-duration: 1.5s;
@@ -118,17 +138,17 @@ p {
     }
 }
 
-/* Carousel */
+/* Carousel
 .carousel,
 .carousel-item,
 .active {
     height: 100%;
-}
+} */
 #hero-carousel .carousel-inner {
     height: 100%;
     background: #000;
 }
-#hero-carousel  .carousel-caption {
+#hero-carousel .carousel-caption {
     padding-bottom: 80px;
 }
 #hero-carousel .carousel-item {
@@ -149,42 +169,208 @@ p {
     opacity: 0.6;
 }
 
-/* Room Cards */
-.room-card {
+/**
+ * Room Card
+ */
+.room-list-container {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    font-family: "Poppins", sans-serif;
+}
+
+/* General Card Styles */
+
+/* CSS */
+.button-69 {
+    background: linear-gradient(
+        to right,
+        #b8cbb8 0%,
+        #b8cbb8 0%,
+        #b465da 0%,
+        #cf6cc9 33%,
+        #ee609c 66%,
+        #ee609c 100%
+    );
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.button-69:hover {
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 1000px) {
+    .button-69 {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
+.room-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: "Poppins", sans-serif;
 }
+
 .room-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-.room-card .card-img-top {
-    height: 230px;
-    object-fit: cover;
+
+/* Card Title */
+.room-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #3b82f6;
+    /* Deep blue for the room title */
+    text-overflow: ellipsis;
+    /* Ellipsis for overflow text */
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
 }
+
+/* Room Location */
+.room-card .card-text.text-muted {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+    /* Dark gray for location text */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Price */
+.room-card .card-text.mb-1.text-primary {
+    font-size: 1rem;
+    color: #3b82f6;
+    /* Deep blue for price */
+}
+
+/* Amenities Icons */
+.room-card .amenity-icon {
+    font-size: 1rem;
+    color: #6b7280;
+    /* Light gray for icons */
+    margin-right: 8px;
+}
+
+/* Badge for Verified/Not Verified */
 .room-card .badge {
-    font-size: 0.85rem;
-    border-radius: 10px;
-    background-color: var(--primary-color);
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+}
+
+.room-card .verified-badge {
+    color: white;
+    padding: 0.3em 4.2px 1em;
+    border-radius: 6px;
+    position: absolute;
+    top: 22px;
+    font-size: 14px;
+    right: 22px;
+}
+
+.room-card .badge.bg-secondary {
+    background-color: #ef4444;
+    /* Red for Not Verified */
     color: white;
 }
-.room-card .card-body {
-    min-height: 160px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+
+/* Buttons (View Details and Like Button) */
+.room-card .btn-outline-primary {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.room-card .btn-outline-primary:hover {
+    background-color: #3b82f6;
+    color: white;
+}
 
+.room-card .btn-outline-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.room-card .btn-outline-danger:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Card Body Styling */
+.room-card .card-body {
+    padding: 1.25rem;
+    background-color: #f3f4f6;
+    /* Light gray background */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .room-card {
+        margin-bottom: 1rem;
+    }
+
+    .room-card .card-body {
+        padding: 1rem;
+    }
+}
+.room-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+    padding: 1em;
+    position: relative;
+}
+
+.room-card:hover {
+    transform: translateY(-4px);
+}
+
+.room-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.badge-verified {
+    background-color: #28a745;
+}
+
+.amenity-icon {
+    margin-right: 0.5rem;
+    font-size: 14px;
+}
+
+.like-btn {
+    transition: color 0.3s;
+}
+
+.like-btn:hover {
+    color: red;
+}
 
 /* Testimonials */
 #testimonials {
     padding: 50px 0;
     background: #f6f6f6;
     min-height: 100vh;
-
 }
 #testimonials .testimonial-col-center {
     margin: 0 auto;
@@ -233,7 +419,7 @@ p {
     background: none;
 }
 #testimonials .carousel .carousel-indicators {
-	bottom: -40px;
+    bottom: -40px;
 }
 #testimonials .carousel-control i {
     font-size: 68px;
@@ -260,7 +446,6 @@ p {
     background: var(--primary-dark);
     box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.2);
 }
-
 
 /* CTA Section */
 .cta-section {
@@ -365,7 +550,7 @@ p {
     .col-md-6 {
         margin-bottom: 20px;
     }
-    #hero-carousel  .carousel-caption {
+    #hero-carousel .carousel-caption {
         bottom: 10%;
     }
 }

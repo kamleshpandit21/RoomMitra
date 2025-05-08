@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @endpush
 @section('content')
-    <div class="container py-5">
+    <div class="container " style="padding: 160px 0 80px 0;">
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -62,21 +62,21 @@
                         </p>
 
                         <div class="mb-4 pb-2">
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
+                            <button type="button" class="btn btn-floating"><i
                                     class="fab fa-facebook-f fa-lg"></i></button>
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
+                            <button type="button" class="btn  btn-floating"><i
                                     class="fab fa-twitter fa-lg"></i></button>
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
-                                    class="fab fa-skype fa-lg"></i></button>
+                          
                         </div>
 
-                        <button type="button" class="btn btn-primary btn-rounded btn-lg" id="edit-profile">Edit
+                        <button type="button" class="btn submit-btn btn-lg" id="edit-profile">Edit
                             Profile</button>
 
 
                     </div>
                 </div>
             </div>
+          
 
             <!-- Main Tabs Section -->
             <div class="col-md-8 animate__animated animate__fadeInRight">
@@ -130,7 +130,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label>Permanent Address:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->permanent_address ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->permanent_address ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Locality:</label>
@@ -138,24 +138,24 @@
                             </div>
                             <div class="col-md-6">
                                 <label>City:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->city ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->city ?? 'N/A' }}</p>
                             </div>
 
 
 
                             <div class="col-md-6">
                                 <label>State:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->state ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->state ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label>Country:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->country ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->country ?? 'N/A' }}</p>
                             </div>
 
 
                             <div class="col-md-6">
                                 <label>Pincode:</label>
-                                <p class="form-control-plaintext">{{ $user->profile->pincode ?? '' }}</p>
+                                <p class="form-control-plaintext">{{ $user->profile->pincode ?? 'N/A' }}</p>
                             </div>
 
 
@@ -246,5 +246,11 @@
         editButton.addEventListener('click', function() {
             window.location.href = "{{ route('user.profile.edit') }}";
         });
+
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);   
+        })
     </script>
 @endpush

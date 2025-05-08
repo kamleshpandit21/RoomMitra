@@ -33,6 +33,7 @@ class AdminFaqController extends Controller
     public function store(Request $request)
     {
         //
+        return response()->json($request->all());
     }
 
     /**
@@ -59,7 +60,7 @@ class AdminFaqController extends Controller
     public function update(Request $request, $id)
     {
         $faq = Faq::findOrFail($id); // Find FAQ or throw 404 error
-    
+
         // Validation (optional but recommended)
         $validated = $request->validate([
             'question' => 'required|string',
@@ -67,17 +68,17 @@ class AdminFaqController extends Controller
             'category' => 'required|string',
             'is_active' => 'required|boolean',
         ]);
-    
+
         // Update FAQ data
         $faq->question = $request->question;
         $faq->answer = $request->answer;
         $faq->category = $request->category;
         $faq->is_active = $request->is_active == '1' ? true : false;
         $faq->save();
-    
+
         return response()->json($faq);
     }
-    
+
 
 
 
@@ -88,7 +89,7 @@ class AdminFaqController extends Controller
     {
         //
         $faq = Faq::findOrFail($id);
-         $faq->delete(); 
-         return response()->json(['message' => 'FAQ deleted successfully.']);
+        $faq->delete();
+        return response()->json(['message' => 'FAQ deleted successfully.']);
     }
 }

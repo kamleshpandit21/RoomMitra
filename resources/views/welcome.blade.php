@@ -17,8 +17,6 @@
                 <li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
             </ol>
 
-
-
             <!-- Wrapper for Slides -->
             <div class="carousel-inner">
                 @forelse ($rooms as $room)
@@ -93,35 +91,31 @@
 
     <div class="container my-5">
 
-        <h2 class="text-center fw-bold mb-4 heading" data-aos="fade-up">
+        <h2 class="display-5 fw-bold mb-3 heading" data-aos="fade-up">
             🏡 New Rooms
         </h2>
 
         <div class="row g-4">
             @forelse ($rooms as $room)
-                @php
-
-                    $firstImage = $room->images->first();
-                    $roomImage =
-                        $firstImage && $firstImage->image_url ? $firstImage->image_url : asset('default-room.jpg');
-                @endphp
-
-
                 <div class="col-md-6 col-lg-4">
-                    <div class="card room-card " data-aos="fade-up" data-aos-delay="100">
-                        <img src="{{ asset($roomImage) }}" class="card-img-top" alt="Room Image">
+                    <div class="card room-card shadow-lg rounded">
+                        <img src="{{ $room->images->first()->image_url ?? asset('default-room.jpg') }}"
+                            class="card-img-top rounded-top" alt="Room Image">
                         <div class="card-body">
-                            <h5 class="card-title">🏷 {{ $room->room_title }}</h5>
-                            <p class="card-text text-muted mb-1">
+                            <h5 class="card-title text-primary" title="{{ $room->room_title }}">
+                                🏷 {{ $room->room_title }}
+                            </h5>
+
+                            <p class="card-text text-muted mb-1" title="Location">
                                 <i class="fas fa-map-marker-alt me-1"></i>
                                 {{ ucwords($room->locality) }}, {{ ucwords($room->city) }}, {{ ucwords($room->state) }}
                             </p>
 
-                            <p class="card-text mb-1">
+                            <p class="card-text mb-1 text-primary" title="Price">
                                 <i class="fas fa-rupee-sign me-1"></i> {{ intval($room->room_price) }} / month
                             </p>
 
-                            <p class="card-text mb-2">
+                            <p class="card-text mb-2" title="Capacity and Bathroom">
                                 <i class="fas fa-user me-1"></i>
                                 {{ $room->room_capacity === 1 ? '1 Person' : $room->room_capacity . ' Sharing' }} |
                                 {{ ucwords($room->bathroom_type) }} Bathroom
@@ -143,7 +137,7 @@
                                     ];
                                 @endphp
 
-                                @foreach ($room->amenities->take(5) as $amenity)
+                                @foreach ($room->amenities as $amenity)
                                     <span class="text-muted small" title="{{ $amenity->amenity_name }}">
                                         <i
                                             class="fas {{ $icons[$amenity->amenity_name] ?? 'fa-concierge-bell' }} amenity-icon"></i>
@@ -153,8 +147,15 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-{{ $room->is_verified ? 'success' : 'secondary' }}">
-                                    {{ $room->is_verified ? 'Verified' : 'Not Verified' }}
+                                <span class="verified-badge">
+                                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="#10b981"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L3 6V11C3 16.52 6.84 21.74 12 23C17.16 21.74 21 16.52 21 11V6L12 2Z"
+                                            stroke="white" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M9 12.5L11.25 14.75L15 11" stroke="white" stroke-width="1.7"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
                                 </span>
 
                                 <small class="text-muted" title="{{ $room->created_at->format('d M Y, h:i A') }}">
@@ -165,9 +166,8 @@
                             <hr>
 
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('room.show', ['id' => $room->room_id]) }}"
-                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye me-1"></i> View Details
+                                <a href="{{ route('room.show', ['id' => $room->room_id]) }}" class="button-69">
+                                    View Room
                                 </a>
                                 <button class="btn btn-sm btn-outline-danger like-btn">
                                     <i class="far fa-heart"></i>
@@ -176,10 +176,11 @@
                         </div>
                     </div>
                 </div>
+
+
             @empty
                 <div class="col-12">
-                    <div class="alert alert-warning text-center " data-aos="fade-in"> <!-- Added animation here -->
-
+                    <div class="alert alert-warning text-center">
                         <strong>No rooms found.</strong>
                     </div>
                 </div>
@@ -286,18 +287,18 @@
                                         <g>
                                             <path
                                                 d="M149.203,41.104l-9.348,12.009c20.15,15.679,30.201,41.063,26.234,66.253c-2.906,18.484-12.838,34.73-27.964,45.748
-                                                                       c-15.131,11.012-33.64,15.488-52.124,12.567c-38.157-6.008-64.32-41.938-58.322-80.098C30.585,79.097,40.52,62.85,55.648,51.835
-                                                                       c13.208-9.615,28.991-14.233,45.086-13.317L87.579,52.319l9.759,9.313l20.766-21.801l0.005,0.008l9.303-9.769l-9.752-9.303
-                                                                       l-0.005,0.003L95.862,0l-9.31,9.769l14.2,13.525c-19.303-0.913-38.21,4.702-54.059,16.242
-                                                                       C28.28,52.943,16.19,72.717,12.65,95.221c-7.302,46.445,24.54,90.184,70.985,97.493c4.489,0.708,8.976,1.055,13.434,1.055
-                                                                       c17.89,0,35.273-5.623,50.011-16.356c18.415-13.409,30.503-33.183,34.043-55.682C185.952,91.077,173.72,60.181,149.203,41.104z" />
+                                                                           c-15.131,11.012-33.64,15.488-52.124,12.567c-38.157-6.008-64.32-41.938-58.322-80.098C30.585,79.097,40.52,62.85,55.648,51.835
+                                                                           c13.208-9.615,28.991-14.233,45.086-13.317L87.579,52.319l9.759,9.313l20.766-21.801l0.005,0.008l9.303-9.769l-9.752-9.303
+                                                                           l-0.005,0.003L95.862,0l-9.31,9.769l14.2,13.525c-19.303-0.913-38.21,4.702-54.059,16.242
+                                                                           C28.28,52.943,16.19,72.717,12.65,95.221c-7.302,46.445,24.54,90.184,70.985,97.493c4.489,0.708,8.976,1.055,13.434,1.055
+                                                                           c17.89,0,35.273-5.623,50.011-16.356c18.415-13.409,30.503-33.183,34.043-55.682C185.952,91.077,173.72,60.181,149.203,41.104z" />
                                             <path
                                                 d="M105.24,151.971v-0.003h0.001v-8.757c10.383-1.159,20.485-7.718,20.485-20.17c0-16.919-15.732-18.859-27.223-20.274
-                                                                       c-7.347-0.878-12.97-1.897-12.97-6.348c0-6.188,8.722-6.855,12.473-6.855c5.567,0,11.507,2.617,13.525,5.957l0.586,0.971
-                                                                       l11.542-5.341l-0.571-1.164c-4.301-8.793-12.009-11.337-17.85-12.364v-7.71H91.723v7.677
-                                                                       c-12.582,1.856-20.054,8.839-20.054,18.829c0,16.29,14.791,17.943,25.582,19.153c9.617,1.134,14.094,3.51,14.094,7.469
-                                                                       c0,7.563-10.474,8.154-13.685,8.154c-7.147,0-14.038-3.566-16.031-8.301l-0.495-1.169l-12.539,5.316l0.5,1.169
-                                                                       c3.713,8.691,11.725,14.137,22.63,15.425v8.336H105.24z" />
+                                                                           c-7.347-0.878-12.97-1.897-12.97-6.348c0-6.188,8.722-6.855,12.473-6.855c5.567,0,11.507,2.617,13.525,5.957l0.586,0.971
+                                                                           l11.542-5.341l-0.571-1.164c-4.301-8.793-12.009-11.337-17.85-12.364v-7.71H91.723v7.677
+                                                                           c-12.582,1.856-20.054,8.839-20.054,18.829c0,16.29,14.791,17.943,25.582,19.153c9.617,1.134,14.094,3.51,14.094,7.469
+                                                                           c0,7.563-10.474,8.154-13.685,8.154c-7.147,0-14.038-3.566-16.031-8.301l-0.495-1.169l-12.539,5.316l0.5,1.169
+                                                                           c3.713,8.691,11.725,14.137,22.63,15.425v8.336H105.24z" />
                                         </g>
                                     </g>
                                 </g>
@@ -316,28 +317,28 @@
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 viewBox="0 0 491.52 491.52" xml:space="preserve">
                                 <path style="fill:#3A556A;" d="M470.097,336.482h-26.81V219.955c0-106.379-88.612-192.926-197.528-192.926
-                                                           S48.233,113.576,48.233,219.955v116.527h-26.81V219.955c0-121.277,100.635-219.943,224.335-219.943
-                                                           c123.699,0,224.339,98.666,224.339,219.943V336.482z" />
+                                                               S48.233,113.576,48.233,219.955v116.527h-26.81V219.955c0-121.277,100.635-219.943,224.335-219.943
+                                                               c123.699,0,224.339,98.666,224.339,219.943V336.482z" />
                                 <path style="fill:#EBF0F3;" d="M350.194,273.835v108.747c0,23.478,18.887,42.51,42.185,42.51V231.325
-                                                           C369.081,231.325,350.194,250.357,350.194,273.835z" />
+                                                               C369.081,231.325,350.194,250.357,350.194,273.835z" />
                                 <path style="fill:#E1E6E9;" d="M392.379,231.325L392.379,231.325v193.768l0,0c23.298,0,42.185-19.033,42.185-42.51V273.835
-                                                           C434.564,250.357,415.677,231.325,392.379,231.325z" />
+                                                               C434.564,250.357,415.677,231.325,392.379,231.325z" />
                                 <path style="fill:#64798A;" d="M434.564,270.813v114.79c31.456,0,56.956-25.697,56.956-57.395
-                                                           C491.52,296.51,466.02,270.813,434.564,270.813z" />
+                                                               C491.52,296.51,466.02,270.813,434.564,270.813z" />
                                 <path style="fill:#EBF0F3;" d="M141.326,273.835v108.747c0,23.478-18.887,42.51-42.185,42.51V231.325
-                                                           C122.439,231.325,141.326,250.357,141.326,273.835z" />
+                                                               C122.439,231.325,141.326,250.357,141.326,273.835z" />
                                 <path style="fill:#E1E6E9;" d="M99.141,231.325L99.141,231.325v193.768l0,0c-23.298,0-42.185-19.033-42.185-42.51V273.835
-                                                           C56.956,250.357,75.843,231.325,99.141,231.325z" />
+                                                               C56.956,250.357,75.843,231.325,99.141,231.325z" />
                                 <g>
                                     <path style="fill:#64798A;"
                                         d="M56.956,270.813v114.79C25.5,385.604,0,359.907,0,328.209C0,296.51,25.5,270.813,56.956,270.813z" />
                                     <path style="fill:#64798A;" d="M267.88,481.232l-0.227-9.006c111.6-2.849,166.686-94.998,167.228-95.93l7.706,4.573
-                                                               C442.015,381.836,384.38,478.259,267.88,481.232z" />
+                                                                   C442.015,381.836,384.38,478.259,267.88,481.232z" />
                                 </g>
                                 <g>
                                     <path style="fill:#3A556A;" d="M472.701,347.484c4.184-8.686,0.589-19.143-8.029-23.36c-8.62-4.217-18.998-0.594-23.181,8.09
-                                                               c-3.076,6.384-1.921,13.705,2.316,18.823l-13.581,28.19l12.785,6.255l13.581-28.19
-                                                               C463.201,357.481,469.626,353.868,472.701,347.484z" />
+                                                                   c-3.076,6.384-1.921,13.705,2.316,18.823l-13.581,28.19l12.785,6.255l13.581-28.19
+                                                                   C463.201,357.481,469.626,353.868,472.701,347.484z" />
                                     <ellipse style="fill:#3A556A;" cx="260.664" cy="475.712" rx="22.989"
                                         ry="15.795" />
                                 </g>
@@ -360,7 +361,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 text-center">
-                    <h2 class="fw-bold mb-4 heading">Testimonials</h2>
+                    <h2 class="display-5 fw-bold mb-3 heading">Testimonials</h2>
                     <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel">
                         <!-- Indicators -->
                         <div class="carousel-indicators">
@@ -420,21 +421,9 @@
 
 
 
-
-
-    <section class=" py-5  text-center" data-aos="fade-up" id="cta">
-        <div class="container">
-            <h2 class="display-5 fw-bold mb-3">🚀 Start Finding Your Room Now</h2>
-            <p class="mb-4 fs-5">
-                Join thousands of students & verified room owners today!
-            </p>
-
-        </div>
-    </section>
-
     <section class="py-5 " id="stats">
         <div class="container text-center">
-            <h2 class="mb-4 fw-bold">Our Growing Community</h2>
+            <h2 class="display-5 fw-bold mb-3 heading">Our Growing Community</h2>
             <div class="row g-4">
                 <div class="col-md-3 col-6">
                     <div class="p-4 bg-white rounded shadow-sm">

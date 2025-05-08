@@ -4,7 +4,13 @@
 
 @section('content')
 
-    <div class="container py-5">
+    <div class="container "  style="padding: 160px 0 80px 0;">
+        <section class="text-center bg-light">
+            <div class="container">
+                <h1 class="display-5 fw-bold  heading">Edit Profile</h1>
+         
+            </div>
+        </section>
         <div class="row">
 
             @if ($errors->any())
@@ -54,35 +60,18 @@
                         <p class="small text-muted">Role: <span class="fw-bold">{{ $user->role ?? 'N/A' }}</span></p>
 
                         <div class="mb-4 pb-2">
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
+                            <button type="button" class="btn  btn-floating"><i
                                     class="fab fa-facebook-f fa-lg"></i></button>
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
+                            <button type="button" class="btn  btn-floating"><i
                                     class="fab fa-twitter fa-lg"></i></button>
-                            <button type="button" class="btn btn-outline-primary btn-floating"><i
+                            <button type="button" class="btn  btn-floating"><i
                                     class="fab fa-skype fa-lg"></i></button>
                         </div>
 
-                        <button type="button" class="btn btn-primary btn-rounded btn-lg" id="upload_profile_picture">Upload
+                        <button type="button" class="btn submit-btn btn-lg" id="upload_profile_picture">Upload
                             Photo</button>
 
-                        <div class="d-flex justify-content-between text-center mt-5 mb-2">
-                            <div>
-                                <p class="mb-2 h5">8471</p>
-                                <p class="text-muted mb-0">Wallets Balance</p>
-                            </div>
-                            <div class="px-3">
-                                <p class="mb-2 h5">8512</p>
-                                <p class="text-muted mb-0">Income amounts</p>
-                            </div>
-                            <div>
-                                <p class="mb-2 h5">4751</p>
-                                <p class="text-muted mb-0">
-                                    @session('success')
-                                        {{ session('success') }}
-                                    @endsession
-                                </p>
-                            </div>
-                        </div>
+                      
                     </div>
                 </div>
             </div>
@@ -114,12 +103,11 @@
 
                         <!-- Personal Tab -->
                         <div class="tab-pane fade show active" id="personal" role="tabpanel">
-                            <h5 class="mb-3">Edit Personal Details</h5>
+                            
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label>Full Name:</label>
-                                    <input type="text" class="form-control" name="full_name"
-                                        value="{{ $user->full_name ?? 'N/A' }}" />
+                                    <label class="fw-bold">Full Name:</label>
+                                    <input type="text" class="form-control" name="full_name" value="{{ $user->full_name ?? '' }}" placeholder="{{ $user->full_name ?? 'Enter Full Name' }}" />
                                     <small class="text-muted">
                                         @error('full_name')
                                             {{ $message }}
@@ -128,9 +116,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label>Phone:</label>
+                                    <label class="fw-bold">Phone:</label>
                                     <input type="text" class="form-control" name="phone"
-                                        value="{{ $user->phone ?? 'N/A' }}" />
+                                        value="{{ $user->phone ?? '' }}" placeholder="{{ $user->phone ?? 'Enter Phone Number' }}"/>
                                     <small class="text-muted">
                                         @error('phone')
                                             {{ $message }}
@@ -140,9 +128,10 @@
 
 
                                 <div class="col-md-6">
-                                    <label>Date of Birth:</label>
+                                    <label class="fw-bold">Date of Birth:</label>
                                     <input type="date" class="form-control" name="date_of_birth"
-                                        value="{{ $user->profile->date_of_birth ?? '' }}" />
+                                    value="{{ optional($user->profile->date_of_birth)->format('Y-m-d') }}"
+                                    placeholder="{{ $user->profile->date_of_birth ?? 'Enter Date of Birth' }}"/>
                                     <small class="text-muted">
                                         @error('date_of_birth')
                                             {{ $message }}
@@ -152,7 +141,7 @@
 
 
                                 <div class="col-md-6">
-                                    <label>Gender:</label>
+                                    <label class="fw-bold">Gender:</label>
                                     <select class="form-select" name="gender">
                                         <option value=""
                                             {{ old('gender', $user->profile->gender) == null ? 'selected' : 'N/A' }}>Select
@@ -178,8 +167,8 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                    <label>Current Address:</label>
-                                    <textarea class="form-control" name="address" rows="2">{{ $user->profile->current_address ?? '' }}</textarea>
+                                    <label class="fw-bold">Current Address:</label>
+                                    <textarea class="form-control" name="address" rows="2" placeholder="{{ $user->profile->current_address ?? 'Enter Current Address' }}">{{ $user->profile->current_address ?? '' }}</textarea>
                                     <small class="text-muted mt-1">
                                         @error('address')
                                             {{ $message }}
@@ -187,39 +176,39 @@
                                     </small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Permanent Address:</label>
-                                    <textarea class="form-control" name="permanent_address">{{ $user->profile->permanent_address ?? '' }}</textarea>
+                                    <label class="fw-bold">Permanent Address:</label>
+                                    <textarea class="form-control" name="permanent_address" placeholder="{{ $user->profile->permanent_address ?? 'Enter Permanent Address' }}">{{ $user->profile->permanent_address ?? '' }}</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Locality:</label>
-                                    <input type="text" class="form-control" name="locality" value="{{ $user->profile->locality ?? '' }}">
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label>Country:</label>
-                                    <input type="text" class="form-control" name="country" value="{{ $user->profile->country ?? '' }}">
+                                    <label class="fw-bold">Locality:</label>
+                                    <input type="text" class="form-control" name="locality" placeholder="{{ $user->profile->locality ?? 'Enter Locality' }}" value="{{ $user->profile->locality ?? '' }}">
                                 </div>
                                 
                                 <div class="col-md-6">
-                                    <label>State:</label>
-                                    <input type="text" class="form-control" name="state" value="{{ $user->profile->state ?? '' }}">
+                                    <label class="fw-bold">Country:</label>
+                                    <input type="text" class="form-control" name="country" placeholder="{{ $user->profile->country ?? 'Enter Country' }}" value="{{ $user->profile->country ?? '' }}">
                                 </div>
                                 
                                 <div class="col-md-6">
-                                    <label>City:</label>
-                                    <input type="text" class="form-control" name="city" value="{{ $user->profile->city ?? '' }}">
+                                    <label class="fw-bold">State:</label>
+                                    <input type="text" class="form-control" name="state" placeholder="{{ $user->profile->state ?? 'Enter State' }}" value="{{ $user->profile->state ?? '' }}">
                                 </div>
                                 
                                 <div class="col-md-6">
-                                    <label>Pincode:</label>
-                                    <input type="text" class="form-control" name="pincode" value="{{ $user->profile->pincode ?? '' }}">
+                                    <label class="fw-bold">City:</label>
+                                    <input type="text" class="form-control" name="city" placeholder="{{ $user->profile->city ?? 'Enter City' }}" value="{{ $user->profile->city ?? '' }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="fw-bold">Pincode:</label>
+                                    <input type="text" class="form-control" name="pincode" placeholder="{{ $user->profile->pincode ?? 'Enter Pincode' }}" value="{{ $user->profile->pincode ?? '' }}">
                                 </div>
                                 
 
                                 <div class="col-md-12">
-                                    <label>Aadhar Number:</label>
+                                    <label class="fw-bold">Aadhar Number:</label>
                                     <input type="text" class="form-control" name="aadhar"
-                                        value="{{ $user->profile->aadhar ?? '' }}" />
+                                        value="{{ $user->profile->aadhar ?? '' }}" placeholder="{{ $user->profile->aadhar ?? 'Enter Aadhar Number' }}"/>
                                     <small class="text-muted mt-1">
                                         @error('aadhar')
                                             {{ $message }}
@@ -235,9 +224,9 @@
                             <h5 class="mb-3">Edit Education Info</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label>College:</label>
+                                    <label class="fw-bold">College:</label>
                                     <input type="text" class="form-control" name="college"
-                                        value="{{ $user->profile->college_name ?? 'N/A' }}" />
+                                        value="{{ $user->profile->college_name ?? '' }}" placeholder="{{ $user->profile->college_name ?? 'Enter College Name' }}"/>
 
                                     <small class="text-muted mt-1">
                                         @error('college')
@@ -247,9 +236,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label>Course:</label>
+                                    <label class="fw-bold">Course:</label>
                                     <input type="text" class="form-control" name="course"
-                                        value="{{ $user->profile->course ?? 'N/A' }}" />
+                                        value="{{ $user->profile->course ?? '' }}" placeholder="{{ $user->profile->course ?? 'Enter Course' }}" />
                                     <small class="text-muted mt-1">
                                         @error('course')
                                             {{ $message }}
@@ -258,8 +247,8 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label>Year:</label>
-                                    <input type="text" class="form-control" name="study_year" value="{{ $user->profile->study_year ?? 'N/A' }}" />
+                                    <label class="fw-bold">Year:</label>
+                                    <input type="text" class="form-control" name="study_year" placeholder="{{ $user->profile->study_year ?? 'Enter Year' }}" value="{{ $user->profile->study_year ?? '' }}" />
                                     <small class="text-muted mt-1">
                                         @error('year')
                                             {{ $message }}
@@ -268,8 +257,8 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label>ID Card:</label>
-                                    <input type="file" class="form-control" name="id_card" />
+                                    <label class="fw-bold">ID Card:</label>
+                                    <input type="file" class="form-control" name="id_card"   />
                                 </div>
                             </div>
                         </div>
@@ -278,8 +267,8 @@
                         <div class="tab-pane fade" id="bio" role="tabpanel">
                             <h5 class="mb-3">Edit Bio & Social Links</h5>
                             <div class="mb-3">
-                                <label>About Me:</label>
-                                <textarea class="form-control" name="bio" rows="3">{{ $user->profile->bio ?? 'N/A' }}</textarea>
+                                <label class="fw-bold">About Me:</label>
+                                <textarea class="form-control" name="bio" rows="3" placeholder="{{ $user->profile->bio ?? 'Enter Bio' }}">{{ $user->profile->bio ?? '' }}</textarea>
                             </div>
                            
                             @php
@@ -287,17 +276,17 @@
                             @endphp
 
                             <div class="mb-3">
-                                <label>Facebook:</label>
+                                <label class="fw-bold">Facebook:</label>
                                 <input type="url" class="form-control" name="social_links[facebook]"
                                     value="{{ $social_links['facebook'] ?? '' }}" placeholder="https://facebook.com/yourname" />
                             </div>
                             <div class="mb-3">
-                                <label>Twitter:</label>
+                                <label class="fw-bold">Twitter:</label>
                                 <input type="url" class="form-control" name="social_links[twitter]"
                                     value="{{ $social_links['twitter'] ?? '' }}" placeholder="https://twitter.com/yourhandle" />
                             </div>
                             <div class="mb-3">
-                                <label>LinkedIn:</label>
+                                <label class="fw-bold">LinkedIn:</label>
                                 <input type="url" class="form-control" name="social_links[linkedin]"
                                     value="{{ $social_links['linkedin'] ?? '' }}"
                                     placeholder="https://linkedin.com/in/yourprofile" />
@@ -313,7 +302,7 @@
 
                     <!-- Submit -->
                     <div class="text-end mt-4">
-                        <button class="btn btn-success btn-lg" type="submit">Save All Changes</button>
+                        <button class="btn submit-btn btn-lg" type="submit">Save All Changes</button>
                     </div>
                 </form>
             </div>

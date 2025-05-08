@@ -9,6 +9,7 @@
             padding: 10px;
             text-align: center;
             min-width: 120px;
+            background: #f9f9f9;
         }
 
         .badge-free {
@@ -31,7 +32,7 @@
 
         .sticky-action {
             position: sticky;
-            top: 90px;
+            top: 160px;
             z-index: 1000;
             background: #fff;
             padding: 15px;
@@ -39,20 +40,28 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .amenity-card {
-            padding: 10px;
-            border: 1px solid #e2e2e2;
-            border-radius: 8px;
-            width: 120px;
-            background: #f9f9f9;
+        @media (max-width: 768px) {
+            .sticky-action {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+
+        .room-details-container {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 @endpush
 
 @section('content')
+    <div class="container room-details-container" style="padding: 160px 0 80px 0;">
+        <section class="text-center bg-light">
+            <div class="container">
+                <h1 class="display-5 fw-bold  heading">{{ $room->room_title }}</h1>
 
-    <div class="container py-4">
-        <!-- Breadcrumb -->
+            </div>
+        </section>
+
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
@@ -61,203 +70,157 @@
             </ol>
         </nav>
 
-        <!-- Header -->
-        <div class="mb-4">
-            <h2 class="fw-bold">{{ $room->room_title }} <span class="badge bg-success"><i class="fa fa-check-circle"></i>
-                    {{ $room->status }} </span></h2>
-            <p><i class="fa fa-map-marker-alt text-danger"></i> {{ $room->locality }}, {{ $room->city }}</p>
-        </div>
-
         <div class="row g-4">
-            <!-- Left Column -->
             <div class="col-lg-8">
                 <!-- Image Gallery -->
                 <div id="roomGallery" class="carousel slide mb-4" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="{{ asset($room->images->first()->image_url) }}" class="d-block w-100" alt="..."
-                                height="400px">
-                        </div>
-                        @foreach ($room->images->skip(1) as $image)
-                            <div class="carousel-item">
+                        @foreach ($room->images as $index => $image)
+                            <div class="carousel-item @if ($index == 0) active @endif">
                                 <img src="{{ asset($image->image_url) }}" class="d-block w-100" alt="Room Image"
-                                    height="400px">
+                                    height="400">
                             </div>
                         @endforeach
-
-
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="carousel-control-prev-icon"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#roomGallery" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="carousel-control-next-icon"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
 
-                <!-- Basic Info -->
+                <!-- Room Info -->
                 <div class="card p-3 mb-4">
                     <h5><i class="fas fa-info-circle me-2"></i> Room Information</h5>
-                    <p><strong>Room No.:</strong> {{ $room->room_number }}</p>
+                    <p><strong>No.:</strong> {{ $room->room_number }}</p>
                     <p><strong>Capacity:</strong> {{ $room->room_capacity }} People</p>
-                    <p><strong>Total Beds:</strong> {{ $room->total_beds }} Beds</p>
+                    <p><strong>Total Beds:</strong> {{ $room->total_beds }}</p>
                     <p><strong>Description:</strong> {{ $room->room_description }}</p>
+
                 </div>
 
                 <!-- Specifications -->
                 <div class="card p-3 mb-4">
                     <h5><i class="fas fa-cogs me-2"></i> Specifications</h5>
                     <div class="row g-3">
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-bath me-2"></i> <strong>Bathroom Type:</strong>
-                            {{ ucfirst($room->bathroom_type) }}
-                        </div>
-
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-utensils me-2"></i> <strong>Kitchen Type:</strong>
-                            {{ ucfirst($room->kitchen_type) }}
-                        </div>
-
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-building me-2"></i> <strong>Floor:</strong>
-                            @if ($room->floor == 1)
-                                Ground Floor
-                            @elseif ($room->floor == 2)
-                                1st Floor
-                            @elseif ($room->floor == 3)
-                                2nd Floor
-                            @elseif ($room->floor == 4)
-                                3rd Floor
-                            @else
-                                {{ $room->floor }}th Floor
-                            @endif
-                        </div>
-
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-elevator me-2"></i> <strong>Lift:</strong>
-                            {{ $room->lift ? 'Available' : 'Not Available' }}
-                        </div>
-
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-car me-2"></i> <strong>Parking:</strong>
-                            {{ $room->parking ? 'Available' : 'Not Available' }}
-                        </div>
-
-                        <div class="col-md-6 spec-item">
-                            <i class="fa fa-bolt me-2"></i> <strong>Light:</strong> {{ ucfirst($room->light ?? 'Normal') }}
-                        </div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-bath me-2"></i> <strong>Bathroom:</strong>
+                            {{ ucfirst($room->bathroom_type) }}</div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-utensils me-2"></i> <strong>Kitchen:</strong>
+                            {{ ucfirst($room->kitchen_type) }}</div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-building me-2"></i> <strong>Floor:</strong>
+                            {{ $room->floor }}</div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-elevator me-2"></i> <strong>Lift:</strong>
+                            {{ $room->lift ? 'Available' : 'Not Available' }}</div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-car me-2"></i> <strong>Parking:</strong>
+                            {{ $room->parking ? 'Available' : 'Not Available' }}</div>
+                        <div class="col-md-6 spec-item"><i class="fa fa-bolt me-2"></i> <strong>Light:</strong>
+                            {{ ucfirst($room->light ?? 'Normal') }}</div>
                     </div>
                 </div>
 
+                <!-- Amenities -->
                 <div class="card p-3 mb-4">
                     <h5>Amenities</h5>
                     <div class="d-flex flex-wrap gap-3">
-                        @php
-                            $icons = [
-                                'WiFi' => 'fa-wifi',
-                                'wifi' => 'fa-wifi',
-                                'Laundry' => 'fa-tshirt',
-                                'laundry' => 'fa-tshirt',
-                                'RO Water' => 'fa-tint',
-                                'ro' => 'fa-tint',
-                                'Fridge' => 'fa-snowflake',
-                                'TV' => 'fa-tv',
-                                'tv' => 'fa-tv',
-                                'Microwave' => 'fa-mitten', // Use 'fa-microwave' if you have Font Awesome Pro
-                            ];
-                        @endphp
-
-                        @forelse ($room->amenities as $amenity)
-                            @php
-                                $iconClass = $icons[$amenity->amenity_name] ?? 'fa-concierge-bell';
-                            @endphp
-
-                            <div class="amenity-card text-center mb-3">
-                                <i class="fas {{ $iconClass }} fa-lg mb-1"></i>
+                        @foreach ($room->amenities as $amenity)
+                            <div class="amenity-card">
+                                <i
+                                    class="fas fa-{{ $icons[strtolower($amenity->amenity_name)] ?? 'concierge-bell' }} fa-lg mb-1"></i>
                                 <div>{{ $amenity->amenity_name }}</div>
                                 <div
                                     class="badge bg-{{ $amenity->status == 'free' ? 'success' : ($amenity->status == 'paid' ? 'warning' : 'secondary') }}">
-                                    {{ ucfirst($amenity->status) }}
-                                </div>
-
+                                    {{ ucfirst($amenity->status) }}</div>
                                 @if ($amenity->status == 'paid')
                                     <div>₹{{ number_format($amenity->price) }}/month</div>
                                 @endif
                             </div>
-                        @empty
-                            <p>No amenities listed.</p>
-                        @endforelse
-
+                        @endforeach
                     </div>
                 </div>
 
-
                 <!-- Location -->
                 <div class="card p-3 mb-4">
-                    <h5>Location</h5>
-                    <p>{{ $room->address_line1 }}</p>
-                    <p>{{ $room->address_line2 }}</p>
+                    <h4>Location</h4>
+                    <p><strong>Address Line 1:</strong> {{ $room->address_line1 }}</p>
+                    <p><strong>Address Line 2:</strong> {{ $room->address_line2 }}</p>
+                    <p><strong>Locality:</strong> {{ $room->locality }}</p>
+                    <p><strong>Country:</strong> {{ $room->country }}</p>
                     <p><strong>City:</strong> {{ $room->city }}</p>
                     <p><strong>State:</strong> {{ $room->state }}</p>
                     <p><strong>Pincode:</strong> {{ $room->pincode }}</p>
-                    <p><strong>Landmarks:</strong>{{ $room->nearby_landmarks }}</p>
-                    <iframe src="https://maps.google.com/maps?q=Salt%20Lake,%20Kolkata&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                    <p><strong>Nearby Landmarks:</strong> {{ $room->nearby_landmarks }}</p>
+                    <iframe
+                        src="https://maps.google.com/maps?q={{ urlencode($room->city) }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
                         width="100%" height="300" frameborder="0" style="border:0;"></iframe>
                 </div>
 
-                <!-- Timings & Restrictions -->
+                <!-- Reviews -->
+                <div class="card p-3 mb-4">
+                    <h5>Reviews</h5>
+                    @forelse ($room->reviews as $review)
+                        <div class="mb-2">
+                            <strong>{{ $review->user->name }}</strong> <span class="text-warning">
+                                @for ($i = 0; $i < $review->rating; $i++)
+                                    <i class="fa fa-star"></i>
+                                @endfor
+                            </span>
+                            <p>{{ $review->comment }}</p>
+                        </div>
+                    @empty
+                        <p>No reviews yet.</p>
+                    @endforelse
+                </div>
+
+                <!-- Timings -->
                 <div class="card p-3 mb-4">
                     <h5>Timings & Restrictions</h5>
-                    <p>
-                        <strong>Entry Time:</strong> {{ date('h:i A', strtotime($room->entry_time)) }} |
-                        <strong>Exit Time:</strong> {{ date('h:i A', strtotime($room->exit_time)) }}
-                    </p>
-                    <p><strong>Restrictions:</strong>{{ $room->restrictions }}</p>
+                    <p><strong>Entry:</strong> {{ date('h:i A', strtotime($room->entry_time)) }} | <strong>Exit:</strong>
+                        {{ date('h:i A', strtotime($room->exit_time)) }}</p>
+                    <p><strong>Restrictions:</strong> {{ $room->restrictions }}</p>
                 </div>
             </div>
 
             <!-- Right Column -->
             <div class="col-lg-4">
                 <div class="sticky-action">
-                    <!-- Pricing -->
                     <div class="card p-3 mb-4">
                         <h5>Pricing</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Room Price: ₹{{ intval($room->room_price) }}/month</li>
-
-                            <li class="list-group-item">Security Deposit: ₹{{ intval($room->security_deposit) }}/month</li>
-                            @forelse ($room->sharing_prices as $key => $price)
+                        <ul class="list-group">
+                            <li class="list-group-item">Price: ₹{{ intval($room->room_price) }}/month</li>
+                            <li class="list-group-item">Security Deposit: ₹{{ intval($room->security_deposit) }}</li>
+                            @foreach ($room->sharing_prices as $key => $price)
                                 <li class="list-group-item">{{ ucwords($key) }}: ₹{{ intval($price) }}/month</li>
-
-                            @empty
-                            @endforelse
+                            @endforeach
+                            <li class="list-group-item">Minimun Stay: {{ $room->min_stay_months }} month</li>
                         </ul>
                     </div>
-
-                    <!-- Owner Info -->
                     <div class="card p-3 mb-4">
-                       
                         <h5>Owner Info</h5>
                         <p><strong>Name:</strong> {{ ucwords($room->owner->full_name) }}</p>
                         <p><strong>Contact:</strong> {{ substr($room->owner->phone, 0, 4) . '********' }}</p>
-
                         <p><strong>Rating:</strong> <span class="text-warning"><i class="fa fa-star"></i> 4.5</span></p>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="d-grid gap-2">
-                        {{-- <button class="btn btn-outline-primary"><i class="fa fa-shopping-cart"></i> Add to Cart</button> --}}
-                        <button id="bookNow" class="btn btn-primary"><i class="fa fa-calendar-check"></i> Book
-                            Now</button>
-                        {{-- <button class="btn btn-light"><i class="fa fa-heart"></i> Add to Wishlist</button> --}}
+                    <div class="card p-3 mb-4">
+                       
+                        <form action="{{ route('user.booking.checkout', $room->room_id) }}" method="GET" id="bookingForm">
+                       
+                    
+                            <button type="submit" class="btn submit-btn w-100"><i class="fa fa-calendar-check"></i> Book Now</button>
+                        </form>
                     </div>
+                    
+
+
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
 
 @push('scripts')
     <script>
@@ -265,4 +228,6 @@
             window.location.href = "{{ route('user.booking.checkout', $room->room_id) }}";
         });
     </script>
+ 
+  
 @endpush

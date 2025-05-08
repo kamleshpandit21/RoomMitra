@@ -24,7 +24,7 @@ class AuthController extends Controller
             if ($user->role === 'room_owner') {
                 return redirect()->route('owner.dashboard'); 
             }
-            return redirect()->route('user.dashboard');
+            return redirect()->route('welcome');
         }
 
         return view('auth.login');

@@ -89,7 +89,7 @@ class SocialAuthController extends Controller
 
                 ;
             } else {
-                return redirect()->route('user.dashboard')->with('success', "You have successfully logged in with $provider.");
+                return redirect()->route('home')->with('success', "You have successfully logged in with $provider.");
             }
 
 

@@ -32,10 +32,13 @@ class TestimonialController extends Controller
     public function store(Request $request)
     {
         //
+        return response()->json($request);
     }
 
     /**
+     * ========================================
      * Display the specified resource.
+     * ========================================
      */
     public function show(string $id)
     {

@@ -10,6 +10,10 @@
             background-color: #f8f9fa;
         }
 
+        .Billing-container {
+            font-family: 'Poppins', sans-serif;
+        }
+
         .booking-card {
             border: 1px solid #e0e0e0;
             border-radius: 10px;
@@ -19,9 +23,9 @@
             transition: transform 0.2s;
         }
 
-        .booking-card:hover {
-            transform: scale(1.02);
-        }
+        /* .booking-card:hover {
+                                                                transform: scale(1.02);
+                                                            } */
 
         .free-tag {
             color: green;
@@ -59,61 +63,68 @@
         }
     @endphp
 
-    <div class="container py-5">
-        <h2 class="mb-4 text-center">Confirm Your Booking</h2>
-        <div class="row g-4">
+    <div class="container" style="padding: 160px 0 80px 0;">
+        <h2 class="display-5 fw-bold  heading">Confirm Your Booking</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('rooms') }}">Rooms</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $room->room_title }}</li>
+            </ol>
+        </nav>
+        <div class="row g-4  Billing-container">
             <!-- Room Summary -->
             <div class="col-md-5">
                 <div class="booking-card">
-                    <h5>Room Summary</h5>
-
-                    <div id="roomGallery" class="carousel slide mb-4" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{{ asset($room->images->first()->image_url) }}" class="d-block w-100"
-                                    alt="..." height="400px">
-                            </div>
-                            @foreach ($room->images->skip(1) as $image)
-                                <div class="carousel-item">
-                                    <img src="{{ asset($image->image_url) }}" class="d-block w-100" alt="Room Image"
-                                        height="400px">
-                                </div>
-                            @endforeach
+                    <h3 class="mb-3 fw-bold ">Room Summary</h3>
 
 
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#roomGallery"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+
+                    <div class="mb-3">
+                        <label>Stay Months</label>
+                        <select name="months" class="form-select" id="stayMonths">
+                            @for ($i = $room->min_stay_months; $i <= 12; $i++)
+                                <option value="{{ $i }}">{{ $i }} month{{ $i > 1 ? 's' : '' }}
+                                </option>
+                            @endfor
+                        </select>
                     </div>
-                    <p><strong>Title:</strong> {{ $room->room_title }}</p>
-                    <p><strong>Location:</strong>{{ $room->city }}, {{ $room->state }}</p>
-                    <p><strong>Room Capacity:</strong> {{ $room->room_capacity }}</p>
-                    <input type="date" class="form-control mb-2" />
-                    <label><strong>Duration:</strong></label>
-                    <select class="form-select mb-2">
-                        <option>1 Month</option>
-                        <option>6 Months</option>
-                        <option>Custom</option>
-                    </select>
-                    <label><strong>Selected Amenities:</strong></label>
-                    <ul class="list-unstyled">
-                        @foreach ($room->amenities as $amenity)
-                            <li>{{ $amenity->amenity_name }}</li>
-                        @endforeach
-                    </ul>
+
+                    <div class="mb-3">
+                        <label>Occupancy</label>
+                        <select name="occupancy" class="form-select" id="occupancySelect">
+                            @for ($i = 1; $i <= $room->room_capacity; $i++)
+                                <option value="{{ $i }}">{{ $i }} Person{{ $i > 1 ? 's' : '' }}
+                                </option>
+                            @endfor
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="checkinDate">Check-in Date</label>
+                        <input type="text" id="checkinDate" name="checkin_date" class="form-control"
+                            placeholder="DD-MM-YYYY" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="checkoutDate">Checkout Date</label>
+                        <input type="text" id="checkoutDate" name="checkout_date" class="form-control"
+                            placeholder="DD-MM-YYYY" readonly>
+                    </div>
+
+
+
                 </div>
             </div>
 
             <!-- Billing & User Info -->
             <div class="col-md-7">
+
+
+
+
+
+
                 @php
                     $baseRent = intval($room->room_price);
                     $securityDeposit = intval($room->security_deposit);
@@ -126,14 +137,12 @@
                         }
                     }
 
-                    // Final Total
-                    $total = $baseRent + $securityDeposit + $amenitiesTotal;
                 @endphp
 
                 <!-- Pricing Breakdown -->
-                <div class="booking-card">
+                <div class="booking-card ">
                     <h5>Billing Details</h5>
-                    <table class="table table-sm">
+                    <table class="table table-sm table-borderless">
                         <tbody>
                             <tr>
                                 <td>Base Rent</td>
@@ -157,210 +166,25 @@
 
                             @empty
                             @endforelse
-                            <tr>
-                                @if ($amenitiesTotal > 0)
-                            <tr>
-                                <td>Amenity Charges</td>
-                                <td>₹ {{ $amenitiesTotal }} / month</td>
-                            </tr>
+
+                            @if ($amenitiesTotal > 0)
+                                <tr>
+                                    <td>Total Amenity Charges</td>
+                                    <td>₹ {{ $amenitiesTotal }} / month</td>
+                                </tr>
                             @endif
 
-                            <td><strong>Total</strong></td>
-                            <td><strong>₹ {{ $total }}</strong></td>
+                            <tr class="border-top border-bottom">
+                                <td><strong>Total</strong></td>
+                                <td><strong id="totalAmount">₹ 0</strong></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
-                <!-- User Info -->
-                <div class="booking-card">
-                    <h5>Your Information</h5>
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <label class="form-label">Name:</label>
-                            <p class="form-control-plaintext">{{ $user->full_name ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email:</label>
-                            <p class="form-control-plaintext">{{ $user->email ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Phone:</label>
-                            <p class="form-control-plaintext">{{ $user->phone ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">College Name:</label>
-                            <p class="form-control-plaintext">{{ $user->profile->college_name ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Course:</label>
-                            <p class="form-control-plaintext">{{ $user->profile->course ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label>ID Card:</label>
-                            <p><a href="{{ asset($user->profile?->id_card_url) ?? '#' }}"
-                                    class="btn btn-sm btn-outline-secondary">View /
-                                    Download</a> </p>
-
-                        </div>
-                    </div>
-                </div>
-
-                {{-- <!-- Payment Method -->
-
-                <div class="booking-card">
-                    <h5>Payment Method</h5>
-                    <div class="form-check mb-3 payment-option">
-                        <input type="radio" name="payment" class="form-check-input" id="credit-card" />
-                        <label class="form-check-label" for="credit-card">
-                            <i class="fab fa-cc-visa fa-2x"></i>
-                            <span class="ms-2">Credit/Debit Card</span>
-                        </label>
-                        <div class="card-details mt-2">
-                            <input type="text" class="form-control mb-2" placeholder="Card Number" />
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <input type="text" class="form-control" placeholder="MM/YY" />
-                                </div>
-                                <div class="col-6">
-                                    <input type="text" class="form-control" placeholder="CVV" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-check mb-3 payment-option">
-                        <input type="radio" name="payment" class="form-check-input" id="paypal" />
-                        <label class="form-check-label" for="paypal">
-                            <i class="fab fa-paypal fa-2x"></i>
-                            <span class="ms-2">PayPal</span>
-                        </label>
-                    </div>
-                    <div class="form-check mb-3 payment-option">
-                        <input type="radio" name="payment" class="form-check-input" id="bank-transfer" />
-                        <label class="form-check-label" for="bank-transfer">
-                            <i class="fas fa-university fa-2x"></i>
-                            <span class="ms-2">Bank Transfer</span>
-                        </label>
-                    </div>
-                    <div class="form-check mb-3 payment-option">
-                        <input type="radio" name="payment" class="form-check-input" id="upi" />
-                        <label class="form-check-label" for="upi">
-                            <i class="fas fa-qrcode fa-2x"></i>
-                            <span class="ms-2">UPI</span>
-                        </label>
-                    </div>
-                    <div class="form-check mb-3 payment-option">
-                        <input type="radio" name="payment" class="form-check-input" id="net-banking" />
-                        <label class="form-check-label" for="net-banking">
-                            <i class="fas fa-university fa-2x"></i>
-                            <span class="ms-2">Net Banking</span>
-                        </label>
-                    </div>
-
-
-                    <span class="secure-icon"><i class="fa fa-lock"></i> Secure Payment</span>
-                </div> --}}
-
-                <div class="accordion" id="policyAccordion">
-
-                    <!-- Refund Policy -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#policyRefund">
-                                Refund Policy
-                            </button>
-                        </h2>
-                        <div id="policyRefund" class="accordion-collapse collapse" data-bs-parent="#policyAccordion">
-                            <div class="accordion-body">
-                                Full refund if cancelled 48 hours before check-in.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Check-in / Check-out Policy -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#policyCheckin">
-                                Check-in / Check-out Policy
-                            </button>
-                        </h2>
-                        <div id="policyCheckin" class="accordion-collapse collapse" data-bs-parent="#policyAccordion">
-                            <div class="accordion-body">
-                                Check-in time: 12:00 PM | Check-out time: 11:00 AM. Early check-in subject to availability.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Guest Policy -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#policyGuest">
-                                Guest Policy
-                            </button>
-                        </h2>
-                        <div id="policyGuest" class="accordion-collapse collapse" data-bs-parent="#policyAccordion">
-                            <div class="accordion-body">
-                                No outside guests allowed after 10:00 PM. Overnight stays by guests are strictly prohibited.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Smoking Policy -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#policySmoking">
-                                Smoking Policy
-                            </button>
-                        </h2>
-                        <div id="policySmoking" class="accordion-collapse collapse" data-bs-parent="#policyAccordion">
-                            <div class="accordion-body">
-                                Smoking is not permitted inside the rooms. Designated smoking areas are available outside
-                                the building.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Noise Policy -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#policyNoise">
-                                Noise Policy
-                            </button>
-                        </h2>
-                        <div id="policyNoise" class="accordion-collapse collapse" data-bs-parent="#policyAccordion">
-                            <div class="accordion-body">
-                                Quiet hours are from 10:00 PM to 7:00 AM. Please respect other guests by keeping noise to a
-                                minimum.
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
                 <!-- Policies -->
                 <div class="booking-card">
-                    <h5>Policies</h5>
-                    <ul class="small" style="list-style-type: none">
-                        <li>
-                            <i class="policy-icon fas fa-clock"></i> Check-in: 10 AM |
-                            Check-out: 9 AM
-                        </li>
-                        <li>
-                            <i class="policy-icon fas fa-ban"></i> {{ $room->restrictions }}
-                        </li>
-                        <li>
-                            <i class="policy-icon fas fa-file-alt"></i> Cancellation before
-                            48 hours: Full Refund
-                        </li>
-                    </ul>
+
+
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="agree" />
                         <label class="form-check-label" for="agree">I Agree to Terms & Conditions</label>
@@ -372,10 +196,15 @@
                     <form method="POST" action="{{ route('user.booking.pay', $room->room_id) }}">
                         @csrf
                         <!-- Your user inputs and hidden fields if needed -->
+                        <input type="hidden" name="checkin_date" id="checkinDateInput">
+                        <input type="hidden" name="checkout_date" id="checkoutDateInput">
+                        <input type="hidden" name="months" id="selectedMonths">
+                        <input type="hidden" name="occupancy" id="selectedOccupancy">
+                        <input type="hidden" name="total" id="totalPrice">
 
                         <div class="text-end">
-                            <a href="{{ route('rooms') }}" class="btn btn-secondary me-2">Back to Room</a>
-                            <button type="submit" class="btn btn-custom" id="confirmPayBtn">Confirm & Pay</button>
+                            <a href="{{ url()->previous() }}" class="btn fill-btn me-2">Back to Room</a>
+                            <button type="submit" class="btn submit-btn" id="confirmPayBtn">Confirm & Pay</button>
                         </div>
                     </form>
 
@@ -410,6 +239,66 @@
                     e.target.classList.remove("is-invalid");
                 }
             });
+        });
+    </script>
+    <script>
+        const stayMonthsEl = document.getElementById("stayMonths");
+        const occupancy = document.getElementById("occupancySelect");
+        const totalAmountEl = document.getElementById("totalAmount");
+        const checkinDateEl = document.getElementById("checkinDate");
+        const checkoutDateEl = document.getElementById("checkoutDate");
+
+        const baseRent = {{ $baseRent }};
+        const security = {{ $securityDeposit }};
+        const amenities = {{ $amenitiesTotal }};
+
+        function calculateTotal() {
+            const months = parseInt(stayMonthsEl.value || 1);
+            const total = (baseRent + amenities) * months + security;
+            totalAmountEl.innerText = `₹ ${total} ( For ${months} Months Only)`;
+        }
+
+        function formatDateMMDDYYYY(date) {
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}-${mm}-${yyyy}`;
+        }
+
+        function updateCheckoutDate() {
+            const checkInVal = checkinDateEl.value;
+            if (!checkInVal) return;
+
+            const [dd, mm, yyyy] = checkInVal.split('-').map(Number);
+            const checkInDate = new Date(yyyy, mm - 1, dd);
+            const months = parseInt(stayMonthsEl.value || 1);
+            const checkout = new Date(checkInDate);
+            checkout.setMonth(checkInDate.getMonth() + months);
+
+            checkoutDateEl.value = formatDateMMDDYYYY(checkout);
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateTotal();
+            updateCheckoutDate();
+        });
+
+        // Event listeners
+        stayMonthsEl.addEventListener('change', () => {
+            calculateTotal();
+            updateCheckoutDate();
+        });
+
+        checkinDateEl.addEventListener('change', updateCheckoutDate);
+
+        // Final submit logic
+        document.getElementById("confirmPayBtn").addEventListener("click", function() {
+            document.getElementById("selectedMonths").value = stayMonthsEl.value;
+            document.getElementById("selectedOccupancy").value = occupancy.value;
+            document.getElementById("totalPrice").value = totalAmountEl.innerText.replace(/[^\d]/g, '');
+            document.getElementById("checkinDateInput").value = checkinDateEl.value;
+            document.getElementById("checkoutDateInput").value = checkoutDateEl.value;
         });
     </script>
 @endpush

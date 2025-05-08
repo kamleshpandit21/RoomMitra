@@ -9,18 +9,35 @@ use Illuminate\Http\Request;
 class CommonRoomController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-
-        $rooms = Room::where('is_verified', true)
+        $query = Room::query()
+            ->where('is_verified', true)
             ->where('status', 'available')
-            ->with('images', 'amenities', 'owner')
-            ->orderBy('created_at', 'desc')
-            ->paginate(6);
-
-
+            ->with(['images', 'amenities', 'owner']);
+    
+        // Apply filters
+        if ($request->filled('city')) {
+            $query->where('city', $request->city);
+        }
+    
+        if ($request->filled('min_price')) {
+            $query->where('room_price', '>=', $request->min_price);
+        }
+    
+        if ($request->filled('max_price')) {
+            $query->where('room_price', '<=', $request->max_price);
+        }
+    
+        if ($request->filled('capacity')) {
+            $query->where('room_capacity', $request->capacity);
+        }
+    
+        $rooms = $query->orderBy('created_at', 'desc')->paginate(6);
+    
         return view('common.room-list', compact('rooms'));
     }
+    
     public function show(string $id)
     {
         $room = Room::where('room_id', $id)

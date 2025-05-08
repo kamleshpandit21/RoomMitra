@@ -49,6 +49,7 @@
 
         <!-- AOS (Animate on Scroll) -->
         <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
 
 
         @stack('styles')
@@ -73,17 +74,21 @@
                 padding-top: 0.5rem;
                 padding-bottom: 0.5rem;
                 transition: all 0.3s ease-in-out;
+                background-color: rgba(0, 0, 0, 0.3);
+                /* Semi-transparent dark background */
+                color: #ffffff;
+                /* White text */
             }
 
-
-            /* Navbar spacing control */
             .navbar-nav .nav-link {
                 padding: 0.75rem 1rem;
                 font-weight: 500;
                 font-size: 1.1rem;
                 color: #ffffff;
+                /* White text for links */
             }
 
+            /* Navbar links color when hovered */
             .navbar-nav .nav-link:hover,
             .navbar-nav .nav-link.active {
                 color: #6366f1;
@@ -111,18 +116,21 @@
                 transform: scale(1.05);
             }
 
-            /* Scroll hone ke baad jo navbar banegi */
+            /* When scrolled, navbar becomes solid */
             .navbar.scrolled {
                 background-color: #ffffff !important;
-
+                /* Solid white background */
                 padding-top: 1.2rem;
                 padding-bottom: 1.2rem;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease-in-out;
+                /* Add shadow when solid */
+                color: #000 !important;
+                /* Dark text color for solid navbar */
             }
 
             .navbar.scrolled .nav-link {
                 color: #000 !important;
+                /* Dark text for links when navbar becomes solid */
             }
 
             .navbar.scrolled .nav-link:hover,
@@ -130,7 +138,7 @@
                 color: #6366f1 !important;
             }
 
-
+            /* Animation for shadow/pulse effect */
             @keyframes pulse {
                 0% {
                     box-shadow: 0 0 0 0 #6366f1;
@@ -156,9 +164,8 @@
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top py-3">
         <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <!-- Logo -->
-            <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="index.html">
-                <img src="https://img.icons8.com/color/48/room.png" alt="logo" height="30" class="me-2" />
-                RoomMitra
+            <a class="navbar-brand" href="{{ route('home') }}">
+                <img src="{{ asset('logo/RoomLogo.png') }}" alt="Logo" alt="" height="80">
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -187,17 +194,6 @@
                         <a class="nav-link" href="{{ route('faqs') }}">FAQ</a>
                     </li>
 
-                    <!-- Language Dropdown (Optional) -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            🌐 English
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">हिंदी</a></li>
-                            <li><a class="dropdown-item" href="#">বাংলা</a></li>
-                            <li><a class="dropdown-item" href="#">मराठी</a></li>
-                        </ul>
-                    </li>
 
                     <!-- Login/Register -->
                     @if (Auth::check() && Auth::user())
@@ -240,7 +236,7 @@
             <div class="row gx-5 gy-4">
                 <!-- Company Info -->
                 <div class="col-md-3">
-                    <h6 class="text-uppercase fw-bold">Student Room Portal</h6>
+                    <img src="{{ asset('logo/RoomLogo.png') }}" alt="" height="80">
                     <hr class="text-success" style="width: 60px; height: 2px" />
                     <p>
                         A one-stop platform for students to find and book verified
@@ -257,9 +253,7 @@
                         <a href="{{ route('about') }}" class="text-white text-decoration-none">About Us</a>
                     </p>
                     <p><a href="" class="text-white text-decoration-none">Rooms</a></p>
-                    <p>
-                        <a href="{{ route('contact.form') }}" class="text-white text-decoration-none">Contact</a>
-                    </p>
+                    
                 </div>
 
                 <!-- Useful Links -->
@@ -274,6 +268,9 @@
                     </p> --}}
                     <p><a href="{{ route('faqs') }}" class="text-white text-decoration-none">FAQs</a></p>
                     <p>
+                        <a href="{{ route('contact.form') }}" class="text-white text-decoration-none">Contact</a>
+                    </p>
+                    <p>
                         <a href="{{ route('complaint.form') }}" class="text-white text-decoration-none">Complaint</a>
                     </p>
                 </div>
@@ -286,10 +283,9 @@
                         <i class="fas fa-home me-3"></i> Lucknow, Uttar Pradesh, India
                     </p>
                     <p>
-                        <i class="fas fa-envelope me-3"></i> support@studentroomportal.com
+                        <i class="fas fa-envelope me-3"></i> support@roommitra.com
                     </p>
-                    <p><i class="fas fa-phone me-3"></i> +91 9876543210</p>
-                    <p><i class="fas fa-print me-3"></i> +91 9876543211</p>
+                    <p><i class="fas fa-phone me-3" ></i> <span style="font-family: 'Times New Roman', Times, serif;">+91 1234567890</span></p>
                 </div>
             </div>
         </section>
@@ -317,9 +313,9 @@
         window.addEventListener("scroll", function() {
             const navbar = document.querySelector(".navbar");
             if (window.scrollY > 50) {
-                navbar.classList.add("scrolled");
+                navbar.classList.add("scrolled"); // Add solid background after scroll
             } else {
-                navbar.classList.remove("scrolled");
+                navbar.classList.remove("scrolled"); // Remove solid background when near top
             }
         });
     </script>
