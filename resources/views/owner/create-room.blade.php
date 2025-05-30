@@ -230,17 +230,7 @@
         <div class="room-form-section">
             <h4 class="mb-3">Sharing Prices</h4>
             <div class="row">
-                <div class="col-md-4 form-group">
-                    <label for="single_price">Single Occupancy Price (₹)</label>
-                    <input type="number" class="form-control" id="single_price" name="single_price"
-                        value="{{ old('single_price') }}">
-                    <small class="alert-danger">
-                        @error('single_price')
-                            {{ $message }}
-                        @enderror
-
-                    </small>
-                </div>
+          
                 <div class="col-md-4 form-group">
                     <label for="double_price">Double Occupancy Price (₹)</label>
                     <input type="number" class="form-control" id="double_price" name="double_price"

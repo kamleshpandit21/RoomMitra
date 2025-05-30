@@ -38,7 +38,7 @@
             rel="stylesheet" />
 
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
 
         <!-- Font Awesome (Latest) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -48,7 +48,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
         <!-- AOS (Animate on Scroll) -->
-        <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+        <link href="{{ asset('aos/dist/aos.css') }}" rel="stylesheet" />
         <link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
 
 
@@ -205,7 +205,8 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a href="{{ route('register.form') }}" class="btn btn-lg fs-5 shadow-pulse me-2 text-white "
+                            <a href="{{ route('register.form') }}"
+                                class="btn btn-lg fs-5 shadow-pulse me-2 text-white "
                                 style="background: linear-gradient(135deg, #6366f1, #8b5cf6)">Get Started</a>
                         </li>
                     @endif
@@ -253,7 +254,7 @@
                         <a href="{{ route('about') }}" class="text-white text-decoration-none">About Us</a>
                     </p>
                     <p><a href="" class="text-white text-decoration-none">Rooms</a></p>
-                    
+
                 </div>
 
                 <!-- Useful Links -->
@@ -285,7 +286,8 @@
                     <p>
                         <i class="fas fa-envelope me-3"></i> support@roommitra.com
                     </p>
-                    <p><i class="fas fa-phone me-3" ></i> <span style="font-family: 'Times New Roman', Times, serif;">+91 1234567890</span></p>
+                    <p><i class="fas fa-phone me-3"></i> <span
+                            style="font-family: 'Times New Roman', Times, serif;">+91 1234567890</span></p>
                 </div>
             </div>
         </section>
@@ -299,10 +301,14 @@
 
     <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+   
+
+    <!-- AOS JS -->
+    <script src="{{ asset('aos/dist/aos.js') }}"></script>
     <script>
-        AOS.init();
+        AOS.init(); // using default settings
     </script>
+
 
 
     @stack('scripts')

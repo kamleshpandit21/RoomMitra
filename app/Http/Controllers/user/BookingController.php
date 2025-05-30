@@ -20,6 +20,7 @@ class BookingController extends Controller
     }
     public function checkout(Room $room)
     {
+        $room->sharing_prices = json_decode($room->sharing_prices, true);
         return view('user.checkout', compact('room'));
     }
 

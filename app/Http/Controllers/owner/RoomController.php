@@ -66,7 +66,6 @@ class RoomController extends Controller
         $room->security_deposit = $request->security_deposit;
         $room->min_stay_months = $request->min_stay_months;
         $room->sharing_prices = json_encode([
-            'single' => $request->single_price ?? 0,
             'double' => $request->double_price ?? 0,
             'triple' => $request->triple_price ?? 0
         ]);
@@ -182,7 +181,6 @@ class RoomController extends Controller
             'security_deposit' => $request->security_deposit,
             'min_stay_months' => $request->min_stay_months,
             'sharing_prices' => json_encode([
-                'single' => $request->single_price ?? 0,
                 'double' => $request->double_price ?? 0,
                 'triple' => $request->triple_price ?? 0
             ]),

@@ -6,8 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .register-section {
-         
-            background: #f4f6f9;
+
             padding: 2rem 0;
         }
 
@@ -37,33 +36,26 @@
 @endpush
 
 @section('content')
-    <section class="text-center bg-light py-5" style="margin: 140px 0 80px 0;">
+    <section class="text-center py-5" style="margin: 80px 0 80px 0;">
         <div class="container">
             <h1 class="display-5 fw-bold  heading">Register Now</h1>
 
         </div>
-   
-        <div class="container ">
+
+        <div class="container "                           
+>
             <div class="row justify-content-center register-section">
-                <div class="col-lg-12 bg-white shadow rounded-3 overflow-hidden">
+               
                     <div class="row">
-                        <!-- Left Image and Message -->
-                        <div class="col-md-6 d-none d-md-flex position-relative p-0 flex-column">
-                            <div class="h-100 w-100 position-absolute bg-dark bg-opacity-50 z-1"></div>
-                            <img src="{{ asset('img/register.jpg') }}" alt="Student Housing"
-                                class="img-fluid h-100 w-100 object-fit-cover" style="object-fit: cover;">
-                        
-                            <div class="position-absolute top-50 start-50 translate-middle text-center text-white z-2 px-4">
-                                <img src="{{ asset('logo/RoomLogo.png') }}" alt="Logo" class="mb-4" style="width: 100px;">
-                                <h2 class="fw-bold">Welcome to StudentStay</h2>
-                                <p class="lead">Affordable. Safe. Verified Student Housing.</p>
-                            </div>
+                       
+                        <div class="col-md-6"   style="background: url({{ asset('img/register.svg') }}) center center/contain no-repeat;"data-aos="fade-right" data-aos-duration="1000">
+
+
                         </div>
-                        
 
 
                         <!-- Right Form Section -->
-                        <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
+                        <div class="col-md-6 p-5 d-flex flex-column justify-content-center" data-aos="fade-left" data-aos-duration="1000">
 
                             <form method="POST" action="{{ route('register') }}" id="register-form">
                                 @csrf
@@ -175,7 +167,7 @@
                             </form>
                         </div> <!-- End Right -->
                     </div>
-                </div>
+              
             </div>
         </div>
     </section>

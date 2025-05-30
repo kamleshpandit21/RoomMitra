@@ -2,7 +2,7 @@
 @section('title', 'Home')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="{{ asset('css/animate.min.css') }}" />
 @endpush
 @section('content')
     <section id="hero-carousel" class="position-relative top-0">
@@ -97,8 +97,11 @@
 
         <div class="row g-4">
             @forelse ($rooms as $room)
+                @php
+                    $delay = $loop->index * 100;
+                @endphp
                 <div class="col-md-6 col-lg-4">
-                    <div class="card room-card shadow-lg rounded">
+                    <div class="card room-card shadow-lg rounded" data-aos="fade-up" data-aos-delay="{{ $delay }}">
                         <img src="{{ $room->images->first()->image_url ?? asset('default-room.jpg') }}"
                             class="card-img-top rounded-top" alt="Room Image">
                         <div class="card-body">
@@ -179,7 +182,7 @@
 
 
             @empty
-                <div class="col-12">
+                <div class="col-12" data-aos="fade-up">
                     <div class="alert alert-warning text-center">
                         <strong>No rooms found.</strong>
                     </div>
@@ -190,19 +193,21 @@
 
     </div>
 
-    <section class="py-5 bg-light" id="why-choose-us" data-aos="fade-up">
+    <section class="py-5 bg-light" id="why-choose-us">
 
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center" data-aos="fade-up">
                 <div class="col-12 text-center mb-5">
-                    <span class="custom-badge text-white mb-3 d-inline-block">Our Services</span>
-                    <h2 class="display-5 fw-bold mb-3 heading">Why Choose RoomMitra</h2>
-                    <p class="text-muted">Discover the reasons why RoomMitra is the best choice for students seeking
-                        reliable room accommodations.</p>
+                    <span class="custom-badge text-white mb-3 d-inline-block" data-aos="fade-down" data-aos-delay="100"
+                 >Our Services</span>
+                    <h2 class="display-5 fw-bold mb-3 heading" data-aos="zoom-in" data-aos-delay="300"
+                       >Why Choose RoomMitra</h2>
+                    <p class="text-muted" data-aos="fade-up" data-aos-delay="500" >Discover the
+                        reasons why RoomMitra is the best choice for students seeking reliable room accommodations.</p>
                 </div>
             </div>
             <div class="row g-4">
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up-right" data-aos-delay="100">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
                             <svg width="44px" height="44px" viewBox="0 0 24 24" fill="none"
@@ -221,7 +226,7 @@
                             comfort, and authenticity.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
                             <svg width="44px" height="44px" viewBox="0 0 24 24" fill="none"
@@ -236,7 +241,7 @@
                             hassle-free experience.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up-left" data-aos-delay="300">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
 
@@ -257,7 +262,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up-right" data-aos-delay="400">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
                             <svg width="44px" height="44px" viewBox="0 0 24 24" fill="none"
@@ -276,7 +281,7 @@
                             listed, ensuring trustworthiness.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
                             <svg fill="white" height="44px" width="44px" version="1.1" id="Layer_1"
@@ -287,18 +292,18 @@
                                         <g>
                                             <path
                                                 d="M149.203,41.104l-9.348,12.009c20.15,15.679,30.201,41.063,26.234,66.253c-2.906,18.484-12.838,34.73-27.964,45.748
-                                                                           c-15.131,11.012-33.64,15.488-52.124,12.567c-38.157-6.008-64.32-41.938-58.322-80.098C30.585,79.097,40.52,62.85,55.648,51.835
-                                                                           c13.208-9.615,28.991-14.233,45.086-13.317L87.579,52.319l9.759,9.313l20.766-21.801l0.005,0.008l9.303-9.769l-9.752-9.303
-                                                                           l-0.005,0.003L95.862,0l-9.31,9.769l14.2,13.525c-19.303-0.913-38.21,4.702-54.059,16.242
-                                                                           C28.28,52.943,16.19,72.717,12.65,95.221c-7.302,46.445,24.54,90.184,70.985,97.493c4.489,0.708,8.976,1.055,13.434,1.055
-                                                                           c17.89,0,35.273-5.623,50.011-16.356c18.415-13.409,30.503-33.183,34.043-55.682C185.952,91.077,173.72,60.181,149.203,41.104z" />
+                                                                                   c-15.131,11.012-33.64,15.488-52.124,12.567c-38.157-6.008-64.32-41.938-58.322-80.098C30.585,79.097,40.52,62.85,55.648,51.835
+                                                                                   c13.208-9.615,28.991-14.233,45.086-13.317L87.579,52.319l9.759,9.313l20.766-21.801l0.005,0.008l9.303-9.769l-9.752-9.303
+                                                                                   l-0.005,0.003L95.862,0l-9.31,9.769l14.2,13.525c-19.303-0.913-38.21,4.702-54.059,16.242
+                                                                                   C28.28,52.943,16.19,72.717,12.65,95.221c-7.302,46.445,24.54,90.184,70.985,97.493c4.489,0.708,8.976,1.055,13.434,1.055
+                                                                                   c17.89,0,35.273-5.623,50.011-16.356c18.415-13.409,30.503-33.183,34.043-55.682C185.952,91.077,173.72,60.181,149.203,41.104z" />
                                             <path
                                                 d="M105.24,151.971v-0.003h0.001v-8.757c10.383-1.159,20.485-7.718,20.485-20.17c0-16.919-15.732-18.859-27.223-20.274
-                                                                           c-7.347-0.878-12.97-1.897-12.97-6.348c0-6.188,8.722-6.855,12.473-6.855c5.567,0,11.507,2.617,13.525,5.957l0.586,0.971
-                                                                           l11.542-5.341l-0.571-1.164c-4.301-8.793-12.009-11.337-17.85-12.364v-7.71H91.723v7.677
-                                                                           c-12.582,1.856-20.054,8.839-20.054,18.829c0,16.29,14.791,17.943,25.582,19.153c9.617,1.134,14.094,3.51,14.094,7.469
-                                                                           c0,7.563-10.474,8.154-13.685,8.154c-7.147,0-14.038-3.566-16.031-8.301l-0.495-1.169l-12.539,5.316l0.5,1.169
-                                                                           c3.713,8.691,11.725,14.137,22.63,15.425v8.336H105.24z" />
+                                                                                   c-7.347-0.878-12.97-1.897-12.97-6.348c0-6.188,8.722-6.855,12.473-6.855c5.567,0,11.507,2.617,13.525,5.957l0.586,0.971
+                                                                                   l11.542-5.341l-0.571-1.164c-4.301-8.793-12.009-11.337-17.85-12.364v-7.71H91.723v7.677
+                                                                                   c-12.582,1.856-20.054,8.839-20.054,18.829c0,16.29,14.791,17.943,25.582,19.153c9.617,1.134,14.094,3.51,14.094,7.469
+                                                                                   c0,7.563-10.474,8.154-13.685,8.154c-7.147,0-14.038-3.566-16.031-8.301l-0.495-1.169l-12.539,5.316l0.5,1.169
+                                                                                   c3.713,8.691,11.725,14.137,22.63,15.425v8.336H105.24z" />
                                         </g>
                                     </g>
                                 </g>
@@ -310,35 +315,41 @@
                             stress-free experience.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up-left" data-aos-delay="600">
                     <div class="service-card h-100 p-4">
                         <div class="icon-wrapper mb-4">
                             <svg height="44px" width="44px" version="1.1" id="Layer_1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 viewBox="0 0 491.52 491.52" xml:space="preserve">
-                                <path style="fill:#3A556A;" d="M470.097,336.482h-26.81V219.955c0-106.379-88.612-192.926-197.528-192.926
-                                                               S48.233,113.576,48.233,219.955v116.527h-26.81V219.955c0-121.277,100.635-219.943,224.335-219.943
-                                                               c123.699,0,224.339,98.666,224.339,219.943V336.482z" />
-                                <path style="fill:#EBF0F3;" d="M350.194,273.835v108.747c0,23.478,18.887,42.51,42.185,42.51V231.325
-                                                               C369.081,231.325,350.194,250.357,350.194,273.835z" />
-                                <path style="fill:#E1E6E9;" d="M392.379,231.325L392.379,231.325v193.768l0,0c23.298,0,42.185-19.033,42.185-42.51V273.835
-                                                               C434.564,250.357,415.677,231.325,392.379,231.325z" />
+                                <path style="fill:#3A556A;"
+                                    d="M470.097,336.482h-26.81V219.955c0-106.379-88.612-192.926-197.528-192.926
+                                                                       S48.233,113.576,48.233,219.955v116.527h-26.81V219.955c0-121.277,100.635-219.943,224.335-219.943
+                                                                       c123.699,0,224.339,98.666,224.339,219.943V336.482z" />
+                                <path style="fill:#EBF0F3;"
+                                    d="M350.194,273.835v108.747c0,23.478,18.887,42.51,42.185,42.51V231.325
+                                                                       C369.081,231.325,350.194,250.357,350.194,273.835z" />
+                                <path style="fill:#E1E6E9;"
+                                    d="M392.379,231.325L392.379,231.325v193.768l0,0c23.298,0,42.185-19.033,42.185-42.51V273.835
+                                                                       C434.564,250.357,415.677,231.325,392.379,231.325z" />
                                 <path style="fill:#64798A;" d="M434.564,270.813v114.79c31.456,0,56.956-25.697,56.956-57.395
-                                                               C491.52,296.51,466.02,270.813,434.564,270.813z" />
-                                <path style="fill:#EBF0F3;" d="M141.326,273.835v108.747c0,23.478-18.887,42.51-42.185,42.51V231.325
-                                                               C122.439,231.325,141.326,250.357,141.326,273.835z" />
+                                                                       C491.52,296.51,466.02,270.813,434.564,270.813z" />
+                                <path style="fill:#EBF0F3;"
+                                    d="M141.326,273.835v108.747c0,23.478-18.887,42.51-42.185,42.51V231.325
+                                                                       C122.439,231.325,141.326,250.357,141.326,273.835z" />
                                 <path style="fill:#E1E6E9;" d="M99.141,231.325L99.141,231.325v193.768l0,0c-23.298,0-42.185-19.033-42.185-42.51V273.835
-                                                               C56.956,250.357,75.843,231.325,99.141,231.325z" />
+                                                                       C56.956,250.357,75.843,231.325,99.141,231.325z" />
                                 <g>
                                     <path style="fill:#64798A;"
                                         d="M56.956,270.813v114.79C25.5,385.604,0,359.907,0,328.209C0,296.51,25.5,270.813,56.956,270.813z" />
-                                    <path style="fill:#64798A;" d="M267.88,481.232l-0.227-9.006c111.6-2.849,166.686-94.998,167.228-95.93l7.706,4.573
-                                                                   C442.015,381.836,384.38,478.259,267.88,481.232z" />
+                                    <path style="fill:#64798A;"
+                                        d="M267.88,481.232l-0.227-9.006c111.6-2.849,166.686-94.998,167.228-95.93l7.706,4.573
+                                                                           C442.015,381.836,384.38,478.259,267.88,481.232z" />
                                 </g>
                                 <g>
-                                    <path style="fill:#3A556A;" d="M472.701,347.484c4.184-8.686,0.589-19.143-8.029-23.36c-8.62-4.217-18.998-0.594-23.181,8.09
-                                                                   c-3.076,6.384-1.921,13.705,2.316,18.823l-13.581,28.19l12.785,6.255l13.581-28.19
-                                                                   C463.201,357.481,469.626,353.868,472.701,347.484z" />
+                                    <path style="fill:#3A556A;"
+                                        d="M472.701,347.484c4.184-8.686,0.589-19.143-8.029-23.36c-8.62-4.217-18.998-0.594-23.181,8.09
+                                                                           c-3.076,6.384-1.921,13.705,2.316,18.823l-13.581,28.19l12.785,6.255l13.581-28.19
+                                                                           C463.201,357.481,469.626,353.868,472.701,347.484z" />
                                     <ellipse style="fill:#3A556A;" cx="260.664" cy="475.712" rx="22.989"
                                         ry="15.795" />
                                 </g>

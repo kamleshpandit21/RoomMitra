@@ -224,6 +224,7 @@
         </div>
     </div>
 
+
 @endsection
 @push('scripts')
     <!-- Bootstrap Bundle with Popper (v5) -->
@@ -248,14 +249,33 @@
         const checkinDateEl = document.getElementById("checkinDate");
         const checkoutDateEl = document.getElementById("checkoutDate");
 
-        const baseRent = {{ $baseRent }};
+        let baseRent = {{ $baseRent }};
         const security = {{ $securityDeposit }};
         const amenities = {{ $amenitiesTotal }};
+
+        occupancy.addEventListener("change", function() {
+            console.log("Occupancy changed:", occupancy.value);
+            const occupancyValue = parseInt(occupancy.value);
+            
+            if (occupancyValue == 1) {
+                baseRent = {{ $room->sharing_prices['single'] ?? $baseRent}};
+            } else if (occupancyValue == 2) {
+                baseRent = {{ $room->sharing_prices['double'] ?? $baseRent}};
+            } else {
+                baseRent = {{ $room->sharing_prices['triple'] ?? $baseRent}};
+            }
+            console.log("Base Rent:", baseRent);
+
+
+
+            calculateTotal();
+        });
 
         function calculateTotal() {
             const months = parseInt(stayMonthsEl.value || 1);
             const total = (baseRent + amenities) * months + security;
             totalAmountEl.innerText = `₹ ${total} ( For ${months} Months Only)`;
+            console.log(`Total: ₹ ${total} ( For ${months} Months Only) ${baseRent} + ${amenities} + ${security}`);
         }
 
         function formatDateMMDDYYYY(date) {
@@ -282,6 +302,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             calculateTotal();
             updateCheckoutDate();
+            
         });
 
         // Event listeners

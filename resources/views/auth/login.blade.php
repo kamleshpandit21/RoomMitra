@@ -8,8 +8,13 @@
 
 @section('content')
 
-<section class="login-section vh-100 d-flex align-items-center bg-light">
+<section class="login-section vh-100 d-flex align-items-center" style="padding: 160px 0 80px 0;">
+     
     <div class="container">
+        <div class="container">
+            <h1 class="display-5 fw-bold  heading">Login Now</h1>
+
+        </div>
         <div class="row justify-content-center">
             <div class="col-lg-10 shadow rounded-4 overflow-hidden bg-white">
                 <div class="row">

@@ -6,15 +6,15 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center p-3">
                 <h6>Total Rooms</h6>
-                <h3>12</h3>
-                <small>You have 12 active rooms</small>
+                <h3>{{$rooms->count()}}</h3>
+                <small>You have {{$rooms->count()}} active rooms</small>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm text-center p-3">
                 <h6>Total Bookings</h6>
-                <h3>120</h3>
-                <small>120 bookings received</small>
+                <h3>0</h3>
+                <small>0 bookings received</small>
             </div>
         </div>
         <div class="col-md-3">

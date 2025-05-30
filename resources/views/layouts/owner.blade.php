@@ -215,17 +215,7 @@
                             </a>
                         </li>
 
-                        <!-- Reviews -->
-                        <li class="nav-item">
-                            <a href="reviews.html" class="nav-link">
-                                <i class="nav-icon fas fa-star"></i>
-                                <p>
-                                    Guest Reviews
-                                    <span class="badge badge-warning right">4.8</span>
-                                </p>
-                            </a>
-                        </li>
-
+                     
                         <!-- Profile -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
@@ -236,6 +226,12 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('owner.profile.index') }}" class="nav-link">
+                                        <i class="fas fa-user nav-icon"></i>
+                                        <p>View Profile</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="{{ route('owner.profile.edit') }}" class="nav-link">
                                         <i class="fas fa-user-edit nav-icon"></i>
