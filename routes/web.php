@@ -65,12 +65,29 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('logout', 'logout')->name('logout');
 });
 
-// password reset
+/**
+ * =============================================================
+ * Password Reset Routes
+ * =============================================================
+ */
 
 Route::controller(ForgotPasswordController::class)->group(function () {
-    Route::get('forgot-password', 'index')->name('forgot-password.form');
-    Route::post('forgot-password', 'sendResetLinkEmail')->name('forgot-password');
+
+    // Password Reset Request
+
+    Route::get('/forgot-password', 'showForgotForm')->name('password.request');
+    Route::post('/forgot-password', 'sendOtp')->name('password.email');
+
+    // Password Reset Verification
+    Route::post('/verify-otp', 'verifyOtp')->name('otp.verify');
+
+    // Password Reset & Update
+
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
+
+
+
 
 Route::controller(SocialAuthController::class)->group(function () {
     Route::get('/auth/{provider}', 'redirectToProvider')->name('social.login'); // role added here

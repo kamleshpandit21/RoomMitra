@@ -124,7 +124,7 @@ class AuthController extends Controller
             }
 
 
-            return redirect()->route('user.dashboard');
+            return redirect()->route('home');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.']);
