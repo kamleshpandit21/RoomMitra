@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\owner;
+namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Room;

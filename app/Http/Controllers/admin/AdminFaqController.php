@@ -32,8 +32,25 @@ class AdminFaqController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',  
+            'category' => 'required|string',
+        ]);
+
+        $faq = new Faq();
+        $faq->question = $request->question;
+        $faq->answer = $request->answer;
+        $faq->category = $request->category;
+        $faq->is_active = $request->is_active == '1' ? true : false;
+        $faq->save();
         //
-        return response()->json($request->all());
+        return response()->json(
+            [
+                'message' => 'FAQ created successfully.',
+                'status' => true
+                ]
+        );
     }
 
     /**

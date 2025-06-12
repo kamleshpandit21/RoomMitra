@@ -92,6 +92,58 @@
         </div>
     </div>
 
+    <!-- Add FAQ Modal -->
+    <div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" id="addFaqForm" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFaqLabel">➕ Add New FAQ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Question</label>
+                        <input type="text" class="form-control" name="question" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Answer</label>
+                        <textarea class="form-control" name="answer" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Category</label>
+                        <select class="form-control" name="category">
+                            <option value="booking">Booking</option>
+                            <option value="payment">Payment</option>
+                            <option value="general">General</option>
+                            <option value="technical">Technical</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Status</label>
+                        <select class="form-control" name="is_active">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
 
     <!-- Edit FAQ Modal -->
     <div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqLabel" aria-hidden="true">
@@ -101,7 +153,9 @@
                 @method('PUT')
                 <div class="modal-header">
                     <h5 class="modal-title" id="editFaqLabel">✏️ Edit FAQ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
                 <div class="modal-body">
@@ -142,7 +196,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">💾 Update</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -155,8 +209,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="viewFaqLabel">📖 FAQ Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i
-                            class="fas fa-times"></i></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
 
                 </div>
                 <div class="modal-body">
@@ -196,9 +251,40 @@
 
 @push('scripts')
     <!-- Bootstrap 5 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script> --}}
 
     <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end', // top-start, top-end, top-right bhi use kar sakte ho
+            showConfirmButton: false,
+            timer: 3000, // toast auto close time
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+
+
+        //Add Faq Modal
+        document.getElementById('addFaqForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.submit();
+            fetch('/admin/faqs', {
+                method: 'POST',
+                body: new FormData(this)
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: data.message
+                    });
+                    document.getElementById('addFaqForm').reset();
+                }
+            })
+        })
         // View FAQ Modal
         document.querySelectorAll('.view-faq-btn').forEach(button => {
             button.addEventListener('click', function() {
