@@ -12,10 +12,31 @@ class AdminFaqController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $faqs = Faq::paginate(10);
+        $query = Faq::query();
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('question', 'like', '%' . $request->search . '%')
+                    ->orWhere('answer', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active' ? 1 : 0);
+        }
+
+        // Final data
+        $faqs = $query->orderByDesc('created_at')->paginate(10);
+        
         return view('admin.faqs', compact('faqs'));
     }
 
@@ -33,25 +54,33 @@ class AdminFaqController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'question' => 'required|string',
-            'answer' => 'required|string',  
-            'category' => 'required|string',
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string',
+            'category' => 'required|string|max:100',
         ]);
 
-        $faq = new Faq();
-        $faq->question = $request->question;
-        $faq->answer = $request->answer;
-        $faq->category = $request->category;
-        $faq->is_active = $request->is_active == '1' ? true : false;
-        $faq->save();
-        //
-        return response()->json(
-            [
+        try {
+            $faq = new Faq();
+            $faq->question = $request->question;
+            $faq->answer = $request->answer;
+            $faq->category = $request->category;
+            $faq->is_active = $request->has('is_active') && $request->is_active == '1';
+            $faq->save();
+
+            return response()->json([
+                'status' => true,
                 'message' => 'FAQ created successfully.',
-                'status' => true
-                ]
-        );
+                'data' => $faq
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Something went wrong: ' . $e->getMessage(),
+                'status' => false,
+                'success' => false,
+            ], 500);
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -76,9 +105,9 @@ class AdminFaqController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $faq = Faq::findOrFail($id); // Find FAQ or throw 404 error
+        $faq = Faq::findOrFail($id);
 
-        // Validation (optional but recommended)
+        // Validate input
         $validated = $request->validate([
             'question' => 'required|string',
             'answer' => 'required|string',
@@ -104,9 +133,20 @@ class AdminFaqController extends Controller
      */
     public function destroy(string $id)
     {
-        //
         $faq = Faq::findOrFail($id);
         $faq->delete();
         return response()->json(['message' => 'FAQ deleted successfully.']);
     }
+
+    public function toggleStatus($id)
+    {
+        $faq = Faq::findOrFail($id);
+        $faq->is_active = !$faq->is_active;
+        $faq->save();
+
+        return response()->json([
+            'success' => $faq->is_active
+        ], 200);
+    }
+
 }

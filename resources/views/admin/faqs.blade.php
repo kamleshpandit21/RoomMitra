@@ -1,6 +1,53 @@
 @extends('layouts.admin')
 @section('title', 'FAQ Management')
 @push('styles')
+    <style>
+        /* Toggle Switch Style */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #28a745;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -15,25 +62,35 @@
             <!-- Filters -->
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="filter-search" placeholder="Search by question or tag...">
+                    <input type="text" class="form-control" id="filter-search" name="search"
+                        value="{{ request('search') }}" placeholder="Search by question or tag...">
                 </div>
-                <div class="col-md-3 form-group">
-                    <select class="form-control select2bs4" id="filter-category">
+
+                <div class="col-md-3">
+                    <select class="form-control select2bs4" id="filter-category" name="category">
                         <option value="">Filter by Category</option>
-                        <option value="booking">Booking</option>
-                        <option value="payment">Payment</option>
-                        <option value="general">General</option>
-                        <option value="technical">Technical</option>
+                        <option value="booking" {{ request('category') == 'booking' ? 'selected' : '' }}>Booking</option>
+                        <option value="payment" {{ request('category') == 'payment' ? 'selected' : '' }}>Payment</option>
+                        <option value="general" {{ request('category') == 'general' ? 'selected' : '' }}>General</option>
+                        <option value="technical" {{ request('category') == 'technical' ? 'selected' : '' }}>Technical
+                        </option>
                     </select>
                 </div>
-                <div class="col-md-3 form-group">
-                    <select class="form-control select2bs4" id="filter-status">
+
+                <div class="col-md-2">
+                    <select class="form-control select2bs4" id="filter-status" name="status">
                         <option value="">Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
+                </div>
+
+                <!-- Clear Button -->
+                <div class="col-md-3">
+                    <a href="{{ route('admin.faqs.index') }}" class="btn btn-outline-secondary w-100">🔄 Clear Filters</a>
                 </div>
             </div>
+
 
             <!-- Table -->
             <table class="table table-hover align-middle" id="faq-table">
@@ -54,11 +111,11 @@
                             <td>{{ Str::limit($faq->question, 60) }}</td>
                             <td>{{ ucfirst($faq->category ?? '-') }}</td>
                             <td>
-                                @if ($faq->is_active === 1)
-                                    <span class="badge bg-success">Active</span>
-                                @else
-                                    <span class="badge bg-danger">Inactive</span>
-                                @endif
+                                <label class="switch">
+                                    <input type="checkbox" class="faq-toggle" data-id="{{ $faq->id }}"
+                                        {{ $faq->is_active ? 'checked' : '' }}>
+                                    <span class="slider round"></span>
+                                </label>
                             </td>
                             <td>{{ $faq->created_at->format('d M Y') }}</td>
                             <td class="d-flex gap-2 flex-wrap justify-content-between ">
@@ -85,7 +142,8 @@
                     @endforelse
 
                     <tr>
-                        <td colspan="6" class="text-center text-muted">{{ $faqs->links('pagination::bootstrap-5') }}</td>
+                        <td colspan="6" class="text-center text-muted">{{ $faqs->links('pagination::bootstrap-5') }}
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -250,51 +308,100 @@
 @endsection
 
 @push('scripts')
-    <!-- Bootstrap 5 -->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script> --}}
-
     <script>
+        // Toast setup
         const Toast = Swal.mixin({
             toast: true,
-            position: 'top-end', // top-start, top-end, top-right bhi use kar sakte ho
+            position: 'top-end',
             showConfirmButton: false,
-            timer: 3000, // toast auto close time
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+            timer: 3000,
+            timerProgressBar: true
         });
 
+        // Utility function to fetch JSON with CSRF
+        async function fetchWithCSRF(url, method = 'GET', body = null) {
+            const headers = {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            };
 
+            const response = await fetch(url, {
+                method,
+                headers,
+                body
+            });
 
-        //Add Faq Modal
-        document.getElementById('addFaqForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            this.submit();
-            fetch('/admin/faqs', {
-                method: 'POST',
-                body: new FormData(this)
-            }).then(response => response.json()).then(data => {
-                if (data.success) {
-                    Toast.fire({
-                        icon: 'success',
-                        title: data.message
+            if (!response.ok) throw await response.json();
+            return await response.json();
+        }
+
+        // Toggle FAQ status
+        function initFaqToggle() {
+            document.querySelectorAll('.faq-toggle').forEach(toggle => {
+                toggle.addEventListener('click', async function() {
+                    const faqId = this.dataset.id;
+                    try {
+                        const data = await fetchWithCSRF(`/admin/faqs/${faqId}/toggle-status`, 'PATCH');
+                        Toast.fire({
+                            icon: 'success',
+                            title: data.success ? '✅ FAQ activated' : '❌ FAQ deactivated'
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Add FAQ
+        function initAddFaqForm() {
+            const form = document.getElementById('addFaqForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Submitting...';
+
+                try {
+                    const response = await fetch('/admin/faqs', {
+                        method: 'POST',
+                        body: new FormData(form)
                     });
-                    document.getElementById('addFaqForm').reset();
+                    const data = await response.json();
+
+                    Toast.fire({
+                        icon: data.success ? 'success' : 'error',
+                        title: data.message || 'Submission failed.'
+                    });
+
+                    if (data.success) {
+                        form.reset();
+                        $('#addFaqModal').modal('hide');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'An error occurred. Please try again.'
+                    });
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit';
                 }
-            })
-        })
-        // View FAQ Modal
-        document.querySelectorAll('.view-faq-btn').forEach(button => {
-            button.addEventListener('click', function() {
+            });
+        }
 
-                let url = this.getAttribute('data-url');
-
-                // Fetch FAQ details from server
-                fetch(url)
-                    .then(response => response.json())
-                    .then(faq => {
+        // View FAQ
+        function initViewFaqButtons() {
+            document.querySelectorAll('.view-faq-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    try {
+                        const url = this.dataset.url;
+                        const faq = await (await fetch(url)).json();
 
                         document.getElementById('view-question').textContent = faq.question;
                         document.getElementById('view-answer').innerHTML = faq.answer;
@@ -304,133 +411,127 @@
                         document.getElementById('view-date').innerText = new Date(faq.created_at)
                             .toLocaleString();
 
-                        // Show the modal (Bootstrap 5 method)
-                        var myModal = new bootstrap.Modal(document.getElementById('viewFaqModal'));
-                        myModal.show();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching FAQ details:', error);
-                        alert('Unable to fetch FAQ details.');
-                    });
+                        new bootstrap.Modal(document.getElementById('viewFaqModal')).show();
+                    } catch (error) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.'
+                        });
+                    }
+                });
             });
-        });
+        }
 
-        document.querySelectorAll('.edit-faq-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                let url = this.getAttribute('data-url');
-                let faqId = this.getAttribute('data-id');
-                let showUrl = "{{ route('admin.faqs.show', ':id') }}".replace(':id', faqId);
+        // Edit FAQ
+        function initEditFaqButtons() {
+            document.querySelectorAll('.edit-faq-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const faqId = this.dataset.id;
+                    const showUrl = `{{ route('admin.faqs.show', ':id') }}`.replace(':id', faqId);
+                    const updateUrl = this.dataset.url;
 
-                fetch(showUrl)
-                    .then(res => res.json())
-                    .then(faq => {
+                    try {
+                        const faq = await (await fetch(showUrl)).json();
+
                         document.getElementById('edit-id').value = faq.id;
                         document.getElementById('edit-question').value = faq.question;
                         document.getElementById('edit-answer').value = faq.answer;
                         document.getElementById('edit-category').value = faq.category;
                         document.getElementById('edit-status').value = faq.is_active;
+                        document.getElementById('editFaqForm').action = updateUrl;
 
-                        // Set form action URL here
-                        document.getElementById('editFaqForm').action =
-                            url; // Dynamic URL for form submission
-
-                        let modal = new bootstrap.Modal(document.getElementById('editFaqModal'));
-                        modal.show();
-                    })
-                    .catch(err => {
-                        console.error("Error fetching FAQ:", err);
-                        alert("Could not load FAQ for editing.");
-                    });
-            });
-        });
-        document.getElementById('editFaqForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const form = this;
-            const url = form.action;
-
-            // Log the values of the fields to check if they are populated
-            console.log({
-                question: document.getElementById('edit-question').value,
-                answer: document.getElementById('edit-answer').value,
-                category: document.getElementById('edit-category').value,
-                is_active: document.getElementById('edit-status').value
-            });
-
-            // Ensure that FormData is correctly populated
-            const formData = new FormData(form);
-            console.log([...formData]);
-
-            fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw errorData;
-                    }
-                    const data = await response.json();
-                    alert('✅ FAQ updated!');
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.error("Error updating FAQ:", error);
-                });
-        });
-
-
-        document.querySelectorAll('.delete-faq-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                let faqId = this.getAttribute('data-id');
-                console.log(faqId);
-                if (confirm('Are you sure you want to delete this FAQ?')) {
-                    fetch(`/admin/faqs/${faqId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json',
-                            }
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                location.reload();
-                                alert('✅ FAQ deleted!');
-                            } else {
-                                alert('Failed to delete FAQ.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Delete error:', error);
-                            alert('Something went wrong while deleting the FAQ.');
+                        new bootstrap.Modal(document.getElementById('editFaqModal')).show();
+                    } catch (err) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.'
                         });
-                }
-            });
-        });
-
-
-        function filterFaqs() {
-            const search = document.getElementById('filter-search').value.toLowerCase();
-            const category = document.getElementById('filter-category').value.toLowerCase();
-            const status = document.getElementById('filter-status').value.toLowerCase();
-
-            document.querySelectorAll('#faq-table tbody tr').forEach(row => {
-                const question = row.children[1].innerText.toLowerCase();
-                const cat = row.children[2].innerText.toLowerCase();
-                const stat = row.children[3].innerText.toLowerCase();
-
-                const matchesSearch = question.includes(search);
-                const matchesCategory = category === '' || cat === category;
-                const matchesStatus = status === '' || stat.includes(status);
-
-                row.style.display = (matchesSearch && matchesCategory && matchesStatus) ? '' : 'none';
+                    }
+                });
             });
         }
 
-        document.getElementById('filter-search').addEventListener('input', filterFaqs);
-        document.getElementById('filter-category').addEventListener('change', filterFaqs);
-        document.getElementById('filter-status').addEventListener('change', filterFaqs);
+        function initEditFaqForm() {
+            document.getElementById('editFaqForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
+
+                try {
+                    await fetchWithCSRF(form.action, 'POST', formData);
+                    Toast.fire({
+                        icon: 'success',
+                        title: '✅ FAQ updated!'
+                    })
+                } catch (error) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'An error occurred. Please try again.'
+                    });
+                }
+            });
+        }
+
+        // Delete FAQ
+        function initDeleteFaqButtons() {
+            document.querySelectorAll('.delete-faq-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const faqId = this.dataset.id;
+                    if (!confirm('Are you sure you want to delete this FAQ?')) return;
+
+                    try {
+                        await fetchWithCSRF(`/admin/faqs/${faqId}`, 'DELETE');
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'FAQ deleted!'
+                        })
+
+                    } catch (error) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Something went wrong. Please try again.'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Init all
+        initFaqToggle();
+        initAddFaqForm();
+        initViewFaqButtons();
+        initEditFaqButtons();
+        initEditFaqForm();
+        initDeleteFaqButtons();
+
+        // Automatically submit filter on change or typing
+        document.getElementById('filter-search').addEventListener('input', debounce(() => {
+            submitFilters();
+        }, 500));
+
+        document.getElementById('filter-category').addEventListener('change', submitFilters);
+        document.getElementById('filter-status').addEventListener('change', submitFilters);
+
+        function submitFilters() {
+            const search = document.getElementById('filter-search').value;
+            const category = document.getElementById('filter-category').value;
+            const status = document.getElementById('filter-status').value;
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (category) params.append('category', category);
+            if (status) params.append('status', status);
+
+            window.location.href = `?${params.toString()}`;
+        }
+
+        // Debounce function to avoid rapid firing
+        function debounce(func, delay) {
+            let timeout;
+            return function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(func, delay);
+            };
+        }
     </script>
 @endpush

@@ -166,6 +166,8 @@ Route::prefix('admin')->middleware(['admin'])->name('admin.')->group(function ()
 
     // FAQs
     Route::resource('faqs', AdminFaqController::class);
+    Route::patch('/faqs/{id}/toggle-status', [AdminFaqController::class, 'toggleStatus'])->name('faqs.toggle');
+
 
     // Testimonials
     Route::resource('testimonials', TestimonialController::class);
