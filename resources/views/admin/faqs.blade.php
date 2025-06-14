@@ -310,13 +310,7 @@
 @push('scripts')
     <script>
         // Toast setup
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
+     
 
         // Utility function to fetch JSON with CSRF
         async function fetchWithCSRF(url, method = 'GET', body = null) {

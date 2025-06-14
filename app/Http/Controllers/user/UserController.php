@@ -23,7 +23,7 @@ class UserController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(3);
 
-        return view('user.dashboard', compact('rooms'));
+        return view('welcome', compact('rooms'));
     }
 
     /**

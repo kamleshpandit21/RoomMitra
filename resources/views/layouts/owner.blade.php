@@ -20,8 +20,6 @@
     if (Auth::check()):
         $user = Auth::user();
         $profile = $user->ownerProfile;
-       
-       
     endif;
 @endphp
 
@@ -40,7 +38,7 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('owner.dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
-               
+
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('owner.complaints.index') }}" class="nav-link">Support</a>
                 </li>
@@ -50,7 +48,7 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link"  href="{{ route('owner.profile.index') }}" >
+                    <a class="nav-link" href="{{ route('owner.profile.index') }}">
                         Profile
                     </a>
                 </li>
@@ -104,9 +102,9 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
 
-                       
-                        <img src="{{ asset($profile->avatar) ?? asset('adminlte/dist/img/user2-160x160.jpg')  }}" alt="Owner Image"  class="img-circle elevation-2"
-                            alt="Owner Image">
+
+                        <img src="{{ asset($profile->avatar) ?? asset('adminlte/dist/img/user2-160x160.jpg') }}"
+                            alt="Owner Image" class="img-circle elevation-2" alt="Owner Image">
                     </div>
                     <div class="info">
 
@@ -215,7 +213,7 @@
                             </a>
                         </li>
 
-                     
+
                         <!-- Profile -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
@@ -283,6 +281,17 @@
             reserved.
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    </script>
     <!-- ./wrapper -->
     @stack('scripts')
     <!-- REQUIRED SCRIPTS -->

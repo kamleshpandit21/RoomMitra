@@ -53,14 +53,14 @@ class Room extends Model
         'sharing_prices' => 'array',
         'entry_time' => 'datetime',
         'exit_time' => 'datetime',
-        
+
         'ac' => 'boolean',
         'lift' => 'boolean',
         'parking' => 'boolean',
         'kitchen' => 'boolean',
         'is_verified' => 'boolean',
         'status' => 'string',
-        
+
     ];
 
     // 🔗 Relationships
@@ -86,8 +86,12 @@ class Room extends Model
     }
 
     public function amenities()
-{
-    return $this->hasMany(RoomAmenity::class, 'room_id', 'room_id');
-}
+    {
+        return $this->hasMany(RoomAmenity::class, 'room_id', 'room_id');
+    }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'room_id', 'room_id');
+    }
 }

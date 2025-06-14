@@ -15,7 +15,8 @@ use App\Http\Controllers\Common\{
     CommonRoomController,
     ComplaintController,
     ForgotPasswordController,
-    SocialAuthController
+    SocialAuthController,
+    WishlistController
 };
 use App\Http\Controllers\Admin\{
     AboutUsController,
@@ -121,6 +122,10 @@ Route::get('about', [AboutController::class, 'index'])->name('about');
 Route::get('complaint', [ComplaintController::class, 'index'])->name('complaint.form');
 Route::post('complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/toggle/{roomId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+});
 
 /**
  * =============================================================

@@ -188,8 +188,12 @@
                         <a class="nav-link" href="{{ route('about') }}">About Us</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('wishlist.index') }}">Wishlist</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('contact.form') }}">Contact</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('faqs') }}">FAQ</a>
                     </li>
@@ -301,15 +305,23 @@
 
     <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-   
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <!-- AOS JS -->
     <script src="{{ asset('aos/dist/aos.js') }}"></script>
+
     <script>
         AOS.init(); // using default settings
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
     </script>
-
-
 
     @stack('scripts')
 

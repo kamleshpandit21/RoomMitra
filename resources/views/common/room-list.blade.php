@@ -4,7 +4,7 @@
 
 @push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
 @endpush
 
 @section('content')
@@ -16,17 +16,20 @@
             <form method="GET" class="mb-4">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <input type="text" name="city" class="form-control" placeholder="Enter City" value="{{ request('city') }}">
+                        <input type="text" name="city" class="form-control" placeholder="Enter City"
+                            value="{{ request('city') }}">
                     </div>
-            
+
                     <div class="col-md-2">
-                        <input type="number" name="min_price" class="form-control" placeholder="Min Price" value="{{ request('min_price') }}">
+                        <input type="number" name="min_price" class="form-control" placeholder="Min Price"
+                            value="{{ request('min_price') }}">
                     </div>
-            
+
                     <div class="col-md-2">
-                        <input type="number" name="max_price" class="form-control" placeholder="Max Price" value="{{ request('max_price') }}">
+                        <input type="number" name="max_price" class="form-control" placeholder="Max Price"
+                            value="{{ request('max_price') }}">
                     </div>
-            
+
                     <div class="col-md-2">
                         <select name="capacity" class="form-select">
                             <option value="">Sharing Type</option>
@@ -36,14 +39,14 @@
                             <option value="4" {{ request('capacity') == 4 ? 'selected' : '' }}>4 Sharing</option>
                         </select>
                     </div>
-            
+
                     <div class="col-md-3 d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                         <a href="{{ route('rooms') }}" class="btn btn-outline-secondary">Clear</a>
                     </div>
                 </div>
             </form>
-            
+
             @forelse ($rooms as $room)
                 <div class="col-md-6 col-lg-4">
                     <div class="card room-card shadow-lg rounded">
@@ -117,8 +120,19 @@
                                 <a href="{{ route('room.show', ['id' => $room->room_id]) }}" class="button-69">
                                     View Room
                                 </a>
-                                <button class="btn btn-sm btn-outline-danger like-btn">
-                                    <i class="far fa-heart"></i>
+                                @php
+                                    $wishlisted = false;
+                                    if (auth()->check()) {
+                                        $wishlisted = in_array(
+                                            $room->room_id,
+                                            auth()->user()->wishlists->pluck('room_id')->toArray(),
+                                        );
+                                    }
+                                @endphp
+
+                                <button class="btn btn-sm like-btn {{ $wishlisted ? 'btn-danger' : 'btn-outline-danger' }}"
+                                    onclick="toggleWishlist({{ $room->room_id }})" id="wishlist-btn-{{ $room->room_id }}">
+                                    <i class="{{ $wishlisted ? 'fas' : 'far' }} fa-heart"></i>
                                 </button>
                             </div>
                         </div>
@@ -140,3 +154,64 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        async function toggleWishlist(roomId) {
+            const button = document.querySelector(`#wishlist-btn-${roomId}`);
+
+            try {
+                const response = await fetch(`/wishlist/toggle/${roomId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.status === 401) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please login to add to wishlist'
+                    });
+                    setTimeout(() => {
+                        window.location.href = '{{ route('login.form') }}';
+                    }, 2000);
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    Toast.fire({
+                        icon: 'error',
+                        title: errorData.message || 'Something went wrong!'
+                    });
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (!button) return;
+
+                button.classList.toggle('btn-danger');
+                button.classList.toggle('btn-outline-danger');
+
+                const icon = button.querySelector('i');
+                icon.classList.toggle('fas');
+                icon.classList.toggle('far');
+
+                Toast.fire({
+                    icon: data.status === 'added' ? 'success' : 'info',
+                    title: data.status === 'added' ? 'Added to wishlist' : 'Removed from wishlist'
+                });
+
+            } catch (error) {
+                console.error('Wishlist Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Network error or unexpected issue.'
+                });
+            }
+        }
+    </script>
+@endpush
