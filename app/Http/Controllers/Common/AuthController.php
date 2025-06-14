@@ -21,16 +21,13 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->role === 'room_owner') {
-                return redirect()->route('owner.dashboard'); 
-            }
-            return redirect()->route('welcome');
+            return redirect()->route($user->role === 'room_owner' ? 'owner.dashboard' : 'user.dashboard');
         }
 
         return view('auth.login');
     }
 
-    /*`
+    /**
      * ================================
      * Show the application Register form.
      *=================================
@@ -39,16 +36,11 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->role === 'room_owner') {
-                return redirect()->route('owner.dashboard'); 
-            }
-            return redirect()->route('user.dashboard');
+            return redirect()->route($user->role === 'room_owner' ? 'owner.dashboard' : 'user.dashboard');
         }
 
         return view('auth.register');
     }
-
-
 
     /**
      * ===============================================
@@ -62,7 +54,7 @@ class AuthController extends Controller
             'full_name' => 'required|min:2|regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email:rfc,dns|unique:users,email',
             'phone' => 'required|digits:10|unique:users,phone',
-            'password' => 'nullable|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/|confirmed',
+            'password' => 'required|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/|confirmed',
             'role' => 'required|in:user,room_owner',
         ]);
 
@@ -74,25 +66,13 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
-        if ($user && $user->role === 'room_owner') {
-            Profile::create([
-                'user_id' => $user->user_id,
-                'avatar' => 'img/avatar/avatar.png',
-            ]);
-        } else {
-            OwnerProfile::create([
-                'user_id' => $user->user_id,
-                'avatar' => 'img/avatar/avatar.png',
-            ]);
-        }
+        $this->createDefaultProfile($user);
+
 
         Auth::login($user);
 
-        if ($user->role === 'room_owner') {
-            return view('owner.dashboard');
-        } else {
-            return redirect()->route('user.dashboard');
-        }
+        return redirect()->route($user->role === 'room_owner' ? 'owner.dashboard' : 'user.dashboard')->with('success', 'Registration successful. You are now logged in.');
+
     }
 
 
@@ -120,7 +100,7 @@ class AuthController extends Controller
 
             if ($user->role === 'room_owner') {
 
-                 return redirect()->route('owner.dashboard');
+                return redirect()->route('owner.dashboard');
             }
 
 
@@ -139,7 +119,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-      if (Auth::guard('web')->check()) {
+        if (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();
         }
 
@@ -149,6 +129,16 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
+    private function createDefaultProfile(User $user)
+    {
+        $avatar = 'img/avatar/avatar.png';
+
+        if ($user->role === 'room_owner') {
+            OwnerProfile::create(['user_id' => $user->user_id, 'avatar' => $avatar]);
+        } else {
+            Profile::create(['user_id' => $user->user_id, 'avatar' => $avatar]);
+        }
+    }
 
 
 }

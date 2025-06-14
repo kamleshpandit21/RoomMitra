@@ -104,7 +104,7 @@
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
 
-
+                       
                         <img src="{{ asset($profile->avatar) ?? asset('adminlte/dist/img/user2-160x160.jpg')  }}" alt="Owner Image"  class="img-circle elevation-2"
                             alt="Owner Image">
                     </div>

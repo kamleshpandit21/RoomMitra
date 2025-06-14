@@ -6,8 +6,14 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center p-3">
                 <h6>Total Rooms</h6>
-                <h3>{{$rooms->count()}}</h3>
-                <small>You have {{$rooms->count()}} active rooms</small>
+                @if ($rooms->isEmpty())
+                    <h3>0</h3>
+                    <small>No rooms found</small>
+                @else
+                    <h3>{{ $rooms->count() }}</h3>
+                    <small>You have {{ $rooms->count() }} active rooms</small>
+                @endif
+
             </div>
         </div>
         <div class="col-md-3">

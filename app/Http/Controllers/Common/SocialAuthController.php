@@ -27,6 +27,9 @@ class SocialAuthController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
             $role = Session::pull('social_login_role');
+            if (!$socialUser->getEmail()) {
+                return redirect()->route('login.form')->with('error', 'Email not provided by provider.');
+            }
             // Step 1: Check if user exists
             $user = User::firstOrCreate(
                 ['email' => $socialUser->email],
@@ -47,33 +50,8 @@ class SocialAuthController extends Controller
                 $profileImagePath = $this->downloadAndSaveImage($socialUser->avatar, $socialUser->email);
             }
 
-            // Step 3: Create profile
-            if ($role === 'room_owner') {
-                $ownerProfile = OwnerProfile::where('user_id', $user->user_id)->first();
-                if ($ownerProfile && $ownerProfile->profile_image) {
-                    // Delete old image if it exists
-                    Storage::delete($ownerProfile->profile_image);
-                }
+            $this->createOrUpdateProfile($user, $profileImagePath);
 
-                OwnerProfile::updateOrCreate([
-                    'user_id' => $user->user_id,
-                ], [
-                    'avatar' => $profileImagePath
-                ]);
-            } else {
-
-                $userProfile = Profile::where('user_id', $user->user_id)->first();
-                if ($userProfile && $userProfile->avatar) {
-                    // Delete old avatar if it exists
-                    Storage::delete($userProfile->avatar);
-                }
-
-                Profile::updateOrCreate([
-                    'user_id' => $user->user_id,
-                ], [
-                    'avatar' => $profileImagePath
-                ]);
-            }
             Auth::login($user);
             if ($user->role === 'room_owner') {
                 $user->load('ownerProfile');
@@ -81,16 +59,8 @@ class SocialAuthController extends Controller
                 $user->load('profile');
             }
 
-            if ($role === 'room_owner') {
-                return redirect()->route(
-                    'owner.dashboard'
+           return redirect()->route($user->role === 'room_owner' ? 'owner.dashboard' : 'user.dashboard');
 
-                )->with('success', "You have successfully logged in with $provider.");
-
-                ;
-            } else {
-                return redirect()->route('home')->with('success', "You have successfully logged in with $provider.");
-            }
 
 
         } catch (\Exception $e) {
@@ -119,4 +89,23 @@ class SocialAuthController extends Controller
             return null;
         }
     }
+
+
+    private function createOrUpdateProfile($user, $avatarPath)
+    {
+        if ($user->role === 'room_owner') {
+            $profile = OwnerProfile::firstOrNew(['user_id' => $user->user_id]);
+        } else {
+            $profile = Profile::firstOrNew(['user_id' => $user->user_id]);
+        }
+
+        // Delete old image if exists
+        if ($profile->avatar) {
+            Storage::delete($profile->avatar);
+        }
+
+        $profile->avatar = $avatarPath;
+        $profile->save();
+    }
+
 }

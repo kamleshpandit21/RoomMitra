@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Manage Users')
 @push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         .badge-verified {
@@ -31,7 +30,7 @@
 
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>👥 User Listing</h4>
+            <h4>👥 Manage All Users</h4>
             <button class="btn btn-success">📤 Export</button>
         </div>
 
@@ -45,7 +44,7 @@
                     <select class="form-control">
                         <option value="">Role</option>
                         <option>User</option>
-                        <option>Room Owner</option>
+                        <option>Owner</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -73,65 +72,83 @@
 
         <!-- User Table -->
         <div class="card">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
+            <div class="table-responsive"><div class="table-responsive">
+    <table class="table table-hover align-middle text-center table-bordered">
+        <thead class="thead-light">
+            <tr class="bg-light text-dark">
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>City</th>
+                <th>Verification</th>
+                <th>Status</th>
+                <th>Registered</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($users as $user)
+                <tr>
+                    <td>#{{ $user->user_id }}</td>
+                    <td>{{ $user->full_name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->phone ?? 'N/A' }}</td>
+                    <td>
+                        <span class="badge bg-{{ $user->role == 'user' ? 'primary' : 'secondary' }}">
+                            {{ ucfirst($user->role) }}
+                        </span>
+                    </td>
+                    <td>{{ $user->profile->city ?? 'N/A' }}</td>
+                    <td>
+                        <span class="badge bg-{{ $user->is_verified ? 'success' : 'warning' }}">
+                            {{ $user->is_verified ? '✔ Verified' : '❌ Not Verified' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ $user->is_blocked ? 'danger' : 'success' }}">
+                            {{ $user->is_blocked ? '❌ Blocked' : '✔ Active' }}
+                        </span>
+                    </td>
+                    <td>{{ $user->created_at->diffForHumans() }}</td>
+                    <td class="d-flex justify-content-center flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-info" data-toggle="modal"
+                            data-target="#viewUserModal" data-id="{{ $user->user_id }}"
+                            title="View User">
+                            👁️
+                        </button>
 
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
-                            <th>City</th>
-                            <th>Verification</th>
-                            <th>Status</th>
-                            <th>Registered</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($users as $user)
-                            <tr>
-                                <td>#{{ $user->user_id }}</td>
-                                <td>{{ $user->full_name }}</td>
+                        @if (!$user->is_blocked)
+                            <button class="btn btn-sm btn-outline-warning" data-toggle="modal"
+                                data-target="#blockUserModal" data-id="{{ $user->user_id }}"
+                                title="Block User">
+                                🚫
+                            </button>
+                        @else
+                            <button class="btn btn-sm btn-outline-success" data-toggle="modal"
+                                data-target="#unblockUserModal" data-id="{{ $user->user_id }}"
+                                data-name="{{ $user->full_name }}" title="Unblock User">
+                                ✅
+                            </button>
+                        @endif
 
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->phone ?? 'N/A' }}</td>
-                                <td><span
-                                        class="badge badge-{{ $user->role == 'user' ? 'primary' : 'secondary' }}">{{ $user->role }}</span>
-                                </td>
-                                <td>{{ $user->profile->city ?? 'N/A' }}</td>
-                                <td><span
-                                        class="badge badge-{{ $user->is_verified ? 'verified' : 'notverified' }}">{{ $user->is_verified ? 'Verified' : 'Not Verified' }}</span>
-                                </td>
-                                <td><span
-                                        class="badge badge-{{ $user->is_blocked ? 'blocked' : 'active' }}">{{ $user->is_blocked ? 'Blocked' : 'Active' }}</span>
-                                </td>
-                                <td>{{ $user->created_at }}</td>
-                                <td class="d-flex g-10 justify-content-evenly align-items-center flex-wrap">
-                                    <button class="btn btn-sm btn-outline-info mx-1 mb-2" data-toggle="modal"
-                                        data-target="#viewUserModal" data-id="{{ $user->user_id }}">👁️</button>
+                        <button class="btn btn-sm btn-outline-danger" data-toggle="modal"
+                            data-target="#deleteUserModal" data-id="{{ $user->user_id }}"
+                            title="Delete User">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="10" class="text-center text-muted">No users found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-                                    <button class="btn btn-sm btn-outline-warning mx-1 mb-2" data-toggle="modal"
-                                        data-target="#blockUserModal" data-id="{{ $user->user_id }}">🚫</button>
-                                    <button class="btn btn-sm btn-outline-success mx-1 mb-2" data-toggle="modal"
-                                        data-target="#unblockUserModal" data-id="{{ $user->user_id }}"
-                                        data-name="{{ $user->full_name }}">✅</button>
-                                    <button class="btn btn-sm btn-outline-danger mx-1 mb-2" data-toggle="modal"
-                                        data-target="#deleteUserModal" data-id="{{ $user->user_id }}">🗑️</button>
-                                </td>
-
-                            </tr>
-
-                        @empty
-                            <tr>
-                                <td colspan="11" class="text-center text-muted">No Users found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-
-                </table>
                 <div class="p-3">
                     {{ $users->links('pagination::bootstrap-5') }}
                 </div>
@@ -343,8 +360,6 @@
 
 @endsection
 @push('scripts')
-    <!-- Bootstrap 5 Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     
 document.addEventListener('DOMContentLoaded', function() {
