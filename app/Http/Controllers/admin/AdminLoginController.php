@@ -12,9 +12,9 @@ class AdminLoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.dashboard'); 
+            return redirect()->route('admin.dashboard');
         }
-        return view('admin.login'); // your Blade file
+        return view('admin.login');
     }
     public function login(Request $request)
     {
@@ -22,24 +22,27 @@ class AdminLoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         $remember = $request->has('remember'); // true if "remember me" checked
-    
+
         $credentials = $request->only('email', 'password');
-    
+
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             return redirect()->route('admin.dashboard');
         }
-    
+
         return back()->withErrors([
             'email' => 'Invalid email or password.',
         ])->withInput($request->only('email', 'remember'));
     }
-    
-    public function logout()
+
+    public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('admin.login.form');
     }
+
 
 }
