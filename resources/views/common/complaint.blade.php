@@ -184,8 +184,8 @@
                                 <div class="col-12">
                                     <label for="file" class="form-label fw-bold">Upload Screenshot / File
                                         (Optional)</label>
-                                    <input class="form-control" type="file" id="file" name="attachment[]"
-                                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" multiple>
+                                    <input type="file" name="attachment[]" multiple class="form-control"
+                                        accept=".jpg,.png,.pdf,.docx,.jpeg">
                                     <div class="form-text">Supported formats: JPG, PNG, PDF, DOC</div>
                                 </div>
 
@@ -225,13 +225,14 @@
                 const formData = new FormData(form);
                 const submitBtn = form.querySelector('button[type="submit"]');
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Submitting...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
                 try {
                     const response = await fetch("{{ route('complaint.store') }}", {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
                         },
                         body: formData
                     });
@@ -239,19 +240,31 @@
                     const data = await response.json();
 
                     if (response.ok) {
-                        alert(data.message || "Complaint submitted successfully!");
+                        console.log(data);
+                        Toast.fire({
+                            icon: 'success',
+                            title: data.message || "Your message has been submitted successfully."
+                        })
                         form.reset();
                     } else {
                         let errors = data.errors || {};
                         let messages = Object.values(errors).flat().join('\n');
-                        alert(messages || "Something went wrong.");
+                       Toast.fire({
+                           icon: 'error',
+                           title: messages || "An error occurred while submitting the form."
+                       })
+
+
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("An error occurred. Please try again.");
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'An error occurred. Please try again.'
+                    })
                 } finally {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Submit';
+                    submitBtn.innerHTML = 'Submit';
                 }
             });
         });

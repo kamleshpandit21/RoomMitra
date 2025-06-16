@@ -24,9 +24,28 @@ class ComplaintManagementController extends Controller
 
     public function show(Request $request, $id)
     {
-        $complaint = Complaint::find($id);
-        return response()->json($complaint);
+        $complaint = Complaint::findOrFail($id);
+
+        $attachments = [];
+
+        if ($complaint->attachment) {
+            $paths = json_decode($complaint->attachment, true); // array ban gaya
+            foreach ($paths as $path) {
+                $attachments[] = asset('storage/' . $path);
+            }
+        }
+
+        return response()->json([
+            'id' => $complaint->id,
+            'subject' => $complaint->subject,
+            'description' => $complaint->description,
+            'name' => $complaint->name,
+            'email' => $complaint->email,
+            'user_type' => $complaint->user_type,
+            'attachments' => $attachments, 
+        ]);
     }
+
     public function resolve($id)
     {
         $complaint = Complaint::findOrFail($id);

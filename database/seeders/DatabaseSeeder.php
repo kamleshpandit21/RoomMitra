@@ -6,6 +6,7 @@ use App\Models\Complaint;
 use App\Models\Room;
 use App\Models\RoomAmenity;
 use App\Models\RoomImage;
+use App\Models\Testimonial;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,16 +20,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->count(20)->create();
+        // User::factory()->count(20)->create();
 
-      
-        $this->call([
-            AdminSeeder::class,
-            RoomSeeder::class
-        ]); 
-    
-        
-            $this->call(FaqSeeder::class);
-        
+
+        // $this->call([
+        //     AdminSeeder::class,
+        //     RoomSeeder::class
+        // ]);
+
+
+        // $this->call(FaqSeeder::class);
+        // Complaint::factory()->count(20)->create();
+        Testimonial::factory()->count(10)->create();
+
     }
 }

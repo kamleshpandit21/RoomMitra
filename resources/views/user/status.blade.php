@@ -5,6 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0 text-center p-5">
+            
 
                 @if ($status == 'success')
                     <div class="mb-4">

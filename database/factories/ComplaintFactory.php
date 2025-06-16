@@ -20,13 +20,16 @@ class ComplaintFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->safeEmail,
             'phone' => $this->faker->phoneNumber,
-            'user_type' => $this->faker->randomElement(['user', 'room_owner','guest']),
+            'user_type' => $this->faker->randomElement(['user', 'room_owner', 'guest']),
             'category' => $this->faker->randomElement(['Noise', 'Cleanliness', 'Water Leakage', 'Other']),
             'subject' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph,
-            'attachment' => null, // can mock file later
+
+            'attachment' => 'https://via.placeholder.com/150',
+
             'status' => $this->faker->randomElement(['pending', 'in_progress', 'resolved']),
             'admin_response' => null,
         ];
+
     }
 }

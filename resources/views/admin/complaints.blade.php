@@ -109,7 +109,7 @@
                 </tr>
             @endforelse
             <tr>
-                <td colspan="7" >{{ $complaints->links('pagination::bootstrap-5') }}</td>
+                <td colspan="7">{{ $complaints->links('pagination::bootstrap-5') }}</td>
             </tr>
 
         </tbody>
@@ -142,12 +142,13 @@
                     <h6>Attachments:</h6>
                     <a href="#" target="_blank" id="modalAttachment">No attachment</a>
 
+
                 </div>
                 <hr>
                 <div class="modal-footer">
                     <h6 class="text-align-start">Reply / Notes</h6>
                     <textarea class="form-control mb-2" placeholder="Write your reply or note..."></textarea>
-                   
+
                     <div class="row justify-content-between">
                         <button class="btn btn-success">💬 Send Reply</button>
                         <button class="btn btn-outline-secondary resolve-modal-btn">
@@ -170,37 +171,59 @@
                     const complaintId = btn.getAttribute('data-id');
                     const url = '{{ route('admin.complaints.show', ':id') }}'.replace(':id',
                         complaintId);
-                    console.log(url);
+                    const ModalBody = document.querySelector('.modal-body'); // ✅ Corrected
+
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data);
-                            const modalComplaintId = document.querySelectorAll(
-                                '.modal-complaint-id')
-                            modalComplaintId.forEach(element => {
-                                element.textContent = data.id
-                            })
-                            document.getElementById('modalSubject').textContent = data
-                                .subject;
+                            // Fill modal fields
+                            document.querySelectorAll('.modal-complaint-id').forEach(el => el
+                                .textContent = data.id);
+                            document.getElementById('modalSubject').textContent = data.subject;
                             document.getElementById('modalDescription').textContent = data
                                 .description;
                             document.getElementById('modalName').textContent = data.name;
                             document.getElementById('modalEmail').textContent = data.email;
                             document.getElementById('modalRole').textContent = data.user_type;
 
+                            // Attachments
+                            const attachmentLink = document.getElementById('modalAttachment');
+                            if (data.attachments && data.attachments.length > 0) {
+                                attachmentLink.href = data.attachments[0]; // first file
+                                attachmentLink.textContent = 'View Attachment';
 
-                            // Show the modal (Bootstrap 5 method)
-                            var myModal = new bootstrap.Modal(document.getElementById(
+                                // Remove previous previews
+                                ModalBody.querySelectorAll('img').forEach(el => el.remove());
+
+                                // Add all previews
+                                data.attachments.forEach(url => {
+                                    let img = document.createElement('img');
+                                    img.src = url;
+                                    img.width = 200;
+                                    img.height = 200;
+                                    ModalBody.appendChild(img);
+                                });
+
+                            } else {
+                                attachmentLink.href = '#';
+                                attachmentLink.textContent = 'No attachment';
+                            }
+
+
+                            // Show modal
+                            const myModal = new bootstrap.Modal(document.getElementById(
                                 'viewComplaintModal'));
                             myModal.show();
                         })
                         .catch(error => {
                             console.error('Error fetching complaint details:', error);
                             alert('Unable to fetch complaint details.');
-                        })
-                })
-            })
-        })
+                        });
+                });
+            });
+        });
+        
+
         // document.addEventListener('DOMContentLoaded', () => {
         //     // Handle click on "Mark as Resolved" in modal
         //     document.querySelectorAll('.resolve-modal-btn').forEach(btn => {

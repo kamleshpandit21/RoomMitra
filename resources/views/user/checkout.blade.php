@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Invoice')
+@section('title', 'Checkout Page')
 
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,8 +24,8 @@
         }
 
         /* .booking-card:hover {
-                                                                transform: scale(1.02);
-                                                            } */
+                                                                                    transform: scale(1.02);
+                                                                                } */
 
         .free-tag {
             color: green;
@@ -243,6 +243,29 @@
         });
     </script>
     <script>
+        document.getElementById("confirmPayBtn").addEventListener("click", function(e) {
+            if (!document.getElementById("agree").checked) {
+                alert("Please agree to the Terms & Conditions.");
+                e.preventDefault();
+                return;
+            }
+
+            const checkin = checkinDateEl.value;
+            if (!checkin) {
+                alert("Please select a valid check-in date.");
+                checkinDateEl.focus();
+                e.preventDefault();
+                return;
+            }
+
+            // Fill hidden fields
+            document.getElementById("selectedMonths").value = stayMonthsEl.value;
+            document.getElementById("selectedOccupancy").value = occupancy.value;
+
+            document.getElementById("checkinDateInput").value = checkinDateEl.value;
+            document.getElementById("checkoutDateInput").value = checkoutDateEl.value;
+        });
+
         const stayMonthsEl = document.getElementById("stayMonths");
         const occupancy = document.getElementById("occupancySelect");
         const totalAmountEl = document.getElementById("totalAmount");
@@ -255,15 +278,17 @@
 
         occupancy.addEventListener("change", function() {
             console.log("Occupancy changed:", occupancy.value);
+            const sharingPrices = @json($room->sharing_prices);
             const occupancyValue = parseInt(occupancy.value);
-            
+
             if (occupancyValue == 1) {
-                baseRent = {{ $room->sharing_prices['single'] ?? $baseRent}};
+                baseRent = sharingPrices.single ?? baseRent;
             } else if (occupancyValue == 2) {
-                baseRent = {{ $room->sharing_prices['double'] ?? $baseRent}};
+                baseRent = sharingPrices.double ?? baseRent;
             } else {
-                baseRent = {{ $room->sharing_prices['triple'] ?? $baseRent}};
+                baseRent = sharingPrices.triple ?? baseRent;
             }
+
             console.log("Base Rent:", baseRent);
 
 
@@ -275,6 +300,7 @@
             const months = parseInt(stayMonthsEl.value || 1);
             const total = (baseRent + amenities) * months + security;
             totalAmountEl.innerText = `₹ ${total} ( For ${months} Months Only)`;
+            document.getElementById("totalPrice").value = total;
             console.log(`Total: ₹ ${total} ( For ${months} Months Only) ${baseRent} + ${amenities} + ${security}`);
         }
 
@@ -298,11 +324,13 @@
             checkoutDateEl.value = formatDateMMDDYYYY(checkout);
         }
 
+
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
+
             calculateTotal();
             updateCheckoutDate();
-            
+
         });
 
         // Event listeners

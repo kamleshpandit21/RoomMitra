@@ -18,7 +18,6 @@ class ComplaintController extends Controller
     }
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email',
@@ -27,43 +26,37 @@ class ComplaintController extends Controller
             'category' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'description' => 'required|string',
-            'attachment' => 'nullable',
+            'attachment.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048', 
         ]);
 
-        $complaint = new Complaint();
+        $complaint = new Complaint($validated);
+        $complaint->status = 'pending';
 
-        $complaint->name = $validated['name'];
-        $complaint->email = $validated['email'];
-        $complaint->phone = $validated['phone'];
-        $complaint->user_type = $validated['user_type'];
-        $complaint->category = $validated['category'];
-        $complaint->subject = $validated['subject'];
-        $complaint->description = $validated['description'];
-
-
+        // File upload logic 
         if ($request->hasFile('attachment')) {
+            $paths = [];
             foreach ($request->file('attachment') as $file) {
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $path = $file->storeAs('uploads/complaints', $filename, 'public');
-                // save $path as needed
-                $complaint->attachment = $path;
+                $paths[] = $path;
             }
+            $complaint->attachment = json_encode($paths); 
         }
 
-
-        $complaint->status = 'pending';
-
         $complaint->save();
+
+        // Send mail to admin
         Mail::to('atul800498@gmail.com')->send(new ComplaintMail($complaint));
 
-
+        // Send mail to user
         if ($complaint->email) {
             Mail::to($complaint->email)->send(new ComplaintConfirmation($complaint));
         }
+
         return response()->json([
             'success' => true,
-            'message' => '✅ Your request has been submitted successfully!',
+            'message' => '✅ Your complaint has been submitted successfully!',
         ]);
-
     }
+
 }

@@ -454,25 +454,25 @@
             <div class="row g-4">
                 <div class="col-md-3 col-6">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <h3 class="counter text-success fw-bold" data-target="1000">0</h3>
+                        <h3 class="counter text-success fw-bold" data-target="0">0</h3>
                         <p class="mb-0">Rooms Listed</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <h3 class="counter text-success fw-bold" data-target="500">0</h3>
+                        <h3 class="counter text-success fw-bold" data-target="0">0</h3>
                         <p class="mb-0">Verified Owners</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <h3 class="counter text-success fw-bold" data-target="1500">0</h3>
+                        <h3 class="counter text-success fw-bold" data-target="0">0</h3>
                         <p class="mb-0">Happy Students</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <h3 class="counter text-success fw-bold" data-target="120">0</h3>
+                        <h3 class="counter text-success fw-bold" data-target="1">0</h3>
                         <p class="mb-0">Cities Covered</p>
                     </div>
                 </div>

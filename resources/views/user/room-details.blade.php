@@ -98,7 +98,7 @@
                     <p><strong>No.:</strong> {{ $room->room_number }}</p>
                     <p><strong>Capacity:</strong> {{ $room->room_capacity }} People</p>
                     <p><strong>Total Beds:</strong> {{ $room->total_beds }}</p>
-                    <p><strong>Description:</strong> {{ $room->room_description }}</p>
+                    <p><strong>Description:</strong> {{ $room->room_description ?? 'No description available' }}</p>
 
                 </div>
 
@@ -107,9 +107,9 @@
                     <h5><i class="fas fa-cogs me-2"></i> Specifications</h5>
                     <div class="row g-3">
                         <div class="col-md-6 spec-item"><i class="fa fa-bath me-2"></i> <strong>Bathroom:</strong>
-                            {{ ucfirst($room->bathroom_type) }}</div>
+                            {{ ucfirst($room->bathroom_type) ?? 'Shared' }}</div>
                         <div class="col-md-6 spec-item"><i class="fa fa-utensils me-2"></i> <strong>Kitchen:</strong>
-                            {{ ucfirst($room->kitchen_type) }}</div>
+                            {{ ucfirst($room->kitchen_type) ?? 'Shared' }}</div>
                         <div class="col-md-6 spec-item"><i class="fa fa-building me-2"></i> <strong>Floor:</strong>
                             {{ $room->floor }}</div>
                         <div class="col-md-6 spec-item"><i class="fa fa-elevator me-2"></i> <strong>Lift:</strong>
@@ -128,7 +128,7 @@
                         @foreach ($room->amenities as $amenity)
                             <div class="amenity-card">
                                 <i
-                                    class="fas fa-{{ $icons[strtolower($amenity->amenity_name)] ?? 'concierge-bell' }} fa-lg mb-1"></i>
+                                    class="fas fa-{{ $icons[strtolower($amenity->amenity_name)] ?? 'question-circle' }} fa-lg mb-1"></i>
                                 <div>{{ $amenity->amenity_name }}</div>
                                 <div
                                     class="badge bg-{{ $amenity->status == 'free' ? 'success' : ($amenity->status == 'paid' ? 'warning' : 'secondary') }}">
@@ -151,10 +151,10 @@
                     <p><strong>City:</strong> {{ $room->city }}</p>
                     <p><strong>State:</strong> {{ $room->state }}</p>
                     <p><strong>Pincode:</strong> {{ $room->pincode }}</p>
-                    <p><strong>Nearby Landmarks:</strong> {{ $room->nearby_landmarks }}</p>
+                    <p><strong>Nearby Landmarks:</strong> {{ $room->nearby_landmarks ?? 'Not specified.' }}</p>
                     <iframe
-                        src="https://maps.google.com/maps?q={{ urlencode($room->city) }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                        width="100%" height="300" frameborder="0" style="border:0;"></iframe>
+                        src="https://maps.google.com/maps?q={{ urlencode($room->address_line1 . ', ' . $room->city) }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                        width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen></iframe>
                 </div>
 
                 <!-- Reviews -->
@@ -191,28 +191,33 @@
                         <ul class="list-group">
                             <li class="list-group-item">Price: ₹{{ intval($room->room_price) }}/month</li>
                             <li class="list-group-item">Security Deposit: ₹{{ intval($room->security_deposit) }}</li>
-                            @foreach ($room->sharing_prices as $key => $price)
+                            @foreach ($room->sharing_prices ?? [] as $key => $price)
                                 <li class="list-group-item">{{ ucwords($key) }}: ₹{{ intval($price) }}/month</li>
                             @endforeach
-                            <li class="list-group-item">Minimun Stay: {{ $room->min_stay_months }} month</li>
+
+                            <li class="list-group-item">Minimum Stay: {{ $room->min_stay_months ?? 1 }} month</li>
                         </ul>
                     </div>
                     <div class="card p-3 mb-4">
                         <h5>Owner Info</h5>
-                        <p><strong>Name:</strong> {{ ucwords($room->owner->full_name) }}</p>
-                        <p><strong>Contact:</strong> {{ substr($room->owner->phone, 0, 4) . '********' }}</p>
+                        <p><strong>Name:</strong> {{ ucwords(optional($room->owner)->full_name ?? 'N/A') }}</p>
+                        <p><strong>Contact:</strong>
+                            {{ $room->owner && $room->owner->phone ? substr($room->owner->phone, 0, 4) . '********' : 'N/A' }}
+                        </p>
                         <p><strong>Rating:</strong> <span class="text-warning"><i class="fa fa-star"></i> 4.5</span></p>
                     </div>
 
                     <div class="card p-3 mb-4">
-                       
-                        <form action="{{ route('user.booking.checkout', $room->room_id) }}" method="GET" id="bookingForm">
-                       
-                    
-                            <button type="submit" class="btn submit-btn w-100"><i class="fa fa-calendar-check"></i> Book Now</button>
+
+                        <form action="{{ route('user.booking.checkout', $room->room_id) }}" method="GET"
+                            id="bookingForm">
+
+
+                            <button type="submit" class="btn submit-btn w-100" id="bookNow"><i class="fa fa-calendar-check"></i> Book
+                                Now</button>
                         </form>
                     </div>
-                    
+
 
 
                 </div>
@@ -228,6 +233,4 @@
             window.location.href = "{{ route('user.booking.checkout', $room->room_id) }}";
         });
     </script>
- 
-  
 @endpush

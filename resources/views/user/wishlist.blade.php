@@ -6,6 +6,12 @@
         <h2 class="display-5 fw-bold mb-3 heading" data-aos="fade-up">💖 My Wishlist</h2>
 
         <div class="row g-4">
+            <div class="col-12" data-aos="fade-up" id="empty-wishlist-message"
+                style="{{ count($wishlists) ? 'display:none;' : '' }}">
+                <div class="alert alert-warning text-center">
+                    <strong>No rooms in your wishlist yet.</strong>
+                </div>
+            </div>
             @forelse($wishlists as $item)
                 @php
                     $room = $item->room;
@@ -91,11 +97,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-12" data-aos="fade-up">
-                    <div class="alert alert-warning text-center">
-                        <strong>No rooms in your wishlist yet.</strong>
-                    </div>
-                </div>
+
             @endforelse
         </div>
     </div>
@@ -150,6 +152,10 @@
                             cardCol.classList.add('animate__animated', 'animate__fadeOut');
                             setTimeout(() => {
                                 cardCol.remove();
+                                const remainingRooms = document.querySelectorAll('.room-card');
+                                if (remainingRooms.length === 0) {
+                                    document.getElementById('empty-wishlist-message').style.display = 'block';
+                                }
                             }, 500);
                         }
 

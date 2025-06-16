@@ -5,7 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Room;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class BookingController extends Controller
 {
@@ -24,28 +26,33 @@ class BookingController extends Controller
         return view('user.checkout', compact('room'));
     }
 
-    public function pay(Request $request, Room $room)
+    public function pay(Request $request, $room)
     {
+        $Room = Room::where('room_id', $room)->with('images', 'amenities', 'owner')->firstOrFail();
         // Fake logic: random success/failure
         $isSuccess = rand(0, 1);
         $paymentSuccess = true;
 
-        // Optionally create a Booking record
+        $checkin = \Carbon\Carbon::createFromFormat('d-m-Y', $request->checkin_date)->format('Y-m-d');
+        $checkout = \Carbon\Carbon::createFromFormat('d-m-Y', $request->checkout_date)->format('Y-m-d');
+
         Booking::create([
-            'user_id' => 1,
-            'owner_id' => $room->owner->user_id, // Assuming Room has user_id (owner)
-            'room_id' => $room->room_id,
-            'check_in_date' => now()->toDateString(),
-            'check_out_date' => now()->addMonth()->toDateString(), // dummy
-            'total_amount' => $room->room_price + $room->security_deposit,
-            'status' => $paymentSuccess ? 'confirmed' : 'pending',
-            'payment_status' => $paymentSuccess ? 'paid' : 'failed',
-            'payment_method' => $request->input('payment_method') ?? 'dummy',
+            'user_id' => FacadesAuth::user()->user_id,
+            'owner_id' => $Room->owner_id,
+            'room_id' => $Room->room_id,
+            'check_in_date' => $checkin,
+            'check_out_date' => $checkout,
+            'total_amount' => $request->total,
+            'status' => 'confirmed',
+            'payment_status' => 'paid',
+            'payment_method' => 'dummy',
             'transaction_id' => 'TXN' . rand(100000, 999999),
         ]);
+
         return $paymentSuccess
-        ? redirect()->route('user.booking.success')
-        : redirect()->route('user.booking.fail');   }
+            ? redirect()->route('user.booking.success')
+            : redirect()->route('user.booking.fail');
+    }
 
     public function success()
     {

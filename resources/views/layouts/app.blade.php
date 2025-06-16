@@ -165,7 +165,7 @@
         <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <!-- Logo -->
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('logo/RoomLogo.png') }}" alt="Logo" alt="" height="80">
+                <img src="{{ asset('logo/RoomLogo.png') }}" alt="Logo" alt="" height="60">
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -178,40 +178,45 @@
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                 <ul class="navbar-nav align-items-center w-100 d-flex flex-wrap justify-content-end gap-3 ">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('home') }}">Home</a>
+                        <a class="nav-link {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rooms') }}">Rooms</a>
-                    </li>
-                    <!-- Pages -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
+                        <a class="nav-link {{ request()->routeIs('rooms') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('rooms') }}">Rooms</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('wishlist.index') }}">Wishlist</a>
+                        <a class="nav-link {{ request()->routeIs('about') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('about') }}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact.form') }}">Contact</a>
+                        <a class="nav-link {{ request()->routeIs('wishlist.index') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('wishlist.index') }}">Wishlist</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('faqs') }}">FAQ</a>
+                        <a class="nav-link {{ request()->routeIs('contact.form') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('contact.form') }}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('faqs') ? 'active text-primary fw-bold' : '' }}"
+                            href="{{ route('faqs') }}">FAQ</a>
                     </li>
 
 
                     <!-- Login/Register -->
-                    @if (Auth::check() && Auth::user())
+                    @if (Auth::check())
                         <li class="nav-item">
-                            <a href="{{ route('user.profile.index') }}" class="btn btn-success">Profile</a>
+                            <a href="{{ route('user.profile.index') }}" class="btn btn-sm submit-btn">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('logout') }}" class="btn btn-outline-success me-2">Logout</a>
+                            <a href="{{ route('logout') }}" class="btn btn-sm fill-btn">Logout</a>
                         </li>
                     @else
                         <li class="nav-item">
-                            <a href="{{ route('register.form') }}"
-                                class="btn btn-lg fs-5 shadow-pulse me-2 text-white "
-                                style="background: linear-gradient(135deg, #6366f1, #8b5cf6)">Get Started</a>
+                            <a href="{{ route('register.form') }}" class="btn btn-sm text-white shadow-pulse"
+                                style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                                Get Started
+                            </a>
                         </li>
                     @endif
                 </ul>
@@ -291,7 +296,7 @@
                         <i class="fas fa-envelope me-3"></i> support@roommitra.com
                     </p>
                     <p><i class="fas fa-phone me-3"></i> <span
-                            style="font-family: 'Times New Roman', Times, serif;">+91 1234567890</span></p>
+                            style="font-family: 'Times New Roman', Times, serif;"><a class="text-white" href="tel:+919305089318">+91 9305089318</a></span></p>
                 </div>
             </div>
         </section>
@@ -299,7 +304,7 @@
         <!-- Copyright -->
         <div class="text-center py-3 mt-4" style="background-color: rgba(0, 0, 0, 0.2)">
             © 2025 Copyright:
-            <a class="text-white text-decoration-none fw-bold" href="#">RoomMitra.com</a>
+            <a class="text-white text-decoration-none fw-bold" href="{{ route('home') }}">RoomMitra.com</a>
         </div>
     </footer>
 
@@ -331,9 +336,9 @@
         window.addEventListener("scroll", function() {
             const navbar = document.querySelector(".navbar");
             if (window.scrollY > 50) {
-                navbar.classList.add("scrolled"); // Add solid background after scroll
+                navbar.classList.add("scrolled"); 
             } else {
-                navbar.classList.remove("scrolled"); // Remove solid background when near top
+                navbar.classList.remove("scrolled"); 
             }
         });
     </script>

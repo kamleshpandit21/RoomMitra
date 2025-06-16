@@ -176,6 +176,7 @@ Route::prefix('admin')->middleware(['admin'])->name('admin.')->group(function ()
 
     // Testimonials
     Route::resource('testimonials', TestimonialController::class);
+    Route::patch('/testimonials/{id}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggleStatus');
 
     // Contact Messages
     Route::resource('contact-messages', ContactMessageController::class);
