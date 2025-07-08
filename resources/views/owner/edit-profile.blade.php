@@ -3,6 +3,26 @@
 @section('title', 'Edit Profile')
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/user.profile.css') }}">
+    <style>
+  .custom-modal {
+    width: 80vw;       /* 80% of viewport width */
+    max-width: 80vw;
+    height: 80vh;       /* 80% of viewport height */
+    max-height: 80vh;
+    margin: auto;       /* center it */
+  }
+
+  .custom-modal .modal-content {
+    height: 100%;
+    overflow: hidden; /* cropper ke liye important */
+  }
+
+  .custom-modal .modal-body {
+    overflow-y: auto;
+    max-height: calc(100% - 120px); /* leave room for header & footer */
+  }
+</style>
+
 @endpush
 @section('content')
 
@@ -67,7 +87,7 @@
                                     class="fab fa-skype fa-lg"></i></button>
                         </div>
 
-                        <button type="button" class="btn btn-primary btn-rounded btn-lg" id="upload_profile_picture">Upload
+                        <button type="button" class="btn btn-primary btn-rounded btn-lg" data-toggle="modal" data-target="#cropperModal">Upload
                             Photo</button>
 
                         <div class="d-flex justify-content-between text-center mt-5 mb-2">
@@ -94,7 +114,7 @@
 
 
             <!-- Editable Form Tabs -->
-            <div class="col-md-8 animate__animated animate__fadeInRight">
+            <div class="col-md-8 animate_animated animate_fadeInRight">
                 <form action="{{ route('user.profile.update', $user->user_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -324,11 +344,91 @@
             </div>
         </div>
     </div>
+    <!-- Cropper Modal -->
+<div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+  <div class="modal-dialog custom-modal modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Crop Image</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+      </div>
+
+      <div class="modal-body text-center">
+        <input type="file" id="uploadImageInput" accept="image/*" class="form-control mb-3">
+        <div>
+          <img id="imagePreview" style="max-width: 100%; display: none;" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="saveCroppedImage" class="btn btn-success">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
 <script src="{{ asset('js/user.profile.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>    
+
+<script>
+
+let cropper;
+    const input = document.getElementById('uploadImageInput');
+    const image = document.getElementById('imagePreview');
+    const hiddenInput = document.getElementById('croppedImageInput');
+    const previewOutput = document.getElementById('previewOutput');
+const model=document.getElementById('cropperModal/')
+    input.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file && /^image\//.test(file.type)) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          image.src = event.target.result;
+          image.style.display = 'block';
+          input.style.display = 'none'
+           image.style.width = '100%';
+      image.style.maxWidth = '100%';
+      image.style.maxHeight = '400px';
+      image.style.objectFit = 'contain';
+          image.onload = function () {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
+                background: false
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('saveCroppedImage').addEventListener('click', function () {
+      if (cropper) {
+        const canvas = cropper.getCroppedCanvas({
+          width: 300,
+          height: 300,
+          imageSmoothingQuality: 'high'
+        });
+
+        const base64Image = canvas.toDataURL('image/jpeg', 0.9);
+        hiddenInput.value = base64Image;
+        previewOutput.src = base64Image;
+
+      }
+    });
     
+
+</script>
+
     <script>
         document.getElementById('upload_profile_picture').addEventListener('click', function() {
             document.getElementById('profile_picture_input').click();

@@ -14,12 +14,15 @@
     @stack('styles')
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-
+    <!---croper js css-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 </head>
 @php
     if (Auth::check()):
         $user = Auth::user();
         $profile = $user->ownerProfile;
+
+
     endif;
 @endphp
 
@@ -32,8 +35,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('owner.dashboard') }}" class="nav-link">Dashboard</a>
@@ -103,8 +105,9 @@
                     <div class="image">
 
 
-                        <img src="{{ asset($profile->avatar) ?? asset('adminlte/dist/img/user2-160x160.jpg') }}"
-                            alt="Owner Image" class="img-circle elevation-2" alt="Owner Image">
+                        <img src="{{ asset(optional($profile)->avatar ?? 'adminlte/dist/img/user2-160x160.jpg') }}"
+                            alt="Owner Image" class="img-circle elevation-2">
+
                     </div>
                     <div class="info">
 
@@ -281,17 +284,6 @@
             reserved.
         </footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-    </script>
     <!-- ./wrapper -->
     @stack('scripts')
     <!-- REQUIRED SCRIPTS -->
